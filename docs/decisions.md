@@ -89,8 +89,9 @@ newer document and wins by default. Each call below was agreed on 2026-10-19.
 - **Starter:** README (how to run, env vars, full flow) plus a write-up (prompt design,
   partial-metadata-failure handling, what's next).
 - **Decision:** all of them, plus this file.
-  `README.md` · `docs/ARCHITECTURE.md` · `docs/DECISIONS.md` · `docs/AI_USAGE.md` ·
-  `docs/ISSUE_LOG.md` · demo video.
+  `README.md` · `docs/prd.md` · `docs/architecture.md` · `docs/decisions.md` · `docs/adr/` ·
+  `docs/users.md` · `docs/test_plan.md` · `docs/agents.md` · `docs/ai_log.md` · `docs/ai_usage.md` ·
+  `docs/deploy.md` · `docs/runbook.md` · `docs/issue_log.md` · demo video.
 
 ## 9. Runtime
 
