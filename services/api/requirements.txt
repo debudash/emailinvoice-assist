@@ -1,0 +1,10 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+# ISSUE-001: the API crashed on startup with "No module named 'psycopg'".
+# Root cause: SQLAlchemy 2.1 maps plain postgresql:// URLs to psycopg (v3) instead of psycopg2,
+# and the unbounded ">=2.0.36" pulled 2.1.x. Capping below 2.1 keeps psycopg2 as the driver, which
+# also keeps the plain URL that docker-entrypoint.sh hands straight to psycopg2.connect().
+sqlalchemy>=2.0.36,<2.1
+psycopg2-binary>=2.9.10
+pydantic>=2.10.0
+pydantic-settings>=2.8.0
