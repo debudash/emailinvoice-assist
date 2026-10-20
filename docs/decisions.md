@@ -263,3 +263,15 @@ From the docs agent's cross-check of the code against the PRD:
     same folder.
 - **Store:** Stage Runs and Actions are append-only. `invoices.status` and the `control` table are
   current-state fields, updated in place by design.
+
+## Run-through changes (2026-10-20)
+
+- **Release at catalog price (PRD story 52a).** The run-through showed a Reviewer wanting to "correct
+  a wrong price". A Correction cannot change a billed figure: Line Items stay as the site wrote them
+  (story 12). A Release now offers two choices for Price Variance lines: accept as billed, or pay the
+  Catalog price. Paying the Catalog price sends the Catalog unit price and amount to ClinRun, and adds
+  the billed unit price and amount to the line, so the record still shows what the site invoiced. The
+  invoice total stays the printed total. It is recorded as a `release_at_catalog_price` Action, and an
+  Operator rerun of a failed submission keeps the choice.
+- **What clears it (ISSUE-007).** The Hub lists the next step for each Hold Reason, and a Correction
+  that would change nothing is refused.

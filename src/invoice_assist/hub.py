@@ -228,10 +228,17 @@ if inv["status"] in (InvoiceStatus.held, InvoiceStatus.escalated) and decision:
                 st.info(f"Release is not available: {', '.join(needs_correction)} needs a Correction.", icon=":material/lock:")
             else:
                 with st.form("release"):
-                    st.caption("Submits as-is. Your reason travels with the submission to ClinRun.")
+                    st.caption("Your reason and name travel with the submission to ClinRun.")
+                    at_catalog_price = False
+                    if "price_variance" in decision["hold_reasons"]:
+                        at_catalog_price = st.radio(
+                            "Price Variance lines", [False, True], horizontal=True,
+                            format_func=lambda c: "Pay the catalog price" if c else "Accept as billed",
+                            help="Paying the catalog price sends the catalog price to ClinRun and keeps the "
+                                 "billed price on the record.")
                     reason = st.text_input("Release reason (required)")
                     if st.form_submit_button("Release to ClinRun", type="primary"):
-                        run_action("Release", "release", invoice_id, actor, reason)
+                        run_action("Release", "release", invoice_id, actor, reason, at_catalog_price)
         with tabs[3], st.form("escalate"):
             note = st.text_area("What needs a second look (required)")
             if st.form_submit_button("Escalate"):

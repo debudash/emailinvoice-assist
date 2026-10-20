@@ -114,7 +114,8 @@ RELEASABLE = {HoldReason.price_variance, HoldReason.unmatched, HoldReason.ambigu
 
 # What clears each Hold Reason, shown on the hold in the Hub (ISSUE-007).
 NEXT_STEP = {
-    HoldReason.price_variance: "Release to accept it as billed, or Escalate to dispute it with the site",
+    HoldReason.price_variance: "Release to accept it as billed or to pay the catalog price, "
+                               "or Escalate to dispute it with the site",
     HoldReason.unmatched: "Correct the line to a Catalog Item, or Release to submit it unmatched",
     HoldReason.ambiguous: "Correct the line to the right Catalog Item, or Release with the AI's choice",
     HoldReason.llm_concern: "Read the concern; Release if it is fine, or Escalate",

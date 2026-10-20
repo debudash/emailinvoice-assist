@@ -39,6 +39,9 @@ class Line(BaseModel):
     unit_price: float
     amount: float
     price_variance: bool
+    # Set when a Release paid this line at the Catalog price: what the site billed.
+    billed_unit_price: float | None = None
+    billed_amount: float | None = None
 
 
 class Decision(BaseModel):
@@ -49,6 +52,7 @@ class Decision(BaseModel):
 class Release(BaseModel):
     reason: str
     reviewer: str
+    at_catalog_price: bool = False
 
 
 class Source(BaseModel):
