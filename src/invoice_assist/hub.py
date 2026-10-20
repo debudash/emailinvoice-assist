@@ -21,8 +21,6 @@ from invoice_assist.store import Store
 st.set_page_config(page_title="Invoice hub", page_icon=":material/receipt_long:", layout="wide")
 
 ACTORS = ["Dana (Reviewer)", "Sam (Reviewer)", "Ops (Operator)"]
-STATUS_ICON = {InvoiceStatus.submitted: ":material/check_circle:", InvoiceStatus.held: ":material/pause_circle:",
-               InvoiceStatus.failed: ":material/error:", InvoiceStatus.escalated: ":material/flag:"}
 QUEUES = ["Held", "Escalated", "Failed", "Submitted", "All"]
 
 
@@ -121,7 +119,9 @@ def queue():
         return
     df = pd.DataFrame(rows)
     df["reasons"] = [", ".join((store().latest_output(i, "decision") or {}).get("hold_reasons", [])) for i in df["id"]]
-    df["status"] = [f"{STATUS_ICON.get(s, ':material/autorenew:')} {s}" for s in df["status"]]
+    # ISSUE-004: the status column showed ":material/pause_circle: Held" as literal text. Root cause:
+    # dataframe cells render plain text, not Markdown, so the icon shortcode was never drawn. Fix: plain
+    # status words in the table; icons stay on the alerts, which do render them.
     event = st.dataframe(df[["id", "status", "reasons", "filename", "sender", "updated_at"]], hide_index=True,
                          on_select="rerun", selection_mode="single-row", key=f"queue_table_{queue_name}",
                          alt="Invoices in the selected queue")
