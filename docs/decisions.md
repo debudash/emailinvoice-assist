@@ -274,3 +274,7 @@ From the docs agent's cross-check of the code against the PRD:
   Operator rerun of a failed submission keeps the choice.
 - **What clears it (ISSUE-007).** The Hub lists the next step for each Hold Reason, and a Correction
   that would change nothing is refused.
+- **`extraction_unverified` stays non-Releasable (decided 2026-10-20).** An extracted number not
+  printed on the PDF cannot be Released and no Correction clears it, like `arithmetic`: the Reviewer
+  Escalates and the site resends. Kept as designed for the demo; a Correction for extracted values
+  is on the README roadmap.
