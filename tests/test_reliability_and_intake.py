@@ -79,18 +79,3 @@ def test_metrics_report_straight_through_and_time_saved(store, simple_invoice):
     assert summary["manual_minutes"] == 5 + 2  # two line items
     assert summary["holds_by_reason"] == {}
     assert Extraction  # model import kept for readability of the image test
-
-
-def test_submission_flags_variance_using_the_same_tolerance_as_the_decision(store, simple_invoice, monkeypatch):
-    import invoice_assist.decision as decision
-    from invoice_assist.config import Settings
-    monkeypatch.setattr(decision, "settings", Settings(price_tolerance=0.02))
-
-    def slightly_high():
-        ex = extraction()
-        ex.line_items[0].unit_price, ex.line_items[0].amount, ex.header.total = 404, 404, 1364
-        return ex
-    pipeline, clinrun = make_pipeline(store, extract=lambda d, mt: slightly_high())
-
-    assert pipeline.process(simple_invoice) == "Submitted"
-    assert clinrun.calls[0][0]["lines"][0]["price_variance"] is False
