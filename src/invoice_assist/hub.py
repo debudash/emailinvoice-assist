@@ -122,8 +122,13 @@ def queue():
     # ISSUE-004: the status column showed ":material/pause_circle: Held" as literal text. Root cause:
     # dataframe cells render plain text, not Markdown, so the icon shortcode was never drawn. Fix: plain
     # status words in the table; icons stay on the alerts, which do render them.
+    # ISSUE-006: when a new Invoice arrived, the detail jumped to a different Invoice on its own.
+    # Root cause: the table remembers a selected row position, not an Invoice; newest-first rows shift
+    # on refresh, so the same position named another Invoice. Fix: the key includes the row ids, so a
+    # changed row set starts with no selection and the detail keeps the Invoice in "selected".
+    table_key = f"queue_table_{queue_name}_{'-'.join(map(str, df['id']))}"
     event = st.dataframe(df[["id", "status", "reasons", "filename", "sender", "updated_at"]], hide_index=True,
-                         on_select="rerun", selection_mode="single-row", key=f"queue_table_{queue_name}",
+                         on_select="rerun", selection_mode="single-row", key=table_key,
                          alt="Invoices in the selected queue")
     if event.selection.rows:
         chosen = int(df.iloc[event.selection.rows[0]]["id"])
