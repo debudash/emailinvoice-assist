@@ -34,7 +34,7 @@ def main() -> None:
     }
     log_dir = os.path.join(project, "docs", "ai_log")
     os.makedirs(log_dir, exist_ok=True)
-    with open(os.path.join(log_dir, "actions.jsonl"), "a", encoding="utf-8") as f:
+    with open(os.path.join(log_dir, "actions.jsonl"), "a", encoding="utf-8", newline="\n") as f:
         f.write(json.dumps(entry) + "\n")
 
 
