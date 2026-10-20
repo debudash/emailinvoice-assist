@@ -1,0 +1,3 @@
+# Corroboration ranks candidates but cannot lift a weak field
+
+Corroboration (the study belongs to the sponsor, the site is linked to the study, the PI matches the site) reorders candidates, but it never raises a field above threshold when that field's own header text matches weakly. On the mismatched-metadata sample, Corroboration alone is enough to pick the right Context (VERITAS at Prairie Field Research Group). Letting it clear the threshold would auto-submit an invoice whose header contains three errors. Instead, that invoice is held with the right answer ready as its Suggested Context. This is surprising, because the system holds an invoice it effectively knows how to resolve. It does so deliberately: a header that wrong deserves a human glance.

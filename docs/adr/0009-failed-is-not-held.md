@@ -1,0 +1,3 @@
+# Failed is a separate status from Held, with retries and rerun from a Stage
+
+A Stage that errors (an LLM timeout, the reference API being down) is retried twice with backoff. If it still fails, the Invoice becomes Failed at that Stage, and the Operator can rerun from the failed Stage. Failed is deliberately not a Hold Reason. A Hold is a Decision the system made; a failure means no Decision was made. Mixing the two would hide outages inside the Reviewer's queue and distort the Straight-Through and Hold metrics. Every attempt and every rerun is kept as a Stage Run, because nothing is overwritten.

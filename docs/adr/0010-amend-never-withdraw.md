@@ -1,0 +1,3 @@
+# A correction to a submitted Invoice becomes an Amendment, never a withdrawal
+
+A submitted Invoice is never withdrawn from ClinRun. A Correction after submission creates a new Invoice Version, reruns the affected Stages and, once a Reviewer approves it, goes to ClinRun as an Amendment linked to the original submission (P2). The original stays as the permanent record, which gives a clean audit trail and avoids assuming ClinRun supports withdrawals. Approving an Amendment is the one human-in-the-loop step even though there is no gate, because changing something already sent outside the company is the highest-risk action in the system. We rejected withdraw-and-resubmit, and also making a submission final with no way to correct it.

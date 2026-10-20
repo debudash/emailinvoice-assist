@@ -37,3 +37,6 @@ postgres_data/
 htmlcov/
 .pytest_cache/
 .mypy_cache/
+
+# App runtime data
+data/

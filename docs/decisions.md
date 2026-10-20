@@ -139,3 +139,32 @@ Terms are defined in [GLOSSARY.md](../GLOSSARY.md).
 | medium | Hold | IRB price $550 vs catalog $500 (#5a) |
 | large | Hold | 3 unmatched items, CT price mismatch, ambiguous matches (#5) |
 | mismatched-metadata | Hold, not matched | Context below threshold (#4) |
+
+## ADR index
+
+| ADR | Decision |
+|-----|----------|
+| [0001](adr/0001-no-human-gate-hold-on-uncertain-context.md) | No human gate; hold on uncertain Context instead |
+| [0002](adr/0002-llm-can-add-holds-never-clear-them.md) | The LLM can add Holds but never clear the hard checks |
+| [0003](adr/0003-mcp-server-owns-reference-search.md) | An MCP server wraps the reference API and owns name search |
+| [0004](adr/0004-context-confidence-is-computed.md) | Context Confidence is computed, not rated by the LLM |
+| [0005](adr/0005-corroboration-ranks-but-cannot-lift.md) | Corroboration ranks candidates but cannot lift a weak field |
+| [0006](adr/0006-whole-catalog-in-one-matching-call.md) | Whole Catalog in one matching call, no retrieval |
+| [0007](adr/0007-native-pdf-extraction-with-text-check.md) | Native document extraction, checked against the document's own text |
+| [0008](adr/0008-fixed-stages-one-agent-loop.md) | Fixed Stages; the only agent loop is in context resolution |
+| [0009](adr/0009-failed-is-not-held.md) | Failed is separate from Held; retries and rerun from a Stage |
+| [0010](adr/0010-amend-never-withdraw.md) | Corrections after submission are Amendments, never withdrawals |
+| [0011](adr/0011-mock-clinrun-idempotent.md) | ClinRun is a separate mock service with idempotent submission |
+| [0012](adr/0012-eval-gate-zero-false-submits.md) | The eval gate requires zero False Submits |
+
+## Build decisions (2026-10-19)
+
+| # | Topic | Decision |
+|---|-------|----------|
+| D1 | Git workflow | One branch per slice. Merge to `main` after the slice's tests and `/code-review` pass, then push to the Gauntlet repo. |
+| D2 | P0 slices | S0 tracer bullet (simple → Submit) · S1 hard checks (medium → Hold) · S2 large catalog (large → Hold) · S3 uncertain context and Correction (mismatched → Hold → Submit) · S4 QC and reliability · S5 eval gate |
+| D3 | ADRs | 0003–0012 written as short ADRs, one paragraph each. Smaller calls stay in this file. |
+| D4 | Time-saved baseline | 5 minutes per Invoice plus 1 minute per Line Item, labelled on screen as an assumption |
+| D5 | Secrets | A git-ignored `.env` with a committed `.env.example`. Required: `ANTHROPIC_API_KEY`. Optional: `LANGSMITH_API_KEY`. |
+| — | Model | `claude-opus-5-5` for every LLM call, set in configuration |
+| — | Tooling (implementer's call) | Python 3.13 with uv; ref-mcp served over streamable HTTP as its own Compose service; LangChain's MCP adapters for the context agent; pytest for app tests |

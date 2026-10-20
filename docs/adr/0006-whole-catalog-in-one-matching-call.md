@@ -1,0 +1,3 @@
+# Match against the whole Catalog in one call, without retrieval
+
+Matching sends the complete scoped Catalog and every Line Item to the LLM in a single structured call. There is no embedding pre-filter and no vector store. The largest Catalog has about 100 items, which fits comfortably in the prompt. A retrieval step could drop the correct Catalog Item before the LLM ever sees it, and that would show up as a silent Unmatched. This project also has no narrative documents, so a vector store would have nothing else to do. Narrowing the Catalog first (top-k by embeddings, then the LLM picks) is the documented next step once Catalogs reach the thousands.

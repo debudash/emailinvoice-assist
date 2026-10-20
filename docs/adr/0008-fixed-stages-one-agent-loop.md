@@ -1,0 +1,3 @@
+# Fixed Stages, with the only agent loop in context resolution
+
+The pipeline is fixed Python Stages in a fixed order: extraction, context resolution, matching, decision, submission. It is not a single ReAct agent choosing what to do next, because the Stage order is a business rule, and the brief asks for observable state transitions and clear separation between Stages. Extraction, matching and the decision review are single structured LLM calls. The one agent loop is in context resolution: a LangChain tool-calling agent over the ref-mcp tools, because that is where the AI genuinely has to choose which lookups to make. The default stack's LangGraph is not used: append-only Stage Runs and rerunning from a Stage already give the pipeline durable state and resumability.

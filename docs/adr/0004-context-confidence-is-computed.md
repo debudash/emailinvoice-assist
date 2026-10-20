@@ -1,0 +1,3 @@
+# Context Confidence is computed, not rated by the LLM
+
+Context Confidence decides whether matching runs at all ([ADR-0001](0001-no-human-gate-hold-on-uncertain-context.md)), so it is computed deterministically rather than self-reported by the LLM. For each of sponsor, study and site, the score combines the similarity of the Invoice Header text to the reference record with Corroboration checks. The agent proposes candidates and explains its choice; code produces the number. LLM self-rated confidence is poorly calibrated, while a computed score can be shown on screen, unit-tested and tuned against the gold set.
