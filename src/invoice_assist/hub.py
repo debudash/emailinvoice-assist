@@ -4,17 +4,14 @@ Run: streamlit run src/invoice_assist/hub.py
 Every action goes through Review Actions, which enforces the rules and keeps the audit trail;
 the Hub only shows state and collects input. ActionRefused is the one error boundary.
 """
-from email.message import EmailMessage
-from email.utils import format_datetime, make_msgid
-from datetime import datetime, timezone
-
 import pandas as pd
 import streamlit as st
 
 from invoice_assist import metrics
 from invoice_assist.config import settings
 from invoice_assist.context import Reference
-from invoice_assist.models import RELEASABLE, HoldReason, InvoiceStatus
+from invoice_assist.intake import write_upload
+from invoice_assist.models import InvoiceStatus
 from invoice_assist.pipeline import Pipeline
 from invoice_assist.review import ActionRefused, ReviewActions
 from invoice_assist.store import Store
@@ -27,9 +24,11 @@ STATUS_ICON = {InvoiceStatus.submitted: ":material/check_circle:", InvoiceStatus
 QUEUES = ["Held", "Escalated", "Failed", "Submitted", "All"]
 
 
-@st.cache_resource
 def store() -> Store:
-    return Store(settings.db_path)
+    """One SQLite connection per browser session; the worker writes through its own."""
+    if "store" not in st.session_state:
+        st.session_state["store"] = Store(settings.db_path)
+    return st.session_state["store"]
 
 
 @st.cache_resource(ttl=600)
@@ -48,6 +47,10 @@ def run_action(label: str, fn, *args):
         except ActionRefused as refused:
             st.error(str(refused), title=f"{label} refused", icon=":material/block:")
             return
+        except Exception as exc:  # the one friendly boundary (CLAUDE.md): never a raw traceback
+            st.error(f"{type(exc).__name__}: {exc}. Nothing was submitted; check the History and try again.",
+                     title=f"{label} could not complete", icon=":material/error:")
+            return
     st.session_state["flash"] = f"{label} done: invoice is now {status}"
     st.rerun()
 
@@ -57,8 +60,8 @@ with st.sidebar:
     actor = st.selectbox("Acting as", ACTORS, help="Authentication is assumed upstream; this records who acted.")
     st.subheader("Inbox poller")
     s = store()
-    paused = st.toggle("Pause poller", value=s.control("paused") == "1")
-    s.set_control("paused", "1" if paused else "0")
+    st.toggle("Pause poller", value=s.control("paused") == "1", key="paused",
+              on_change=lambda: store().set_control("paused", "1" if st.session_state["paused"] else "0"))
     if st.button("Check inbox now", icon=":material/refresh:", width="stretch"):
         s.set_control("check_now", "1")
         st.toast("The worker will check the inbox on its next tick")
@@ -66,15 +69,7 @@ with st.sidebar:
     st.subheader("Upload an invoice")
     upload = st.file_uploader("PDF or image", type=["pdf", "png", "jpg", "jpeg"], label_visibility="collapsed")
     if upload and st.button("Add to inbox", icon=":material/upload:", width="stretch"):
-        msg = EmailMessage()
-        msg["From"], msg["Subject"] = actor, f"Uploaded in the Hub: {upload.name}"
-        msg["Date"], msg["Message-ID"] = format_datetime(datetime.now(timezone.utc)), make_msgid(domain="hub.local")
-        msg["X-Invoice-Source"] = "upload"
-        msg.set_content(f"Uploaded by {actor}.")
-        maintype, subtype = (upload.type or "application/pdf").split("/")
-        msg.add_attachment(upload.getvalue(), maintype=maintype, subtype=subtype, filename=upload.name)
-        settings.inbox_dir.mkdir(parents=True, exist_ok=True)
-        (settings.inbox_dir / f"upload-{datetime.now():%Y%m%d%H%M%S}.eml").write_bytes(bytes(msg))
+        write_upload(settings.inbox_dir, upload.name, upload.type or "application/pdf", upload.getvalue(), actor)
         st.toast("Added to the inbox; the worker picks it up on its next poll")
 
 # --- Header and metrics -------------------------------------------------------------------
@@ -86,7 +81,7 @@ if flash := st.session_state.pop("flash", None):
 
 @st.fragment(run_every=settings.hub_refresh_seconds or None)
 def metrics_strip():
-    m = metrics.summary(store())
+    m = metrics.summary(store(), settings.minutes_per_invoice, settings.minutes_per_line)
     with st.container(horizontal=True):
         st.metric("Invoices", m["invoices"], border=True)
         st.metric("Straight-through", f"{m['straight_through_rate']:.0%}", border=True)
@@ -94,7 +89,8 @@ def metrics_strip():
         st.metric("AI processing", f"{m['actual_minutes']:.1f} min", border=True)
     holds = ", ".join(f"{k} ({v})" for k, v in m["holds_by_reason"].items()) or "none"
     st.caption(f"Holds by reason: {holds} · Avg Stage seconds: {m['stage_seconds']} · "
-               f"Manual baseline assumption: 5 min per invoice + 1 min per line item")
+               f"Manual baseline assumption: {settings.minutes_per_invoice:g} min per invoice + "
+               f"{settings.minutes_per_line:g} min per line item")
 
 
 metrics_strip()
@@ -153,8 +149,7 @@ elif decision:
 
 # --- Actions --------------------------------------------------------------------------------
 if inv["status"] in (InvoiceStatus.held, InvoiceStatus.escalated) and decision:
-    reasons = {HoldReason(r) for r in decision["hold_reasons"]}
-    needs_correction = sorted(reasons - RELEASABLE)
+    needs_correction = actions().release_blockers(invoice_id)
     ref = reference()
     with st.container(border=True):
         st.subheader("Act on this invoice")

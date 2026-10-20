@@ -51,3 +51,21 @@ def parse_eml(path: Path) -> Message:
     if not incoming.invoices:
         incoming.rejection_reason = "No PDF or image attachment"
     return incoming
+
+
+def write_upload(inbox: Path, filename: str, media_type: str, data: bytes, uploaded_by: str) -> Path:
+    """A file a Reviewer added in the Hub becomes a Message in the inbox, marked source=upload."""
+    from datetime import datetime, timezone
+    from email.message import EmailMessage
+    from email.utils import format_datetime, make_msgid
+    msg = EmailMessage()
+    msg["From"], msg["Subject"] = uploaded_by, f"Uploaded in the Hub: {filename}"
+    msg["Date"], msg["Message-ID"] = format_datetime(datetime.now(timezone.utc)), make_msgid(domain="hub.local")
+    msg["X-Invoice-Source"] = "upload"
+    msg.set_content(f"Uploaded by {uploaded_by}.")
+    maintype, subtype = media_type.split("/")
+    msg.add_attachment(data, maintype=maintype, subtype=subtype, filename=filename)
+    inbox.mkdir(parents=True, exist_ok=True)
+    path = inbox / f"upload-{datetime.now():%Y%m%d%H%M%S}-{filename}.eml"
+    path.write_bytes(bytes(msg))
+    return path

@@ -115,3 +115,60 @@ def test_operator_rerun_from_failed_stage(store, simple_invoice):
 
     assert actions.rerun(simple_invoice, "Ops", "context") == "Submitted"
     assert store.actions(simple_invoice)[-1]["kind"] == "rerun"
+
+
+# --- S3/S4 review findings ---------------------------------------------------------------
+
+def test_rerun_cannot_push_a_held_invoice_into_submission(store, simple_invoice):
+    actions, clinrun = held_for_context(store, simple_invoice)
+    with pytest.raises(ActionRefused, match="Failed"):
+        actions.rerun(simple_invoice, "Ops", "submission")
+    assert clinrun.calls == []
+
+
+def test_only_a_held_invoice_can_be_escalated(store, simple_invoice):
+    actions, pipeline, _ = actions_for(store)
+    pipeline.process(simple_invoice)
+    with pytest.raises(ActionRefused, match="Held"):
+        actions.escalate(simple_invoice, "Dana", "second look please")
+
+
+def test_correction_without_a_note_changes_nothing(store, simple_invoice):
+    actions, _ = held_for_context(store, simple_invoice)
+    runs_before = len(store.stage_runs(simple_invoice))
+    with pytest.raises(ActionRefused):
+        actions.correct_context(simple_invoice, "Dana", 2, 3, 1, " ")
+    assert len(store.stage_runs(simple_invoice)) == runs_before and store.actions(simple_invoice) == []
+
+
+def test_a_corrected_invoice_is_not_straight_through(store, simple_invoice):
+    actions, _ = held_for_context(store, simple_invoice)
+    actions.correct_context(simple_invoice, "Dana", 2, 3, 1, "right site")
+    assert store.latest_output(simple_invoice, "decision")["straight_through"] is False
+
+
+def test_release_reason_survives_a_failed_submission_rerun(store, simple_invoice):
+    attempts = []
+
+    def flaky_submit(submission, key):
+        attempts.append(submission)
+        if len(attempts) <= 3:
+            raise ConnectionError("ClinRun down")
+        return "CR-000009"
+    actions, pipeline, _ = actions_for(store, match=lambda l, c: matching(unmatched_line=1), submit=flaky_submit)
+    pipeline.process(simple_invoice)
+    assert actions.release(simple_invoice, "Dana", "approved by sponsor") == "Failed"
+
+    assert actions.rerun(simple_invoice, "Ops", "submission") == "Submitted"
+    assert attempts[-1]["release"] == {"reason": "approved by sponsor", "reviewer": "Dana"}
+
+
+def test_a_line_the_matcher_left_out_can_be_corrected(store, simple_invoice):
+    def drops_line_2(lines, catalog):
+        m = matching()
+        m.matches = m.matches[:1]
+        return m
+    actions, pipeline, _ = actions_for(store, match=drops_line_2)
+    assert pipeline.process(simple_invoice) == "Held"
+
+    assert actions.correct_line(simple_invoice, "Dana", 2, 102, "Screening Visit") == "Submitted"

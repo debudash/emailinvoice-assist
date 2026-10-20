@@ -200,3 +200,20 @@
 {"ts": "2026-10-20T02:58:41+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Read the LLM concern on the corrected invoice"}, "ok": true}
 {"ts": "2026-10-20T02:59:57+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Pass correction to review, rerun mismatched"}, "ok": true}
 {"ts": "2026-10-20T03:01:02+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Live outage: retries, Failed, operator rerun"}, "ok": true}
+{"ts": "2026-10-20T03:01:35+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Record decisions and commit S3+S4"}, "ok": true}
+{"ts": "2026-10-20T03:01:35+00:00", "session": "f5c00250", "agent": "main", "tool": "Agent", "input": {"description": "Review S3+S4 (standards and spec)", "subagent_type": "general-purpose"}, "ok": true}
+{"ts": "2026-10-20T03:01:45+00:00", "session": "f5c00250", "agent": "a5adf0fda8351cd47", "tool": "Bash", "input": {}, "ok": true}
+{"ts": "2026-10-20T03:01:56+00:00", "session": "f5c00250", "agent": "a5adf0fda8351cd47", "tool": "Bash", "input": {}, "ok": true}
+{"ts": "2026-10-20T03:02:03+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Probe LangSmith evaluate and Client API"}, "ok": true}
+{"ts": "2026-10-20T03:02:07+00:00", "session": "f5c00250", "agent": "a5adf0fda8351cd47", "tool": "Bash", "input": {}, "ok": true}
+{"ts": "2026-10-20T03:02:26+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_eval_scoring.py"}, "ok": true}
+{"ts": "2026-10-20T03:02:27+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\evals\\scoring.py"}, "ok": true}
+{"ts": "2026-10-20T03:02:53+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Run eval scoring tests"}, "ok": true}
+{"ts": "2026-10-20T03:03:05+00:00", "session": "f5c00250", "agent": "a5adf0fda8351cd47", "tool": "Bash", "input": {}, "ok": true}
+{"ts": "2026-10-20T03:03:39+00:00", "session": "f5c00250", "agent": "a5adf0fda8351cd47", "tool": "Bash", "input": {}, "ok": true}
+{"ts": "2026-10-20T03:03:50+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\evals\\run_eval.py"}, "ok": true}
+{"ts": "2026-10-20T03:06:41+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Run the eval against live stack and LangSmith"}, "ok": true}
+{"ts": "2026-10-20T03:07:39+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Add failing tests for S3/S4 review findings"}, "ok": true}
+{"ts": "2026-10-20T03:08:03+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\review.py"}, "ok": true}
+{"ts": "2026-10-20T03:08:48+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Pass release explicitly and fix straight-through"}, "ok": true}
+{"ts": "2026-10-20T03:10:09+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Apply hub review fixes and run suite"}, "ok": true}

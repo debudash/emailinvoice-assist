@@ -3,7 +3,6 @@
 Time saved compares a manual baseline (minutes per Invoice plus minutes per Line Item, shown on
 screen as an assumption) with the pipeline's actual processing time.
 """
-import json
 from collections import Counter
 from datetime import datetime
 
@@ -31,5 +30,4 @@ def summary(store, minutes_per_invoice: float = 5, minutes_per_line: float = 1) 
         "stage_seconds": {stage: round(sum(v) / len(v), 1) for stage, v in by_stage.items()},
         "manual_minutes": manual_minutes,
         "actual_minutes": round(actual_minutes, 1),
-        "assumptions": json.dumps({"minutes_per_invoice": minutes_per_invoice, "minutes_per_line": minutes_per_line}),
     }

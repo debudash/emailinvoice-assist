@@ -77,12 +77,11 @@ class Pipeline:
     def process(self, invoice_id: int, from_stage: str = "extraction", trigger: str = "automatic",
                 release: dict | None = None) -> str:
         inv = self.store.invoice(invoice_id)
-        self.release = release
         for stage in STAGES[STAGES.index(from_stage):]:
             started, inputs, served = now(), {}, []
             token = llm.served_by.set(served)
             try:
-                output, attempts = self._attempt(stage, invoice_id, inv, inputs)
+                output, attempts = self._attempt(stage, invoice_id, inv, inputs, release)
             except _Exhausted as failure:
                 self.store.add_stage_run(invoice_id, inv["version"], stage, trigger, "failed", inputs, None,
                                          _describe(failure.error), served, started, failure.attempts)
@@ -100,10 +99,10 @@ class Pipeline:
         self.store.set_status(invoice_id, InvoiceStatus.submitted)
         return InvoiceStatus.submitted
 
-    def _attempt(self, stage: str, invoice_id: int, inv, inputs: dict) -> tuple[dict, int]:
+    def _attempt(self, stage: str, invoice_id: int, inv, inputs: dict, release: dict | None) -> tuple[dict, int]:
         for attempt, delay in enumerate((*self.backoff, None), start=1):
             try:
-                return self._run(stage, invoice_id, inv, inputs), attempt
+                return self._run(stage, invoice_id, inv, inputs, release), attempt
             except Exception as exc:  # the one place errors are caught: a Stage that cannot complete
                 if delay is None:
                     raise _Exhausted(exc, attempt)
@@ -114,7 +113,7 @@ class Pipeline:
         inputs[stage] = run["id"]
         return self.store.latest_output(invoice_id, stage)
 
-    def _run(self, stage: str, invoice_id: int, inv, inputs: dict) -> dict:
+    def _run(self, stage: str, invoice_id: int, inv, inputs: dict, release: dict | None) -> dict:
         s = self.stages
         if stage == "extraction":
             return s.extract(inv["data"], inv["media_type"]).model_dump()
@@ -130,12 +129,16 @@ class Pipeline:
         matching_output = self._read(invoice_id, "matching", inputs)
         m = None if matching_output.get("skipped") else Matching.model_validate(matching_output)
         if stage == "decision":
-            return s.decide(ex, ctx, m, matching_output.get("catalog", [])).model_dump()
+            d = s.decide(ex, ctx, m, matching_output.get("catalog", []))
+            # Straight-Through means no human action (GLOSSARY): a Corrected Invoice never counts.
+            if any(a["kind"].startswith("correct_") for a in self.store.actions(invoice_id)):
+                d.straight_through = False
+            return d.model_dump()
         if stage == "submission":
             d = Decision.model_validate(self._read(invoice_id, "decision", inputs))
             catalog_by_id = {item["id"]: item for item in matching_output["catalog"]}
             key = clinrun.idempotency_key(inv["sha256"], inv["version"])
-            submission = build_submission(self.store, invoice_id, ex, ctx, m, d, catalog_by_id, self.release)
+            submission = build_submission(self.store, invoice_id, ex, ctx, m, d, catalog_by_id, release)
             clinrun_id = s.submit(submission, key)
             self.store.add_submission(invoice_id, inv["version"], clinrun_id, key)
             return {"clinrun_id": clinrun_id, "idempotency_key": key}
