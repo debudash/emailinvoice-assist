@@ -32,6 +32,26 @@ cp samples/emails/*.eml inbox/          # the worker picks them up within POLL_S
 
 The worker moves each `.eml` it has read to `inbox/processed/`.
 
+### Choosing the model
+
+Every LLM call (extraction, the context agent, matching and the decision review) uses one model,
+set by `LLM_MODEL` in `.env`. The default is `claude-opus-5-5`. If your key cannot use Opus, or you
+want faster and cheaper runs, pick another model:
+
+```bash
+# .env
+LLM_MODEL=claude-sonnet-5-5     # or claude-haiku-5-5
+```
+
+```bash
+docker compose up -d            # recreates worker and hub with the new setting
+```
+
+Sonnet 5.5 and Haiku 5.5 both accept the same call settings as Opus. The eval results in
+[`evals/reports/latest.md`](evals/reports/latest.md) were measured on Opus 5.5. Rerun
+`python -m evals.run_eval` after switching to see how another model scores. Each Stage Run records
+the model that served it, shown in the Hub's History tab.
+
 ### Services and ports
 
 | Service | Port | What it is |
