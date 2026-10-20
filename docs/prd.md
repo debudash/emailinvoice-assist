@@ -168,7 +168,7 @@ Context ready for the Reviewer ([ADR-0001](adr/0001-no-human-gate-hold-on-uncert
 - **No human gate** ([ADR-0001](adr/0001-no-human-gate-hold-on-uncertain-context.md)). If any Context field is uncertain, matching is skipped and the Invoice is held.
 - **Hard checks override the LLM** ([ADR-0002](adr/0002-llm-can-add-holds-never-clear-them.md)). The LLM can add Holds, never clear them.
 - **Processing is sequential.** One Invoice at a time, oldest first, in a long-running worker separate from the Hub, so the Hub never waits on an LLM. A queue with scaled-out workers is the production design.
-- **Model.** `claude-sonnet-5-5` for every LLM call, including the eval judge. The model name is configuration.
+- **Model.** `claude-opus-5-5` for every LLM call, including the eval judge, chosen for accuracy on the matching and decision calls. The model name is configuration, so switching to a cheaper or faster model is a config change measured by the eval gate.
 - **Runtime.** One Docker Compose stack: Postgres and the reference API (as provided), ref-mcp, mock-clinrun, and the app (worker and Hub). App state lives in a single SQLite file on a volume, and the inbox folder is mounted. The app can also run natively against the containers. The only required secret is the Anthropic key; LangSmith is optional at runtime and required for evals.
 
 ### Modules
