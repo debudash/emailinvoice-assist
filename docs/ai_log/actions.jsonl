@@ -273,3 +273,5 @@
 {"ts": "2026-10-20T03:31:16+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Apply hub boundary edits with UTF-8"}, "ok": true}
 {"ts": "2026-10-20T03:31:30+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Locate stale statements in docs"}, "ok": true}
 {"ts": "2026-10-20T03:31:44+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Annotate superseded statements in decisions and ADR"}, "ok": true}
+{"ts": "2026-10-20T03:32:29+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Record limitations, AI log, commit fixes"}, "ok": true}
+{"ts": "2026-10-20T03:35:58+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Clean rebuild and final smoke run of all samples"}, "ok": true}
