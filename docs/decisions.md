@@ -115,7 +115,7 @@ Terms are defined in [GLOSSARY.md](../GLOSSARY.md).
 | Name matching | The ref-mcp server provides `search_*` tools returning scored candidates (rapidfuzz), and `get_catalog` fetches every page (the default page size of 50 would cut LUMIN's 100 items). |
 | Line Match confidence | The LLM gives a high/medium/low label, a reason and alternatives; Ambiguous means more than one plausible item. The price check runs independently. |
 | Large catalog | The whole scoped Catalog goes in one call. An embedding pre-filter is documented for catalogs in the thousands; no Chroma. |
-| Extraction | The PDF goes natively to Claude with a structured schema. Extracted numbers are cross-checked against local pdfplumber text; a number that isn't found is a Hold Reason. | *(P2: the text cross-check is not built; image invoices hold as extraction_unverifiable.)*
+| Extraction | The PDF goes natively to Claude with a structured schema. Extracted numbers are cross-checked against local pdfplumber text; a number that isn't found is a Hold Reason. | *(The text cross-check is built (`verify.py`), ahead of its P2 tier. Image invoices and scanned PDFs hold as extraction_unverifiable.)*
 | $0.00 catalog prices | Taken literally: any billed amount is a Price Variance (Releasable). |
 | Price as tie-break | Price is evidence for the matcher, but the line is still marked Ambiguous and the alternative is recorded. |
 | Release | Allowed with a required reason for Price Variance, Unmatched, Ambiguous and LLM concern. Not allowed for uncertain Context, Possible Duplicate or unverified extraction. |
@@ -127,7 +127,7 @@ Terms are defined in [GLOSSARY.md](../GLOSSARY.md).
 | Learning from Corrections | None (audited only). Site alias memory is a documented next step. |
 | Hub | Streamlit, built for responsiveness: cached reads, `st.fragment`, and the pipeline in a separate worker. |
 | Time saved | Metrics strip: Straight-Through rate, stage timings, and estimated manual time vs actual (assumptions shown). |
-| Gold set | Synthetic now: the 4 originals hand-labelled plus about 20 scenario-built invoices whose labels are true by construction, also emitted as `.eml` files. Rewordings come from a curated, frozen variant table. | *(Revised in the PRD split: P0 ships the 4 hand-labelled samples; the synthetic set is P2.)*
+| Gold set | Synthetic now: the 4 originals hand-labelled plus about 20 scenario-built invoices whose labels are true by construction, also emitted as `.eml` files. Rewordings come from a curated, frozen variant table. | *(Revised in the PRD split: P0 ships the 4 hand-labelled samples; the synthetic set is P2. The scenario generator is now built (`scripts/make_test_invoices.py`, 12 scenarios), but the gated eval still uses only the 4 samples.)*
 | Eval gate | False Submits = 0 (hard). Decision accuracy ≥ 90%, Hold Reason recall ≥ 90%, Context accuracy ≥ 95%, Line Match accuracy ≥ 90%. Straight-Through rate is reported only. |
 | Eval platform | LangSmith first (datasets plus experiments). LLM-as-judge grades rationale faithfulness only, reported and not gated. |
 
@@ -256,9 +256,8 @@ From the docs agent's cross-check of the code against the PRD:
     only in the worker.
   - Moving actions onto the worker's queue is the production design: SQS plus workers (deploy.md).
 - **Not built, by tier:**
-  - P1: showing the original document beside the extraction (story 13), the before/after
-    Decision view (story 59), and a separate "Decided" status. Statuses go straight from Matched to
-    Submitted or Held.
+  - P1: nothing from this list remains. The original document beside the extraction (story 13),
+    the Decision history (story 59) and the Decided status were built in the P1 completion.
   - P2: the MessageSource adapter. The worker reads the folder directly; upload writes into the
     same folder.
 - **Store:** Stage Runs and Actions are append-only. `invoices.status` and the `control` table are

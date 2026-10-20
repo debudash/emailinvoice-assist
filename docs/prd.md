@@ -70,7 +70,7 @@ Context ready for the Reviewer ([ADR-0001](adr/0001-no-human-gate-hold-on-uncert
 13. **P0** As a Reviewer, I want the extracted Invoice Header and Line Items shown next to the original document, so that I can check the extraction at a glance.
 14. **P0** As a Reviewer, I want an Invoice held when the line amounts don't add up to quantity × unit price, or don't sum to the printed total, so that arithmetic errors never reach ClinRun.
 15. **P1** As a Reviewer, I want an image Invoice held as "extraction unverifiable", a reason I can Release, so that numbers read from a picture get a human glance before submission.
-16. **P2** As a Reviewer, I want every extracted number checked against the document's own text, and the Invoice held when one cannot be found, so that the AI cannot invent a figure.
+16. **P2, built early** As a Reviewer, I want every extracted number checked against the document's own text, and the Invoice held when one cannot be found, so that the AI cannot invent a figure.
 
 ### Context resolution
 
@@ -158,8 +158,8 @@ Context ready for the Reviewer ([ADR-0001](adr/0001-no-human-gate-hold-on-uncert
 
 77. **P0** As an Operator, I want an eval run over the labelled sample invoices that fails if any False Submit occurs, so that a prompt or model change can't quietly make the system unsafe.
 78. **P0** As an Operator, I want the eval to report Decision accuracy, Hold Reason recall, Context accuracy and Line Match accuracy against their thresholds, so that quality is measured, not assumed.
-79. **P2** As an Operator, I want a synthetic set of scenario-built invoices whose labels are correct by construction, so that every Hold Reason and edge case is evaluated, not just the four samples.
-80. **P2** As an Operator, I want rationale faithfulness graded by an LLM judge, so that explanations stay grounded in the data.
+79. **P2, generator built, not in the gate yet** As an Operator, I want a synthetic set of scenario-built invoices whose labels are correct by construction, so that every Hold Reason and edge case is evaluated, not just the four samples.
+80. **P2, built early (reported, not gated)** As an Operator, I want rationale faithfulness graded by an LLM judge, so that explanations stay grounded in the data.
 
 ## Implementation Decisions
 
@@ -177,7 +177,7 @@ Context ready for the Reviewer ([ADR-0001](adr/0001-no-human-gate-hold-on-uncert
 | Module | Interface | Hides |
 |---|---|---|
 | **Intake** | Turns a source item (an inbox file, or an upload in P1) into a Message with its Invoices, or a Rejected Message | Parsing email, sorting attachments, rejection reasons, file hashing. Behind it is a MessageSource adapter, so IMAP is a later swap. |
-| **Extraction** | Turns an invoice file into an Invoice Header, Line Items and a verification result | The prompt and schema, reading PDFs and images natively, the image "unverifiable" result (P1), and checking numbers against the document's text (P2) |
+| **Extraction** | Turns an invoice file into an Invoice Header, Line Items and a verification result | The prompt and schema, reading PDFs and images natively, the image "unverifiable" result (P1), and checking numbers against the document's text (P2, built early) |
 | **ref-mcp** (service) | MCP tools: search sponsors by text; search studies by text, optionally within a sponsor; search sites by name, optionally with a PI; list a study's sites; get a Catalog for a sponsor and study | REST calls, paging (the reference API pages at 50 by default, which would cut a 100-item Catalog in half), fuzzy scoring and name normalisation |
 | **Context Resolution** | Turns an Invoice Header (plus Email Hints in P2) into a Context: for each of sponsor, study and site, its candidates, Context Confidence, evidence and the Suggested Context | The agent loop over ref-mcp, combining scores, Corroboration that ranks but cannot lift a weak field, thresholds |
 | **Matching** | Turns Line Items plus a Catalog into Line Matches | The prompt, the whole Catalog in one call, price as evidence, Ambiguous and Unmatched labels with their alternatives |
@@ -191,7 +191,7 @@ Context ready for the Reviewer ([ADR-0001](adr/0001-no-human-gate-hold-on-uncert
 | **Hub** | Queues, Invoice detail, QC actions, Operator controls, upload (P1), metrics (P1) | Layout, caching, fragments. Shallow, deliberately: it only calls Review Actions and Store queries. |
 | **Metrics** (P1) | A summary over a time window: Straight-Through rate, Stage timings, Holds by reason, time saved | Queries and the manual-baseline assumptions. Shallow, deliberately. |
 | **Eval Runner** (tooling) | Runs a labelled dataset, returns metrics and whether the gate passed | Uploading the dataset to LangSmith, running experiments, comparing results with the labels |
-| **Gold Set Generator** (tooling, P2) | Generates scenario invoices, as PDFs plus `.eml` files, with their labels | The starter's invoice layout, a curated table of wording variants, a fixed random seed |
+| **Gold Set Generator** (tooling, P2; built as `scripts/make_test_invoices.py`, not in the gate) | Generates scenario invoices, as PDFs plus `.eml` files, with their labels | The starter's invoice layout, a curated table of wording variants, a fixed random seed |
 | **Reference API** | Unchanged | Kept as provided, apart from the ISSUE-001 dependency pin |
 
 The deep modules are **Decision**, **Context Resolution** and **Pipeline**. Most of the behaviour and
@@ -237,7 +237,7 @@ its name or protocol, a similarity score and the reference fields that support C
 - **Context Confidence threshold:** one per field. The starting values are tuned on the labelled samples.
 - **Price tolerance:** 0% by default (amounts compared to the cent).
 - **$0.00 Catalog price:** taken literally, so any billed amount is a Price Variance.
-- **Release:** allowed for Price Variance, Unmatched, Ambiguous, LLM concern and image unverifiable. Not allowed for uncertain Context, unlinked site, arithmetic inconsistency, unverified extraction (P2) or Possible Duplicate (P2).
+- **Release:** allowed for Price Variance, Unmatched, Ambiguous, LLM concern and image unverifiable. Not allowed for uncertain Context, unlinked site, arithmetic inconsistency, unverified extraction or Possible Duplicate (P2).
 - **Time-saved baseline (P1):** configurable minutes per Invoice and per Line Item.
 
 ## Testing Decisions
@@ -255,7 +255,7 @@ its name or protocol, a similarity score and the reference fields that support C
     - The ClinRun Client against mock-clinrun, including idempotency.
   - **AI eval:**
     - The four sample invoices, hand-labelled with the expected Context, the expected Catalog Item (or Unmatched or Ambiguous) for each line, the expected Decision and the expected Hold Reasons.
-    - Run as a LangSmith experiment, with the gate: zero False Submits; Decision accuracy, Hold Reason recall and Line Match accuracy at least 90%; Context accuracy at least 95%. The synthetic set and the rationale judge are P2.
+    - Run as a LangSmith experiment, with the gate: zero False Submits; Decision accuracy, Hold Reason recall and Line Match accuracy at least 90%; Context accuracy at least 95%. The synthetic set and the rationale judge are P2; both were built early, the judge reports without gating and the generated scenarios are not in the gate yet.
   - **Smoke:** the whole Compose stack runs the four sample emails to their expected outcomes:
     - simple: Submit
     - medium: Hold for Price Variance
@@ -286,7 +286,7 @@ Neither source document requires any of these; they are optional, or not mention
 - **Release plan.**
   - **P0** (days 1–2) meets every brief requirement in its simplest form. It is built as vertical slices behind a tracer bullet, a thin first path through every component: the simple sample runs from email to Submit through every component.
   - **P1** (day 3) adds Line Match Correction, the metrics strip, upload, image invoices, the short documentation set and the demo video.
-  - **P2** is the roadmap: Amendments, the synthetic gold set and rationale judge, number checking against the document text, Email Hints, Possible Duplicate, and the full documentation set.
+  - **P2** is the roadmap: Amendments, the synthetic gold set and rationale judge, number checking against the document text (these three built early), Email Hints, Possible Duplicate, and the full documentation set.
 - **Expected outcomes for the samples:**
 
   | Sample | Expected Decision | Why |

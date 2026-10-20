@@ -337,20 +337,20 @@ record in the list rather than an empty choice, so the Reviewer must pick that f
 
 ### (c) What to improve next
 
-The one thing first: **a synthetic gold set** of scenario-built invoices whose labels are correct by
-construction (PRD story 79, P2). The eval gate is the main safety net for prompt and model changes,
-and four samples are too few to cover every Hold Reason and edge case; the medium sample already
-shows run-to-run variation (an extra `ambiguous` reason on some runs).
+The one thing first: **put the generated scenarios into the gated eval** (PRD story 79). The
+generator exists (`scripts/make_test_invoices.py`, 12 scenarios whose labels are correct by
+construction), but the gate still scores only the four samples. The eval gate is the main safety net
+for prompt and model changes, and four samples are too few to cover every Hold Reason and edge case;
+the medium sample already shows run-to-run variation (an extra `ambiguous` reason on some runs).
 
 The rest of the roadmap, from the PRD's P2 tier and the deferred tables in
 [decisions.md](docs/decisions.md):
 
 - Amendments for corrections to a submitted Invoice, with Reviewer approval ([ADR-0010](docs/adr/0010-amend-never-withdraw.md)); today a submitted Invoice cannot be corrected.
 - Possible Duplicate holds (same file hash, or same invoice number and site). Today a re-sent email creates a second Invoice; the idempotency key stops a second ClinRun submission, but the Hub shows two rows.
-- Checking every extracted number against the PDF's own text layer ([ADR-0007](docs/adr/0007-native-pdf-extraction-with-text-check.md)).
 - Email Hints (sender domain, subject, body) as Context evidence, with a contradiction as a Hold Reason.
-- An LLM judge for rationale faithfulness (reported, not gated).
-- The AI's original Decision shown next to the post-Correction one (P1, not built).
+- A CI pipeline that runs the eval gate on every change, including a subject matter expert's change to the gold labels; today the eval is run by hand ([docs/deploy.md](docs/deploy.md)).
+- A Correction for an extracted value. Today an `extraction_unverified` or `arithmetic` Hold can only be Escalated, and the site resends.
 - Metrics over a time window, without the per-Invoice queries.
 - Roles enforced from identity rather than an "acting as" picker; site alias memory learned from Corrections; an embedding pre-filter once Catalogs reach the thousands; a real mailbox connector and a queue with scaled workers (see [docs/deploy.md](docs/deploy.md)).
 

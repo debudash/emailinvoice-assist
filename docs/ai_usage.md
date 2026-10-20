@@ -131,5 +131,4 @@ and the P0/P1/P2 split.
   Check the sample outcomes, the quoted prompts and the counts against a fresh run.
 - **Stale statements in older documents**, listed so they are not repeated in a presentation: the
   design-review table in decisions.md still says the context agent is a LangChain agent (superseded
-  by the ADR-0008 amendment) and that numbers are cross-checked with pdfplumber (P2, not built);
-  the comment in `services/ref-mcp/requirements.txt` still cites `langchain-mcp-adapters`.
+  by the ADR-0008 amendment); the comment in `services/ref-mcp/requirements.txt` still cites `langchain-mcp-adapters`.

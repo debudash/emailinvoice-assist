@@ -115,7 +115,7 @@ A Decision not to send an Invoice to ClinRun until a reviewer acts. A Hold alway
 _Avoid_: Exception (as a status), reject, block
 
 **Hold Reason**:
-One specific cause of a Hold, such as Price Variance, Unmatched, Ambiguous, uncertain Context or Possible Duplicate. Some Hold Reasons can be Released; others need a Correction.
+One specific cause of a Hold, such as Price Variance, Unmatched, Ambiguous, uncertain Context, unverified extraction (an extracted number not printed on the document) or Possible Duplicate. Some Hold Reasons can be Released; others need a Correction.
 _Avoid_: Error, flag, issue
 
 **Release**:

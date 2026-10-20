@@ -33,13 +33,16 @@ Checks the AI's Decisions after the fact and acts on the exceptions.
       flash message shows the new status (Submitted, or Held with new reasons).
 3. **Release a business-judgement Hold** (the medium sample's Price Variance)
    1. Open the Invoice; the warning lists each Hold Reason with a detail line, for example the
-      billed and Catalog prices.
-   2. **Release** tab: enter a reason, press **Release to ClinRun**.
+      billed and Catalog prices, and **What clears it** names the action for each reason.
+   2. **Release** tab: for a Price Variance, choose **Accept as billed** or **Pay the catalog
+      price** (the billed price stays on the record). Enter a reason, press **Release to ClinRun**.
    3. The submission carries the reason and the Reviewer's name; the Invoice is not
       Straight-Through.
 4. **Correct one Line Match**
    1. **Correct a line** tab (available once matching has run).
-   2. Choose the line, then a Catalog Item from that Catalog or "Unmatched", and enter a note.
+   2. Choose the line: only the flagged lines are listed, each with its problem (**Show all lines**
+      for a confident match that is still wrong). Then pick a Catalog Item from that Catalog or
+      "Unmatched", and enter a note. A Correction that changes nothing is refused.
    3. The Decision reruns on the corrected matches.
 5. **Escalate**
    1. **Escalate** tab on a Held Invoice; a note is required.
@@ -89,6 +92,19 @@ Keeps the pipeline running.
 - Rerun an Invoice that is not Failed, or rerun from a Stage later than the one that failed.
 - Rerun into submission an Invoice whose Decision is Hold and that nothing Released.
 - Submit the same Invoice Version twice: the idempotency key returns the original ClinRun ID.
+
+## Subject matter expert
+
+Owns the gold labels: the answer key the eval scores the AI against (accounts payable or clinical
+finance, not the developer). Acts as **Pat (SME)** on the Hub's **Gold review** page.
+
+**Main scenario: review the answer key**
+1. Pick an invoice; each shows its expected result and when it was last reviewed.
+2. Check the expected result, then the **lines that need your judgement**, each with the reason in
+   plain words. The straightforward lines are in an expander.
+3. Answer each line (right, a different item, or not sure), add comments, and **Save review**. A
+   changed answer goes straight into the gold file.
+4. An engineer reruns the eval by hand (`docker compose run --rm eval`); it is not in CI yet.
 
 ## Limits of the role model
 
