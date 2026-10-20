@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS invoices (
     failed_stage TEXT, created_at TEXT, updated_at TEXT);
 CREATE TABLE IF NOT EXISTS stage_runs (
     id INTEGER PRIMARY KEY, invoice_id INTEGER REFERENCES invoices(id), version INTEGER,
-    stage TEXT, run_no INTEGER, trigger TEXT, outcome TEXT, output TEXT, error TEXT,
-    started_at TEXT, ended_at TEXT);
+    stage TEXT, run_no INTEGER, trigger TEXT, outcome TEXT, inputs TEXT, output TEXT, error TEXT,
+    served_by TEXT, started_at TEXT, ended_at TEXT);
 CREATE TABLE IF NOT EXISTS submissions (
     id INTEGER PRIMARY KEY, invoice_id INTEGER REFERENCES invoices(id), version INTEGER,
     clinrun_id TEXT, idempotency_key TEXT, sent_at TEXT);
@@ -61,14 +61,16 @@ class Store:
         self.db.commit()
 
     def add_stage_run(self, invoice_id: int, version: int, stage: str, trigger: str, outcome: str,
-                      output: dict | None, error: str | None, started_at: str) -> int:
+                      inputs: dict, output: dict | None, error: str | None, served_by: list[str],
+                      started_at: str) -> int:
+        """inputs: the Stage Run ids this run read from, so any Decision can be rebuilt from its rows."""
         run_no = self.db.execute("SELECT COUNT(*) FROM stage_runs WHERE invoice_id=? AND version=? AND stage=?",
                                  (invoice_id, version, stage)).fetchone()[0] + 1
         cur = self.db.execute(
-            "INSERT INTO stage_runs (invoice_id, version, stage, run_no, trigger, outcome, output, error, started_at, ended_at)"
-            " VALUES (?,?,?,?,?,?,?,?,?,?)",
-            (invoice_id, version, stage, run_no, trigger, outcome,
-             json.dumps(output) if output is not None else None, error, started_at, now()))
+            "INSERT INTO stage_runs (invoice_id, version, stage, run_no, trigger, outcome, inputs, output, error,"
+            " served_by, started_at, ended_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            (invoice_id, version, stage, run_no, trigger, outcome, json.dumps(inputs),
+             json.dumps(output) if output is not None else None, error, ",".join(served_by), started_at, now()))
         self.db.commit()
         return cur.lastrowid
 
@@ -85,11 +87,15 @@ class Store:
         return self.db.execute("SELECT m.* FROM messages m JOIN invoices i ON i.message_id=m.id WHERE i.id=?",
                                (invoice_id,)).fetchone()
 
-    def latest_output(self, invoice_id: int, stage: str) -> dict | None:
-        row = self.db.execute(
-            "SELECT output FROM stage_runs s JOIN invoices i ON i.id=s.invoice_id"
+    def latest_run(self, invoice_id: int, stage: str) -> sqlite3.Row | None:
+        """The latest successful Stage Run of the Invoice's current version."""
+        return self.db.execute(
+            "SELECT s.* FROM stage_runs s JOIN invoices i ON i.id=s.invoice_id"
             " WHERE s.invoice_id=? AND s.version=i.version AND s.stage=? AND s.outcome='succeeded'"
             " ORDER BY s.id DESC LIMIT 1", (invoice_id, stage)).fetchone()
+
+    def latest_output(self, invoice_id: int, stage: str) -> dict | None:
+        row = self.latest_run(invoice_id, stage)
         return json.loads(row["output"]) if row and row["output"] else None
 
     def stage_runs(self, invoice_id: int) -> list[sqlite3.Row]:

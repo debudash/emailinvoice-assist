@@ -7,6 +7,7 @@ Server-side refusal fallbacks are on, so a policy decline is re-run on Anthropic
 recommended fallback model instead of failing the Stage.
 """
 import os
+from contextvars import ContextVar
 from typing import TypeVar
 
 import anthropic
@@ -17,6 +18,16 @@ from .config import settings
 T = TypeVar("T", bound=BaseModel)
 
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
+
+# Models that actually served this Stage's calls; differs from settings.model only when a
+# refusal fallback ran. The Pipeline records it on the Stage Run so evals can attribute results.
+served_by: ContextVar[list[str] | None] = ContextVar("served_by", default=None)
+
+
+def record_served(model: str) -> None:
+    models = served_by.get()
+    if models is not None and model not in models:
+        models.append(model)
 
 
 class LLMRefusal(RuntimeError):
@@ -53,4 +64,5 @@ def parse(output: type[T], system: str, content: list[dict], effort: str = "medi
     )
     if response.stop_reason == "refusal":
         raise LLMRefusal(str(response.stop_details))
+    record_served(response.model)
     return response.parsed_output

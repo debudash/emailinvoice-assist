@@ -101,3 +101,45 @@
 {"ts": "2026-10-20T01:31:23+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Show working tree status before committing"}, "ok": true}
 {"ts": "2026-10-20T01:31:48+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Confirm no venvs or caches would be committed"}, "ok": true}
 {"ts": "2026-10-20T01:32:52+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Commit S0 and ISSUE-002 fix separately"}, "ok": true}
+{"ts": "2026-10-20T01:33:24+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Update issue log and AI log, commit"}, "ok": true}
+{"ts": "2026-10-20T01:33:28+00:00", "session": "f5c00250", "agent": "main", "tool": "Skill", "input": {"skill": "code-review"}, "ok": true}
+{"ts": "2026-10-20T01:34:29+00:00", "session": "f5c00250", "agent": "main", "tool": "Agent", "input": {"description": "Spec review of S0", "subagent_type": "general-purpose"}, "ok": true}
+{"ts": "2026-10-20T01:34:29+00:00", "session": "f5c00250", "agent": "main", "tool": "Agent", "input": {"description": "Standards review of S0", "subagent_type": "general-purpose"}, "ok": true}
+{"ts": "2026-10-20T01:35:05+00:00", "session": "f5c00250", "agent": "a252f3da5b4969021", "tool": "Bash", "input": {"description": "List branch commits and changed files"}, "ok": true}
+{"ts": "2026-10-20T01:35:07+00:00", "session": "f5c00250", "agent": "ad7708df8b42c2c4b", "tool": "Bash", "input": {"description": "List commits, diff stats, and messages"}, "ok": true}
+{"ts": "2026-10-20T01:35:38+00:00", "session": "f5c00250", "agent": "a252f3da5b4969021", "tool": "Bash", "input": {"description": "Read core source files"}, "ok": true}
+{"ts": "2026-10-20T01:35:42+00:00", "session": "f5c00250", "agent": "ad7708df8b42c2c4b", "tool": "Bash", "input": {"description": "Read main source and issue test"}, "ok": true}
+{"ts": "2026-10-20T01:35:42+00:00", "session": "f5c00250", "agent": "ad7708df8b42c2c4b", "tool": "Bash", "input": {"description": "Read glossary, ADRs, issue log"}, "ok": true}
+{"ts": "2026-10-20T01:35:58+00:00", "session": "f5c00250", "agent": "a252f3da5b4969021", "tool": "Bash", "input": {"description": "Grep PRD for contract lines"}, "ok": true}
+{"ts": "2026-10-20T01:36:02+00:00", "session": "f5c00250", "agent": "ad7708df8b42c2c4b", "tool": "Bash", "input": {"description": "Read ADRs, issue log, glossary terms"}, "ok": true}
+{"ts": "2026-10-20T01:36:15+00:00", "session": "f5c00250", "agent": "a252f3da5b4969021", "tool": "Bash", "input": {"description": "Read contracts and services"}, "ok": true}
+{"ts": "2026-10-20T01:36:55+00:00", "session": "f5c00250", "agent": "ad7708df8b42c2c4b", "tool": "Bash", "input": {"description": "Check usage of possibly-unused names"}, "ok": true}
+{"ts": "2026-10-20T01:37:08+00:00", "session": "f5c00250", "agent": "a252f3da5b4969021", "tool": "Bash", "input": {"description": "Read key ADRs and doc diffs"}, "ok": true}
+{"ts": "2026-10-20T01:37:24+00:00", "session": "f5c00250", "agent": "a252f3da5b4969021", "tool": "Bash", "input": {"description": "List tests"}, "ok": true}
+{"ts": "2026-10-20T02:01:19+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_review_fixes.py"}, "ok": true}
+{"ts": "2026-10-20T02:01:20+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_clinrun_client.py"}, "ok": true}
+{"ts": "2026-10-20T02:01:51+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Run new review tests against current code"}, "ok": true}
+{"ts": "2026-10-20T02:02:03+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\config.py"}, "ok": true}
+{"ts": "2026-10-20T02:02:04+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\llm.py"}, "ok": true}
+{"ts": "2026-10-20T02:02:05+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\llm.py"}, "ok": true}
+{"ts": "2026-10-20T02:02:06+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\llm.py"}, "ok": true}
+{"ts": "2026-10-20T02:02:28+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\context.py"}, "ok": true}
+{"ts": "2026-10-20T02:02:40+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\decision.py"}, "ok": true}
+{"ts": "2026-10-20T02:02:41+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\decision.py"}, "ok": true}
+{"ts": "2026-10-20T02:02:56+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Rename intake types to glossary terms"}, "ok": true}
+{"ts": "2026-10-20T02:03:25+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Add inputs and served_by to stage runs"}, "ok": true}
+{"ts": "2026-10-20T02:03:45+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\pipeline.py"}, "ok": true}
+{"ts": "2026-10-20T02:13:57+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Run test files separately to locate the hang"}, "ok": true}
+{"ts": "2026-10-20T02:14:45+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Read background result and time the slowest tests"}, "ok": true}
+{"ts": "2026-10-20T02:16:05+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Fix stale row, log deferrals, reset app volume"}, "ok": true}
+{"ts": "2026-10-20T02:17:35+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Read invoice 1 failure"}, "ok": true}
+{"ts": "2026-10-20T02:18:55+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Reproduce context failure twice locally"}, "ok": true}
+{"ts": "2026-10-20T02:19:35+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Add failing tests for tie and error unwrapping"}, "ok": true}
+{"ts": "2026-10-20T02:19:49+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\context.py"}, "ok": true}
+{"ts": "2026-10-20T02:19:51+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\pipeline.py"}, "ok": true}
+{"ts": "2026-10-20T02:19:52+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\pipeline.py"}, "ok": true}
+{"ts": "2026-10-20T02:21:33+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Test, rebuild, rerun invoice 1 and inspect both"}, "ok": true}
+{"ts": "2026-10-20T02:22:36+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Add fastapi and uvicorn as dev dependencies"}, "ok": true}
+{"ts": "2026-10-20T02:22:37+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_clinrun_client.py"}, "ok": true}
+{"ts": "2026-10-20T02:23:53+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Run full suite with isolated ClinRun test"}, "ok": true}
+{"ts": "2026-10-20T02:25:57+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Reset demo volumes and rerun two samples"}, "ok": true}

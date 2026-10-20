@@ -19,9 +19,18 @@ def check_context(extraction: Extraction, context: Context, matching: Matching |
             findings.append((HoldReason.context_uncertain,
                              f"{name.title()} '{field.header_text}' resolved to '{field.record_name}' "
                              f"with confidence {field.confidence:.2f}, below threshold"))
+    if not context.study_belongs_to_sponsor:
+        findings.append((HoldReason.context_uncertain, "Study does not belong to the resolved sponsor"))
     if not context.site_linked_to_study:
         findings.append((HoldReason.site_not_linked, "Site is not linked to the study"))
     return findings
+
+
+def check_printed_total(extraction: Extraction, context: Context, matching: Matching | None) -> list[Finding]:
+    # The submission carries the printed total; never invent one from the lines. S1 adds the sum check.
+    if extraction.header.total is None:
+        return [(HoldReason.arithmetic, "No printed invoice total")]
+    return []
 
 
 def check_unmatched(extraction: Extraction, context: Context, matching: Matching | None) -> list[Finding]:
@@ -32,7 +41,7 @@ def check_unmatched(extraction: Extraction, context: Context, matching: Matching
             for m in matching.matches if m.catalog_item_id is None]
 
 
-HARD_CHECKS: list[Check] = [check_context, check_unmatched]
+HARD_CHECKS: list[Check] = [check_context, check_printed_total, check_unmatched]
 
 
 def decide(extraction: Extraction, context: Context, matching: Matching | None) -> Decision:

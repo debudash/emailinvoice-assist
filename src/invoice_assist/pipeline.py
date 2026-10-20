@@ -2,12 +2,13 @@
 
 Stages: extraction -> context -> matching -> decision -> submission.
 Matching is skipped when Context is uncertain (ADR-0001). Each Stage reads its inputs from
-the latest successful Stage Runs, so a rerun can start from any Stage.
+the latest successful Stage Runs and records which ones it read, so a rerun can start from
+any Stage and any Decision can be rebuilt from its rows.
 """
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from . import clinrun, context, decision, extraction, matching
+from . import clinrun, context, decision, extraction, llm, matching
 from .models import Context, Decision, Extraction, Matching, Outcome
 from .store import Store, now
 
@@ -42,14 +43,22 @@ def build_submission(store: Store, invoice_id: int, ex: Extraction, ctx: Context
             "price_variance": bool(item) and round(line.unit_price, 2) != round(float(item["unit_price"]), 2),
         })
     return {
+        # The printed total only; a missing one is held by the decision (check_printed_total).
         "invoice": {"number": ex.header.invoice_number, "date": ex.header.invoice_date, "currency": "USD",
-                    "total": ex.header.total if ex.header.total is not None else sum(l.amount for l in ex.line_items)},
+                    "total": ex.header.total},
         "context": {"sponsor_id": ctx.sponsor.record_id, "study_id": ctx.study.record_id, "site_id": ctx.site.record_id},
         "lines": lines,
         "decision": {"rationale": d.rationale, "straight_through": d.straight_through},
         "release": None,
         "source": {"message_id": msg["message_id"], "received_at": msg["received_at"]},
     }
+
+
+def _describe(exc: BaseException) -> str:
+    """The error an Operator needs: async MCP calls wrap the real cause in ExceptionGroups."""
+    while isinstance(exc, BaseExceptionGroup) and exc.exceptions:
+        exc = exc.exceptions[0]
+    return f"{type(exc).__name__}: {exc}"
 
 
 class Pipeline:
@@ -60,16 +69,20 @@ class Pipeline:
     def process(self, invoice_id: int, from_stage: str = "extraction", trigger: str = "automatic") -> str:
         inv = self.store.invoice(invoice_id)
         for stage in STAGES[STAGES.index(from_stage):]:
-            started = now()
+            started, inputs, served = now(), {}, []
+            token = llm.served_by.set(served)
             try:
-                output = self._run(stage, invoice_id, inv)
-            except Exception as exc:  # recorded as a failed Stage Run; retries arrive in S4
-                self.store.add_stage_run(invoice_id, inv["version"], stage, trigger, "failed", None,
-                                         f"{type(exc).__name__}: {exc}", started)
+                output = self._run(stage, invoice_id, inv, inputs)
+            except Exception as exc:  # recorded as a failed Stage Run (ADR-0009); retries arrive in S4
+                self.store.add_stage_run(invoice_id, inv["version"], stage, trigger, "failed", inputs, None,
+                                         _describe(exc), served, started)
                 self.store.set_status(invoice_id, "Failed", failed_stage=stage)
                 return "Failed"
-            self.store.add_stage_run(invoice_id, inv["version"], stage, trigger, "succeeded", output, None, started)
-            if stage in STATUS_AFTER:
+            finally:
+                llm.served_by.reset(token)
+            self.store.add_stage_run(invoice_id, inv["version"], stage, trigger, "succeeded", inputs, output,
+                                     None, served, started)
+            if stage in STATUS_AFTER and not output.get("skipped"):
                 self.store.set_status(invoice_id, STATUS_AFTER[stage])
             if stage == "decision" and output["outcome"] == Outcome.hold:
                 self.store.set_status(invoice_id, "Held")
@@ -77,26 +90,31 @@ class Pipeline:
         self.store.set_status(invoice_id, "Submitted")
         return "Submitted"
 
-    def _run(self, stage: str, invoice_id: int, inv) -> dict:
-        s, latest = self.stages, lambda name: self.store.latest_output(invoice_id, name)
+    def _read(self, invoice_id: int, stage: str, inputs: dict) -> dict:
+        run = self.store.latest_run(invoice_id, stage)
+        inputs[stage] = run["id"]
+        return self.store.latest_output(invoice_id, stage)
+
+    def _run(self, stage: str, invoice_id: int, inv, inputs: dict) -> dict:
+        s = self.stages
         if stage == "extraction":
             return s.extract(inv["data"], inv["media_type"]).model_dump()
-        ex = Extraction.model_validate(latest("extraction"))
+        ex = Extraction.model_validate(self._read(invoice_id, "extraction", inputs))
         if stage == "context":
             return s.resolve(ex.header).model_dump()
-        ctx = Context.model_validate(latest("context"))
+        ctx = Context.model_validate(self._read(invoice_id, "context", inputs))
         if stage == "matching":
             if not ctx.confident:
                 return {"skipped": True, "reason": "Context uncertain"}
             catalog = s.catalog(ctx.sponsor.record_id, ctx.study.record_id)
             return {"skipped": False, "catalog": catalog, **s.match(ex.line_items, catalog).model_dump()}
-        mout = latest("matching")
-        m = Matching.model_validate(mout) if mout and not mout.get("skipped") else None
+        matching_output = self._read(invoice_id, "matching", inputs)
+        m = None if matching_output.get("skipped") else Matching.model_validate(matching_output)
         if stage == "decision":
             return s.decide(ex, ctx, m).model_dump()
         if stage == "submission":
-            d = Decision.model_validate(latest("decision"))
-            catalog_by_id = {item["id"]: item for item in mout["catalog"]}
+            d = Decision.model_validate(self._read(invoice_id, "decision", inputs))
+            catalog_by_id = {item["id"]: item for item in matching_output["catalog"]}
             key = clinrun.idempotency_key(inv["sha256"], inv["version"])
             clinrun_id = s.submit(build_submission(self.store, invoice_id, ex, ctx, m, d, catalog_by_id), key)
             self.store.add_submission(invoice_id, inv["version"], clinrun_id, key)

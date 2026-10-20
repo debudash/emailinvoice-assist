@@ -17,10 +17,13 @@ class Settings:
     inbox_dir: Path = Path(os.getenv("INBOX_DIR", "inbox"))
     poll_seconds: float = float(os.getenv("POLL_SECONDS", "3"))
     hub_refresh_seconds: float = float(os.getenv("HUB_REFRESH_SECONDS", "3"))  # 0 turns auto-refresh off
-    # Context Confidence floor per field (ADR-0004); tuned on the labelled samples.
-    context_threshold: float = float(os.getenv("CONTEXT_THRESHOLD", "0.85"))
-    # Price tolerance as a fraction; 0 means exact to the cent.
-    price_tolerance: float = float(os.getenv("PRICE_TOLERANCE", "0"))
+    # Context Confidence floor, one per field (ADR-0004); tuned on the labelled samples in S3.
+    threshold_sponsor: float = float(os.getenv("THRESHOLD_SPONSOR", "0.85"))
+    threshold_study: float = float(os.getenv("THRESHOLD_STUDY", "0.85"))
+    threshold_site: float = float(os.getenv("THRESHOLD_SITE", "0.85"))
+
+    def threshold(self, field: str) -> float:
+        return getattr(self, f"threshold_{field}")
 
 
 settings = Settings()
