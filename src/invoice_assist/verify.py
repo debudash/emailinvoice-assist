@@ -24,11 +24,18 @@ def document_text(data: bytes) -> str:
         return "\n".join(page.extract_text() or "" for page in pdf.pages)
 
 
-def unverified_values(data: bytes, media_type: str, extraction: Extraction) -> list[str]:
-    """Extracted values that do not appear in the document text; empty means verified."""
+def unverified_values(data: bytes, media_type: str, extraction: Extraction) -> list[str] | None:
+    """Extracted values that do not appear in the document text; empty means verified, None means
+    there is no text to check against."""
     if media_type != "application/pdf":
         return []
     text = document_text(data)
+    # ISSUE-005: a scanned PDF held as extraction_unverified, which no Reviewer can Release or correct.
+    # Root cause: with no text layer, every value counted as "not printed", so a missing text layer
+    # read as invented numbers. Fix: no text means unverifiable, like an image (ADR-0007), which the
+    # Reviewer can Release after checking the numbers against the document.
+    if not text.strip():
+        return None
     printed = {_money(n.replace(",", "")) for n in NUMBER.findall(text)}
     missing = []
     if extraction.header.invoice_number.lower() not in text.lower():
