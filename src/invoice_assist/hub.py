@@ -300,7 +300,9 @@ with st.container(border=True):
             "catalog price": catalog[mm["catalog_item_id"]]["unit_price"] if mm["catalog_item_id"] else None,
             "confidence": mm["confidence"], "ambiguous": mm["ambiguous"], "alternatives": ", ".join(mm["alternatives"]),
             "reason": mm["reason"]} for mm in sorted(m["matches"], key=lambda mm: (mm["line_no"] not in issues, mm["line_no"]))]),
-            hide_index=True, alt="Line matches against the catalog")
+            hide_index=True, alt="Line matches against the catalog",
+            column_config={"issue": st.column_config.TextColumn(width="medium"),
+                           "as billed": st.column_config.TextColumn(width="medium")})
 
 with st.container(border=True):
     st.subheader("History")
