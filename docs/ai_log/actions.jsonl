@@ -419,3 +419,16 @@
 {"ts": "2026-10-20T21:49:08+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Run app and mock-clinrun test suites"}, "ok": true}
 {"ts": "2026-10-20T21:49:12+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Locate doc sections to update"}, "ok": true}
 {"ts": "2026-10-20T21:49:22+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Update PRD, glossary and decisions log"}, "ok": true}
+{"ts": "2026-10-20T21:49:32+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Commit feature, merge to main"}, "ok": true}
+{"ts": "2026-10-20T21:50:11+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Rebuild and restart the docker stack"}, "ok": true}
+{"ts": "2026-10-20T21:50:20+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check stack health and new code is live"}, "ok": true}
+{"ts": "2026-10-20T21:50:25+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "C:\\Users\\debud\\.claude\\projects\\d--Dev-lr-emailassist\\memory\\project-status.md"}, "ok": true}
+{"ts": "2026-10-20T21:57:07+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read Hub line match display and decision line checks"}, "ok": true}
+{"ts": "2026-10-20T21:58:29+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Branch and write failing ISSUE-008 tests"}, "ok": true}
+{"ts": "2026-10-20T21:58:39+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\decision.py"}, "ok": true}
+{"ts": "2026-10-20T21:58:43+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check decide signature and hub imports"}, "ok": true}
+{"ts": "2026-10-20T21:59:17+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Apply Hub changes and run all tests"}, "ok": true}
+{"ts": "2026-10-20T21:59:21+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Review Hub diff"}, "ok": true}
+{"ts": "2026-10-20T21:59:30+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\hub.py"}, "ok": true}
+{"ts": "2026-10-20T21:59:55+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Run tests and commit ISSUE-008"}, "ok": true}
+{"ts": "2026-10-20T22:00:01+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\docs\\issue_log.md"}, "ok": true}
