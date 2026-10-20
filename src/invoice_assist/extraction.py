@@ -3,6 +3,7 @@ import base64
 
 from . import llm
 from .models import Extraction
+from .verify import unverified_values
 
 SYSTEM = """You read clinical trial site invoices and transcribe them exactly.
 Copy every header field and every line item as printed: do not correct spelling,
@@ -18,4 +19,5 @@ def extract(data: bytes, media_type: str) -> Extraction:
                            [{"type": block, "source": source}, {"type": "text", "text": "Transcribe this invoice."}],
                            effort="medium")
     extraction.source_media_type = media_type
+    extraction.unverified = unverified_values(data, media_type, extraction)
     return extraction

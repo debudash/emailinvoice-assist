@@ -101,3 +101,26 @@ Two layers:
   - Review the gold labels (judgement calls in `evals/gold/*.json` notes).
   - The demo video.
   - The accepted limitations in decisions.md.
+
+### P1 completion and P2 items 3–4 (2026-10-20)
+- **Developer asked for:**
+  - the P1 items;
+  - a page to review the gold labels;
+  - the rationale judge and the PDF-text cross-check;
+  - a way to generate test invoices, plus a test script.
+- **Built:**
+  - the original document in the Hub, a Decision history, and a "Decided" status;
+  - `verify.py`: extracted numbers must be printed on the PDF, otherwise `extraction_unverified`,
+    which can't be Released;
+  - `evals/judge.py`, reported and not gated;
+  - `evals/gold_review.py`;
+  - `scripts/make_test_invoices.py`, with 12 scenarios;
+  - `scripts/run_scenarios.py`.
+- **Verified live:**
+  - Scenarios: 12/12 passed.
+  - Eval gate: passed (`gold-c6290478`), rationale faithfulness 1.00.
+  - Judge calibration: a planted bad rationale scored 0.33, with all three errors caught.
+- **The AI caught its own measurement errors:**
+  - The judge's first run penalised true statements, because it lacked the evidence.
+  - Its evidence was captured at the wrong moment for the corrected sample.
+  - Both were fixed before the score was trusted.

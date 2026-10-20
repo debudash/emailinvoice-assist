@@ -113,3 +113,14 @@ def test_failed_stage_run_records_the_underlying_error_not_the_task_group(store,
     pipeline.process(simple_invoice)
 
     assert store.stage_runs(simple_invoice)[-1]["error"] == "ConnectionRefusedError: ref-mcp down"
+
+
+def test_status_passes_through_decided_before_the_outcome(store, simple_invoice):
+    pipeline, _ = make_pipeline(store)
+    statuses = []
+    real = store.set_status
+    store.set_status = lambda i, s, failed_stage=None: statuses.append(s) or real(i, s, failed_stage)
+
+    pipeline.process(simple_invoice)
+
+    assert statuses == ["Extracted", "Context Resolved", "Matched", "Decided", "Submitted"]

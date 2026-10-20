@@ -96,14 +96,47 @@ Outage check: `docker compose stop ref-mcp`, drop an email, expect Failed at con
 attempts; `docker compose start ref-mcp`, **Rerun from context** → Submitted. The S3+S4 commit
 records this check, and all four sample outcomes, as verified live. The smoke run is not automated.
 
+## Scenario tests (generated invoices)
+
+`scripts/make_test_invoices.py` builds 12 scenarios from the seed reference data (PDF, a PNG for the
+image case, `.eml`, and a `gold.json` label in the eval's format). `scripts/run_scenarios.py` runs
+them through the real pipeline in process (fake ClinRun) and prints PASS/FAIL: the Decision must
+match and every expected Hold Reason must be present. Together they cover the Hold Reasons the four
+samples miss: `arithmetic` (wrong total, bad line amount), `site_not_linked`, `extraction_unverifiable`
+(image), plus a $0.00 item billed, reworded lines, a second sponsor and a Rejected Message. First run:
+12/12 passed. `--via-inbox` sends them through the running worker instead, for watching in the Hub.
+
+## Extraction verification and the rationale judge
+
+- **Extracted numbers are checked against the PDF's text layer** (`verify.py`, ADR-0007): every unit
+  price, line amount, the total and the invoice number must be printed on the document, or the
+  Invoice holds as `extraction_unverified` (not Releasable). Tested in `tests/test_verify.py` against
+  the real sample PDFs.
+- **Rationale faithfulness** is graded by an LLM judge (`evals/judge.py`): states the outcome, cites
+  every Hold Reason, no claim the evidence does not support. The judge sees the same evidence the
+  rationale was written from. Reported per sample and on average; not part of the gate.
+
 ## Known gaps
 
-- **Synthetic gold set (P2).** Four samples do not cover every Hold Reason (`arithmetic`,
-  `site_not_linked`, `llm_concern`, `extraction_unverifiable` have no gold example) or measure
-  run-to-run variation.
-- **Rationale judge (P2).** Rationale faithfulness is not graded.
+- **Generated scenarios are not in the gated eval yet (P2).** They run through `run_scenarios.py`
+  with PASS/FAIL, but not as a LangSmith experiment, and no scenario measures run-to-run variation.
+- **No gold example for `llm_concern`.** The review's concerns are judgement calls; a scenario that
+  reliably provokes one has not been designed.
 - **No automated smoke test** of the Compose stack, and no CI.
 - **The Hub's component tests cover two views.** The Correction, Release and Escalation forms are
   covered at the Review Actions level, not by clicking through the Hub.
 - **The worker loop** (`poll_once`, the pause and check-now flags) has no direct test.
-- **Gold labels** are AI-derived and await the developer's review.
+- **Gold labels** are AI-derived; review them with `streamlit run evals/gold_review.py`.
+
+## Judge calibration (2026-10-20)
+
+- **Why the judge needed fixing:** its first run scored every sample 0.67. It had been given the
+  Decision's findings but not the evidence, so it flagged true arithmetic as unsupported. Its
+  evidence for the mismatched sample was also captured after the Correction, not when the
+  rationale was written.
+- **What changed:** the judge now receives the same evidence the rationale was written from, and
+  treats the plausibility assessments the review was asked to make as judgement, not fact.
+- **Result:** every sample scored 1.00 (`gold-c6290478`).
+- **Check that it isn't lenient:** a planted bad rationale for the large invoice scored 0.33. It
+  contained a wrong total ($31,500 vs $29,191), an invented "verified by phone" check, and was
+  missing the unmatched and ambiguous reasons. The judge caught all three.

@@ -92,14 +92,42 @@ and watch it become Failed at the context Stage after three attempts; start ref-
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install uv && uv sync                            # app plus the dev group into .venv
-python -m pytest                                     # 61 app tests; no stack or API key needed
+python -m pytest                                     # app tests; no stack or API key needed
 python -m evals.run_eval                             # needs the stack, ANTHROPIC_API_KEY, LANGSMITH_API_KEY
 ```
 
 `evals.run_eval` runs the four gold samples through the real pipeline (with a fake ClinRun), writes
 `evals/reports/latest.{md,json}` and exits 0 when the gate passes, 1 when it fails, 2 when
-`LANGSMITH_API_KEY` is missing. The service test suites (ref-mcp, mock-clinrun, reference API) are
-described in [docs/test_plan.md](docs/test_plan.md).
+`LANGSMITH_API_KEY` is missing. It also reports rationale faithfulness from an LLM judge
+(`evals/judge.py`); that metric is reported, not gated. The service test suites (ref-mcp,
+mock-clinrun, reference API) are described in [docs/test_plan.md](docs/test_plan.md).
+
+### Try it with your own invoices
+
+```bash
+python scripts/make_test_invoices.py --list          # 12 scenarios and what each should produce
+python scripts/make_test_invoices.py                 # PDFs (+ a PNG) and .eml files in samples/generated/
+python scripts/run_scenarios.py                      # run them all in process; PASS/FAIL per scenario
+python scripts/run_scenarios.py price-variance       # or just some
+python scripts/run_scenarios.py --via-inbox          # or drop them in inbox/ and watch them in the Hub
+```
+
+Scenarios are built from the seed reference data, so each expected outcome is true by construction:
+clean invoices for two sponsors, reworded lines, price variance, a $0.00 item billed, an unmatched
+charge, a wrong printed total, a bad line amount, a site not on the study, an unknown site, an image
+invoice and an email with no attachment. Add a scenario by adding one entry to `SCENARIOS` in
+`scripts/make_test_invoices.py`. You can also upload any PDF or image from the Hub's sidebar.
+
+### Review the gold labels
+
+```bash
+streamlit run evals/gold_review.py                   # no stack needed
+```
+
+Shows each gold line next to the Catalog Item it names (description and price) and the invoice PDF.
+Mark each line agree / change / unsure with a comment, and save: feedback goes to
+`evals/gold/review/<sample>.json`. **Apply to gold file** also updates the labels you changed and
+records you as the reviewer; rerun the eval afterwards.
 
 ## Repository layout
 

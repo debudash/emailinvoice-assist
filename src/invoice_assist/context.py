@@ -107,7 +107,15 @@ async def score_context(call: ToolCall, header: InvoiceHeader, proposal: Context
 
 async def _propose(session: ClientSession, header: InvoiceHeader) -> tuple[ContextProposal, list[str]]:
     tools = [t for t in (await session.list_tools()).tools if t.name in AGENT_TOOLS]
-    runner = llm.async_client().beta.messages.tool_runner(
+    client = llm.async_client()
+    try:
+        return await _run_agent(client, session, tools, header)
+    finally:
+        await client.close()  # close inside this event loop; asyncio.run closes the loop after
+
+
+async def _run_agent(client, session: ClientSession, tools, header: InvoiceHeader) -> tuple[ContextProposal, list[str]]:
+    runner = client.beta.messages.tool_runner(
         model=settings.model,
         max_tokens=16000,
         system=SYSTEM,

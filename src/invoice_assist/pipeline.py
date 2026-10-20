@@ -15,7 +15,7 @@ from .store import Store, now
 
 STAGES = ["extraction", "context", "matching", "decision", "submission"]
 STATUS_AFTER = {"extraction": InvoiceStatus.extracted, "context": InvoiceStatus.context_resolved,
-                "matching": InvoiceStatus.matched}
+                "matching": InvoiceStatus.matched, "decision": InvoiceStatus.decided}
 
 
 @dataclass

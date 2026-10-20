@@ -4,6 +4,8 @@ Run: streamlit run src/invoice_assist/hub.py
 Every action goes through Review Actions, which enforces the rules and keeps the audit trail;
 the Hub only shows state and collects input. ActionRefused is the one error boundary.
 """
+import json
+
 import pandas as pd
 import streamlit as st
 
@@ -219,6 +221,11 @@ elif inv["status"] == InvoiceStatus.submitted:
 left, right = st.columns(2)
 with left, st.container(border=True):
     st.subheader("Extracted")
+    with st.expander("Original document", icon=":material/description:"):
+        if inv["media_type"] == "application/pdf":
+            st.pdf(bytes(inv["data"]), height=600, alt=f"Invoice {inv['filename']} as received")
+        else:
+            st.image(bytes(inv["data"]), alt=f"Invoice {inv['filename']} as received")
     if ex:
         st.table(pd.Series({k: "" if v is None else str(v) for k, v in ex["header"].items()}, name="value"))
         st.dataframe(pd.DataFrame(ex["line_items"]), hide_index=True, alt="Extracted line items")
@@ -252,6 +259,13 @@ with st.container(border=True):
     st.dataframe(pd.DataFrame([{k: r[k] for k in ("stage", "run_no", "trigger", "outcome", "attempts", "served_by",
                                                    "started_at", "ended_at", "error")} for r in s.stage_runs(invoice_id)]),
                  hide_index=True, alt="Stage run history")
+    decisions = [r for r in s.stage_runs(invoice_id) if r["stage"] == "decision" and r["outcome"] == "succeeded"]
+    if len(decisions) > 1:  # the AI's original Decision next to the one after a Correction (story 59)
+        st.markdown("**Decisions over time**")
+        st.dataframe(pd.DataFrame([{"run": r["run_no"], "trigger": r["trigger"], "outcome": out["outcome"],
+                                    "hold reasons": ", ".join(out["hold_reasons"]), "rationale": out["rationale"]}
+                                   for r in decisions for out in [json.loads(r["output"])]]),
+                     hide_index=True, alt="Each Decision the AI made for this invoice")
     audit = s.actions(invoice_id)
     if audit:
         st.dataframe(pd.DataFrame([{k: r[k] for k in ("at", "actor", "kind", "note")} for r in audit]),

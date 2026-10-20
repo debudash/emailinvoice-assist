@@ -1,6 +1,6 @@
-# Eval report (2026-10-20T03:15:33+00:00)
+# Eval report (2026-10-20T14:13:59+00:00)
 
-**Gate: PASSED** · LangSmith experiment `gold-37363ddd`
+**Gate: PASSED** Â· LangSmith experiment `gold-c6290478`
 
 | Metric | Value | Gate |
 |---|---|---|
@@ -9,10 +9,11 @@
 | hold_reason_recall | 1.00 | >= 0.9 |
 | context_accuracy | 1.00 | >= 0.95 |
 | line_match_accuracy | 1.00 | >= 0.9 |
+| rationale_faithfulness (LLM judge) | 1.00 | reported only |
 
-| Sample | Decision | Hold reasons | False submit | Context | Lines |
-|---|---|---|---|---|---|
-| simple | submit |  | 0 | 1 | 1.00 |
-| mismatched-metadata | hold -> submit after correction | context_uncertain | 0 | 1 | 1.00 |
-| large | hold | ambiguous, price_variance, unmatched | 0 | 1 | 1.00 |
-| medium | hold | price_variance | 0 | 1 | 1.00 |
+| Sample | Decision | Hold reasons | False submit | Context | Lines | Rationale |
+|---|---|---|---|---|---|---|
+| simple | submit |  | 0 | 1 | 1.00 | 1.0 |
+| mismatched-metadata | hold -> submit after correction | context_uncertain | 0 | 1 | 1.00 | 1.0 |
+| large | hold | ambiguous, price_variance, unmatched | 0 | 1 | 1.00 | 1.0 |
+| medium | hold | price_variance | 0 | 1 | 1.00 | 1.0 |

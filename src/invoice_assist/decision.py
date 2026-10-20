@@ -33,7 +33,9 @@ def check_source(extraction: Extraction, context: Context, matching: Matching | 
     if extraction.source_media_type.startswith("image/"):
         return [(HoldReason.extraction_unverifiable,
                  f"Read from an image ({extraction.source_media_type}); numbers not verifiable")]
-    return []
+    # Values the model extracted that are not printed on the document (ADR-0007): never Releasable.
+    return [(HoldReason.extraction_unverified, f"Extracted {value} does not appear on the document")
+            for value in extraction.unverified]
 
 
 def check_context(extraction: Extraction, context: Context, matching: Matching | None, catalog: dict) -> list[Finding]:
@@ -111,7 +113,7 @@ def llm_review(extraction: Extraction, context: Context, matching: Matching | No
     payload = {
         "outcome_from_hard_checks": "held" if findings else "submitted unless you raise a concern",
         "hard_check_findings": [text for _, text in findings],
-        "invoice": extraction.model_dump(exclude={"source_media_type"}),
+        "invoice": extraction.model_dump(exclude={"source_media_type", "unverified"}),
         "context": {f: getattr(context, f).record_name for f in ("sponsor", "study", "site")},
         "context_corrected_by_reviewer": {"reviewer": context.corrected_by, "note": context.explanation}
         if context.corrected_by else None,
