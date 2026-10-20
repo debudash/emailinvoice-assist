@@ -15,6 +15,7 @@ services:
       timeout: 5s
       retries: 10
 
+  # Reference data API, as provided by the starter (plus the ISSUE-001 pin).
   api:
     build:
       context: ./services/api
@@ -27,5 +28,58 @@ services:
       db:
         condition: service_healthy
 
+  # MCP server wrapping the reference API (ADR-0003).
+  ref-mcp:
+    build: ./services/ref-mcp
+    ports:
+      - "8200:8200"
+    environment:
+      REFERENCE_API_URL: http://api:8000
+    depends_on:
+      - api
+
+  # Stand-in for ClinRun, the sponsor's payment backend (ADR-0011).
+  mock-clinrun:
+    build: ./services/mock-clinrun
+    ports:
+      - "8100:8100"
+    volumes:
+      - clinrun_data:/data
+
+  # Polls the inbox and runs the pipeline, one Invoice at a time.
+  worker:
+    build: .
+    env_file:
+      - path: .env
+        required: false
+    environment: &app_env
+      REF_MCP_URL: http://ref-mcp:8200/mcp
+      CLINRUN_URL: http://mock-clinrun:8100
+      APP_DB: /data/app.db
+      INBOX_DIR: /inbox
+    volumes:
+      - app_data:/data
+      - ./inbox:/inbox
+    depends_on:
+      - ref-mcp
+      - mock-clinrun
+
+  # The Reviewer's Hub.
+  hub:
+    build: .
+    command: ["streamlit", "run", "src/invoice_assist/hub.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+    env_file:
+      - path: .env
+        required: false
+    environment: *app_env
+    ports:
+      - "8501:8501"
+    volumes:
+      - app_data:/data
+    depends_on:
+      - worker
+
 volumes:
   postgres_data:
+  clinrun_data:
+  app_data:

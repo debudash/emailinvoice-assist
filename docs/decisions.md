@@ -168,3 +168,4 @@ Terms are defined in [GLOSSARY.md](../GLOSSARY.md).
 | D5 | Secrets | A git-ignored `.env` with a committed `.env.example`. Required: `ANTHROPIC_API_KEY`. Optional: `LANGSMITH_API_KEY`. |
 | — | Model | `claude-opus-5-5` for every LLM call, set in configuration |
 | — | Tooling (implementer's call) | Python 3.13 with uv; ref-mcp served over streamable HTTP as its own Compose service; LangChain's MCP adapters for the context agent; pytest for app tests |
+| — | LLM client (changed in S0) | Anthropic SDK directly; LangChain dropped because Opus 5.5 rejects the forced tool calls and `temperature` it relies on. See the ADR-0008 amendment. Server-side refusal fallbacks (`fallbacks: "default"`) are on for every call. |
