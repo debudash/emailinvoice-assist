@@ -126,7 +126,7 @@ samples miss: `arithmetic` (wrong total, bad line amount), `site_not_linked`, `e
 - **The Hub's component tests cover two views.** The Correction, Release and Escalation forms are
   covered at the Review Actions level, not by clicking through the Hub.
 - **The worker loop** (`poll_once`, the pause and check-now flags) has no direct test.
-- **Gold labels** are AI-derived and human-reviewed once (2026-10-20); re-review after changing them with `streamlit run evals/gold_review.py`.
+- **Gold labels** are AI-derived and human-reviewed once (2026-10-20); the subject matter expert re-reviews them in the Hub (**Gold review**), and the eval is rerun by hand afterwards (not in CI yet).
 
 ## Judge calibration (2026-10-20)
 

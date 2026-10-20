@@ -432,3 +432,50 @@
 {"ts": "2026-10-20T21:59:30+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\hub.py"}, "ok": true}
 {"ts": "2026-10-20T21:59:55+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Run tests and commit ISSUE-008"}, "ok": true}
 {"ts": "2026-10-20T22:00:01+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\docs\\issue_log.md"}, "ok": true}
+{"ts": "2026-10-20T22:00:29+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Log, merge to main, rebuild hub and worker"}, "ok": true}
+{"ts": "2026-10-20T22:00:37+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Verify flagged lines for invoice 2 in live stack"}, "ok": true}
+{"ts": "2026-10-20T22:00:43+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check how invoice 2 was released and submitted"}, "ok": true}
+{"ts": "2026-10-20T22:01:34+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check current model setting"}, "ok": true}
+{"ts": "2026-10-20T22:01:46+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Switch to Haiku and recreate worker and hub"}, "ok": true}
+{"ts": "2026-10-20T22:01:50+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check local scripts also pick up the model"}, "ok": true}
+{"ts": "2026-10-20T22:02:52+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Verify each docs-drift finding"}, "ok": true}
+{"ts": "2026-10-20T22:02:54+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read the stale passages"}, "ok": true}
+{"ts": "2026-10-20T22:03:47+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read gold review tool and saved feedback"}, "ok": true}
+{"ts": "2026-10-20T22:03:52+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read gold labels to explain them"}, "ok": true}
+{"ts": "2026-10-20T22:05:38+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Find stale \"needs review\" mentions"}, "ok": true}
+{"ts": "2026-10-20T22:05:40+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read surrounding text to update"}, "ok": true}
+{"ts": "2026-10-20T22:05:49+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Commit gold review and update docs"}, "ok": true}
+{"ts": "2026-10-20T22:06:26+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check how eval and gold review are run today"}, "ok": true}
+{"ts": "2026-10-20T22:06:40+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Reword gold review owner as SME"}, "ok": true}
+{"ts": "2026-10-20T22:10:12+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read existing gold review page, tests, compose env"}, "ok": true}
+{"ts": "2026-10-20T22:11:43+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check gold generator, scoring keys, hub sidebar"}, "ok": true}
+{"ts": "2026-10-20T22:11:47+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read make_gold.py"}, "ok": true}
+{"ts": "2026-10-20T22:12:04+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Look up catalog items and billed prices"}, "ok": true}
+{"ts": "2026-10-20T22:12:23+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Add SME notes to gold generator and regenerate"}, "ok": true}
+{"ts": "2026-10-20T22:12:28+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Show removed lines in gold diff"}, "ok": true}
+{"ts": "2026-10-20T22:12:56+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check package path in container and deps"}, "ok": true}
+{"ts": "2026-10-20T22:13:11+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_gold_review.py"}, "ok": true}
+{"ts": "2026-10-20T22:13:36+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\gold.py"}, "ok": true}
+{"ts": "2026-10-20T22:13:52+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read config module"}, "ok": true}
+{"ts": "2026-10-20T22:14:01+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Move ACTORS to config and add the SME"}, "ok": true}
+{"ts": "2026-10-20T22:14:23+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\gold_review.py"}, "ok": true}
+{"ts": "2026-10-20T22:14:30+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Run gold review tests"}, "ok": true}
+{"ts": "2026-10-20T22:14:41+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\app.py"}, "ok": true}
+{"ts": "2026-10-20T22:14:50+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Smoke-test navigation entry point"}, "ok": true}
+{"ts": "2026-10-20T22:14:57+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Set page config, remove old page, read compose"}, "ok": true}
+{"ts": "2026-10-20T22:15:06+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Add gold mounts and on-demand eval service"}, "ok": true}
+{"ts": "2026-10-20T22:15:28+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Run full test suite and show status"}, "ok": true}
+{"ts": "2026-10-20T22:16:08+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Rebuild hub and verify gold data is reachable"}, "ok": true}
+{"ts": "2026-10-20T22:16:18+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\gold.py"}, "ok": true}
+{"ts": "2026-10-20T22:16:32+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Rerun gold tests and restart hub"}, "ok": true}
+{"ts": "2026-10-20T22:17:06+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Rebuild hub and eval images"}, "ok": true}
+{"ts": "2026-10-20T22:17:14+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Run the eval container on Haiku"}, "ok": true}
+{"ts": "2026-10-20T22:17:19+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Find doc references to update"}, "ok": true}
+{"ts": "2026-10-20T22:17:23+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read README eval section and deploy CI section"}, "ok": true}
+{"ts": "2026-10-20T22:17:43+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Update README, deploy, test plan, architecture, gold README"}, "ok": true}
+{"ts": "2026-10-20T22:17:56+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Document new gold fields"}, "ok": true}
+{"ts": "2026-10-20T22:18:02+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Warn that make_gold overwrites SME edits"}, "ok": true}
+{"ts": "2026-10-20T22:19:02+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Wait for eval container result"}, "ok": true}
+{"ts": "2026-10-20T22:19:12+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check eval report files"}, "ok": true}
+{"ts": "2026-10-20T22:19:19+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Save Haiku report separately, restore Opus latest"}, "ok": true}
+{"ts": "2026-10-20T22:19:51+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Note Haiku result in README, branch, run tests"}, "ok": true}

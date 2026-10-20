@@ -11,6 +11,8 @@
     {
       "line_no": 1,
       "description": "Site Admin",
+      "qty": 1,
+      "billed_unit_price": "350.00",
       "expected_item_code": "ADMIN-SITE",
       "acceptable_item_codes": [
         "ADMIN-SITE"
@@ -21,6 +23,8 @@
     {
       "line_no": 2,
       "description": "Screening Visit",
+      "qty": 5,
+      "billed_unit_price": "450.00",
       "expected_item_code": "VISIT-SCR",
       "acceptable_item_codes": [
         "VISIT-SCR"
@@ -31,6 +35,8 @@
     {
       "line_no": 3,
       "description": "Baseline Visit",
+      "qty": 4,
+      "billed_unit_price": "525.00",
       "expected_item_code": "VISIT-BL",
       "acceptable_item_codes": [
         "VISIT-BL"
@@ -41,6 +47,8 @@
     {
       "line_no": 4,
       "description": "Wk 4 Visit",
+      "qty": 4,
+      "billed_unit_price": "475.00",
       "expected_item_code": "VISIT-WK4",
       "acceptable_item_codes": [
         "VISIT-WK4"
@@ -51,6 +59,8 @@
     {
       "line_no": 5,
       "description": "Wk 8 Visit",
+      "qty": 4,
+      "billed_unit_price": "475.00",
       "expected_item_code": "VISIT-WK8",
       "acceptable_item_codes": [
         "VISIT-WK8"
@@ -61,6 +71,8 @@
     {
       "line_no": 6,
       "description": "Week 12 Visit",
+      "qty": 4,
+      "billed_unit_price": "500.00",
       "expected_item_code": "VISIT-WK12",
       "acceptable_item_codes": [
         "VISIT-WK12"
@@ -71,6 +83,8 @@
     {
       "line_no": 7,
       "description": "Week 16 Visit",
+      "qty": 4,
+      "billed_unit_price": "500.00",
       "expected_item_code": "VISIT-WK16",
       "acceptable_item_codes": [
         "VISIT-WK16"
@@ -81,6 +95,8 @@
     {
       "line_no": 8,
       "description": "Wk 24 Visit",
+      "qty": 3,
+      "billed_unit_price": "525.00",
       "expected_item_code": "VISIT-WK24",
       "acceptable_item_codes": [
         "VISIT-WK24"
@@ -91,6 +107,8 @@
     {
       "line_no": 9,
       "description": "End of Study Visit",
+      "qty": 2,
+      "billed_unit_price": "550.00",
       "expected_item_code": "VISIT-EOS",
       "acceptable_item_codes": [
         "VISIT-EOS"
@@ -101,16 +119,21 @@
     {
       "line_no": 10,
       "description": "ECG",
+      "qty": 12,
+      "billed_unit_price": "85.00",
       "expected_item_code": "PROC-ECG",
       "acceptable_item_codes": [
         "PROC-ECG"
       ],
       "ambiguous": false,
-      "price_variance": false
+      "price_variance": false,
+      "review_note": "Two ECG items exist: 'ECG - 12 Lead' and 'ECG Interpretation' ($55). The billed price matches the 12-lead ECG."
     },
     {
       "line_no": 11,
       "description": "Vitals",
+      "qty": 20,
+      "billed_unit_price": "45.00",
       "expected_item_code": "PROC-VITAL",
       "acceptable_item_codes": [
         "PROC-VITAL"
@@ -121,6 +144,8 @@
     {
       "line_no": 12,
       "description": "Physical Exam",
+      "qty": 10,
+      "billed_unit_price": "120.00",
       "expected_item_code": "PROC-PHYS",
       "acceptable_item_codes": [
         "PROC-PHYS"
@@ -131,16 +156,21 @@
     {
       "line_no": 13,
       "description": "IV Drug Administration",
+      "qty": 8,
+      "billed_unit_price": "200.00",
       "expected_item_code": "PROC-INFUS",
       "acceptable_item_codes": [
         "PROC-INFUS"
       ],
       "ambiguous": false,
-      "price_variance": false
+      "price_variance": false,
+      "review_note": "'IV Placement' ($65) is a different service; the billed price matches the infusion."
     },
     {
       "line_no": 14,
       "description": "Pharmacokinetic Sampling",
+      "qty": 16,
+      "billed_unit_price": "75.00",
       "expected_item_code": "PROC-PK",
       "acceptable_item_codes": [
         "PROC-PK"
@@ -151,6 +181,8 @@
     {
       "line_no": 15,
       "description": "CBC w/ Differential",
+      "qty": 10,
+      "billed_unit_price": "95.00",
       "expected_item_code": "LAB-CBC",
       "acceptable_item_codes": [
         "LAB-CBC"
@@ -161,6 +193,8 @@
     {
       "line_no": 16,
       "description": "Comprehensive Metabolic Panel",
+      "qty": 10,
+      "billed_unit_price": "110.00",
       "expected_item_code": "LAB-CMP",
       "acceptable_item_codes": [
         "LAB-CMP"
@@ -171,6 +205,8 @@
     {
       "line_no": 17,
       "description": "UA",
+      "qty": 8,
+      "billed_unit_price": "55.00",
       "expected_item_code": "LAB-URINAL",
       "acceptable_item_codes": [
         "LAB-URINAL"
@@ -181,16 +217,21 @@
     {
       "line_no": 18,
       "description": "Hepatic Function Panel",
+      "qty": 8,
+      "billed_unit_price": "88.00",
       "expected_item_code": "LAB-LFT",
       "acceptable_item_codes": [
         "LAB-LFT"
       ],
       "ambiguous": false,
-      "price_variance": false
+      "price_variance": false,
+      "review_note": "Another name for the liver function tests; the billed price matches."
     },
     {
       "line_no": 19,
       "description": "Lipid Panel",
+      "qty": 6,
+      "billed_unit_price": "78.00",
       "expected_item_code": "LAB-LIPID",
       "acceptable_item_codes": [
         "LAB-LIPID"
@@ -201,6 +242,8 @@
     {
       "line_no": 20,
       "description": "CT Scan - Chest/Abdomen",
+      "qty": 2,
+      "billed_unit_price": "475.00",
       "expected_item_code": "IMG-CT",
       "acceptable_item_codes": [
         "IMG-CT"
@@ -211,6 +254,8 @@
     {
       "line_no": 21,
       "description": "IRB Annual Maintenance",
+      "qty": 1,
+      "billed_unit_price": "500.00",
       "expected_item_code": "ADMIN-IRB",
       "acceptable_item_codes": [
         "ADMIN-IRB"
@@ -221,6 +266,8 @@
     {
       "line_no": 22,
       "description": "Drug Shipping (cold chain)",
+      "qty": 3,
+      "billed_unit_price": "125.00",
       "expected_item_code": "PASS-COLD",
       "acceptable_item_codes": [
         "PASS-COLD",
@@ -232,26 +279,34 @@
     {
       "line_no": 23,
       "description": "Lab Supplies",
+      "qty": 10,
+      "billed_unit_price": "42.00",
       "expected_item_code": "PASS-KIT",
       "acceptable_item_codes": [
         "PASS-KIT"
       ],
       "ambiguous": false,
-      "price_variance": false
+      "price_variance": false,
+      "review_note": "Loose wording; 'Lab Kit - Standard' is the only close item and the billed price matches."
     },
     {
       "line_no": 24,
       "description": "Sample Transport",
+      "qty": 8,
+      "billed_unit_price": "58.00",
       "expected_item_code": "PASS-SPEC",
       "acceptable_item_codes": [
         "PASS-SPEC"
       ],
       "ambiguous": false,
-      "price_variance": false
+      "price_variance": false,
+      "review_note": "Loose wording; 'Specimen Shipping' is the only close item and the billed price matches."
     },
     {
       "line_no": 25,
       "description": "Parking Reimbursement",
+      "qty": 15,
+      "billed_unit_price": "25.00",
       "expected_item_code": null,
       "acceptable_item_codes": [
         null
@@ -262,6 +317,8 @@
     {
       "line_no": 26,
       "description": "Patient Stipend",
+      "qty": 12,
+      "billed_unit_price": "75.00",
       "expected_item_code": null,
       "acceptable_item_codes": [
         null
@@ -272,6 +329,8 @@
     {
       "line_no": 27,
       "description": "Translator Services",
+      "qty": 3,
+      "billed_unit_price": "150.00",
       "expected_item_code": null,
       "acceptable_item_codes": [
         null

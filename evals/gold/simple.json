@@ -11,6 +11,8 @@
     {
       "line_no": 1,
       "description": "Site Management Fee",
+      "qty": 1,
+      "billed_unit_price": "400.00",
       "expected_item_code": "ADMIN-SITE",
       "acceptable_item_codes": [
         "ADMIN-SITE"
@@ -21,6 +23,8 @@
     {
       "line_no": 2,
       "description": "Screening Visit",
+      "qty": 2,
+      "billed_unit_price": "480.00",
       "expected_item_code": "VISIT-SCR",
       "acceptable_item_codes": [
         "VISIT-SCR"
@@ -31,6 +35,8 @@
     {
       "line_no": 3,
       "description": "Baseline Visit",
+      "qty": 1,
+      "billed_unit_price": "550.00",
       "expected_item_code": "VISIT-BL",
       "acceptable_item_codes": [
         "VISIT-BL"
@@ -41,6 +47,8 @@
     {
       "line_no": 4,
       "description": "Complete Blood Count",
+      "qty": 1,
+      "billed_unit_price": "95.00",
       "expected_item_code": "LAB-CBC",
       "acceptable_item_codes": [
         "LAB-CBC"
@@ -51,6 +59,8 @@
     {
       "line_no": 5,
       "description": "IV Infusion Administration",
+      "qty": 1,
+      "billed_unit_price": "225.00",
       "expected_item_code": "PROC-INFUS",
       "acceptable_item_codes": [
         "PROC-INFUS"

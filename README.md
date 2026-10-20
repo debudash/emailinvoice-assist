@@ -48,7 +48,8 @@ docker compose up -d            # recreates worker and hub with the new setting
 ```
 
 Sonnet 5.5 and Haiku 5.5 both accept the same call settings as Opus. The eval results in
-[`evals/reports/latest.md`](evals/reports/latest.md) were measured on Opus 5.5. Rerun
+[`evals/reports/latest.md`](evals/reports/latest.md) were measured on Opus 5.5; Haiku 5.5 also passed the gate on 2026-10-20
+([`evals/reports/2026-10-20-haiku-5-5.md`](evals/reports/2026-10-20-haiku-5-5.md)). Rerun
 `python -m evals.run_eval` after switching to see how another model scores. Each Stage Run records
 the model that served it, shown in the Hub's History tab.
 
@@ -114,6 +115,7 @@ python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\act
 pip install uv && uv sync                            # app plus the dev group into .venv
 python -m pytest                                     # app tests; no stack or API key needed
 python -m evals.run_eval                             # needs the stack, ANTHROPIC_API_KEY, LANGSMITH_API_KEY
+docker compose run --rm eval                         # the same eval in a container: no host Python needed
 ```
 
 `evals.run_eval` runs the four gold samples through the real pipeline (with a fake ClinRun), writes
@@ -138,16 +140,25 @@ charge, a wrong printed total, a bad line amount, a site not on the study, an un
 invoice and an email with no attachment. Add a scenario by adding one entry to `SCENARIOS` in
 `scripts/make_test_invoices.py`. You can also upload any PDF or image from the Hub's sidebar.
 
-### Review the gold labels
+### Review the gold labels (the subject matter expert)
 
-```bash
-streamlit run evals/gold_review.py                   # no stack needed
-```
+The gold labels are the answer key the eval scores the AI against. They belong to a subject matter
+expert (accounts payable or clinical finance), not the developer, so the review is a page in the Hub:
+open http://localhost:8501 and choose **Gold review** in the sidebar, acting as **Pat (SME)**.
 
-Shows each gold line next to the Catalog Item it names (description and price) and the invoice PDF.
-Mark each line agree / change / unsure with a comment, and save: feedback goes to
-`evals/gold/review/<sample>.json`. **Apply to gold file** also updates the labels you changed and
-records you as the reviewer; rerun the eval afterwards.
+- Pick an invoice; each shows its expected result and whether it has been reviewed.
+- **Lines that need your judgement** come first, each with the reason in plain words (more than one
+  plausible item, a price difference, nothing in the catalog, loose wording). The straightforward
+  lines are in an expander.
+- For each line: *Yes, that's right*, *No, it's a different item* (then pick the right one) or
+  *Not sure*, with an optional comment. Check the expected result the same way.
+- **Save review** records the review in `evals/gold/review/<sample>.json` and writes any changed
+  answer straight into `evals/gold/<sample>.json`.
+
+After a change, an engineer reruns the eval (`docker compose run --rm eval`) to score the AI against
+the new answer key. **That step is manual today; it is not wired into CI.** In production, a change
+to the answer key would be a pull request, and CI would run the eval gate on it before it merges
+([docs/deploy.md](docs/deploy.md), CI/CD).
 
 ## Repository layout
 
@@ -173,7 +184,10 @@ records you as the reviewer; rerun the eval afterwards.
 │   ├── llm.py                  the LLM seam: structured calls, tool runner client, LangSmith wrap
 │   ├── metrics.py              Straight-Through rate, Holds by reason, Stage timings, time saved
 │   ├── worker.py               inbox poller
-│   └── hub.py                  the Hub (Streamlit)
+│   ├── app.py                  the Hub entry point: the Invoices and Gold review pages
+│   ├── hub.py                  the Invoices page (Streamlit)
+│   ├── gold_review.py          the Gold review page, for the subject matter expert
+│   └── gold.py                 the answer key and its review: what needs judgement, saving changes
 ├── services/
 │   ├── api/                    starter reference API and seed data (plus the ISSUE-001 test)
 │   ├── ref-mcp/                MCP server: server.py (tools), scoring.py (rapidfuzz), refapi.py (paging)

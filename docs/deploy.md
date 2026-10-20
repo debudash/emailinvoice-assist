@@ -18,7 +18,8 @@ docker compose ps             # six services; db reports (healthy)
 | `ref-mcp` | `services/ref-mcp` | 8200 (`/mcp`) | Stateless |
 | `mock-clinrun` | `services/mock-clinrun` | 8100 | volume `clinrun_data` (`/data/clinrun.db`) |
 | `worker` | root `Dockerfile`, default command `python -m invoice_assist.worker` | none | volume `app_data` (`/data/app.db`), bind mount `./inbox` |
-| `hub` | root `Dockerfile`, command `streamlit run src/invoice_assist/hub.py` | 8501 | same volume and mount as the worker |
+| `hub` | root `Dockerfile`, command `streamlit run src/invoice_assist/app.py` | 8501 | same volume and mount as the worker, plus `./evals` (read-write, for Gold review), `./samples` and the seed data |
+| `eval` | root `Dockerfile`, command `python -m evals.run_eval`; Compose profile `eval`, so it runs only on `docker compose run --rm eval` | none | same mounts as the Hub |
 
 Startup order comes from `depends_on`: `api` waits for a healthy `db`; `ref-mcp` starts after `api`;
 `worker` after `ref-mcp` and `mock-clinrun`; `hub` after `worker`. Only `db` has a health check, so
@@ -39,7 +40,7 @@ docker compose up -d db api ref-mcp mock-clinrun
 docker compose stop worker hub         # if they are running: both would watch ./inbox
 source .venv/bin/activate              # see README: uv sync
 python -m invoice_assist.worker        # REF_MCP_URL=http://localhost:8200/mcp, CLINRUN_URL=http://localhost:8100
-streamlit run src/invoice_assist/hub.py
+streamlit run src/invoice_assist/app.py
 ```
 
 Natively the app store is `data/app.db` and the inbox is `./inbox` (`APP_DB`, `INBOX_DIR`). That
@@ -107,4 +108,6 @@ The eval gate is `python -m evals.run_eval`, which exits non-zero when any False
 metric falls below its floor ([ADR-0012](adr/0012-eval-gate-zero-false-submits.md)). It needs the
 stack, an Anthropic key and a LangSmith key, so in CI it runs against a staging-like environment. A
 prompt, model or threshold change goes through the same gate as a code change. None of this
-pipeline exists in the repository today; tests and evals are run by hand.
+pipeline exists in the repository today; tests and evals are run by hand. That includes a change
+to the gold labels from the Hub's Gold review page: today an engineer reruns the eval by hand
+(`docker compose run --rm eval`); in production the change is a pull request and this gate runs on it.

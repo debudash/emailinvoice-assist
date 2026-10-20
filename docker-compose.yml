@@ -67,22 +67,39 @@ services:
       - ref-mcp
       - mock-clinrun
 
-  # The Reviewer's Hub.
+  # The Hub: the Reviewer's Invoices page and the SME's Gold review page.
   hub:
     build: .
     restart: unless-stopped
-    command: ["streamlit", "run", "src/invoice_assist/hub.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+    command: ["streamlit", "run", "src/invoice_assist/app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
     env_file:
       - path: .env
         required: false
     environment: *app_env
     ports:
       - "8501:8501"
-    volumes:
+    volumes: &gold_volumes
       - app_data:/data
       - ./inbox:/inbox
+      # Gold review writes the answer key and the review records back into the repo.
+      - ./evals:/app/evals
+      - ./samples:/app/samples:ro
+      - ./services/api/seed/data:/app/services/api/seed/data:ro
     depends_on:
       - worker
+
+  # The eval, on demand only: docker compose run --rm eval  (not wired into CI yet).
+  eval:
+    build: .
+    profiles: ["eval"]
+    command: ["python", "-m", "evals.run_eval"]
+    env_file:
+      - path: .env
+        required: false
+    environment: *app_env
+    volumes: *gold_volumes
+    depends_on:
+      - ref-mcp
 
 volumes:
   postgres_data:

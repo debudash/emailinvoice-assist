@@ -10,7 +10,7 @@ import pandas as pd
 import streamlit as st
 
 from invoice_assist import metrics
-from invoice_assist.config import settings
+from invoice_assist.config import ACTORS, settings
 from invoice_assist.context import Reference
 from invoice_assist.intake import write_upload
 from invoice_assist.decision import line_findings
@@ -21,7 +21,6 @@ from invoice_assist.store import Store
 
 st.set_page_config(page_title="Invoice hub", page_icon=":material/receipt_long:", layout="wide")
 
-ACTORS = ["Dana (Reviewer)", "Sam (Reviewer)", "Ops (Operator)"]
 QUEUES = ["Held", "Escalated", "Failed", "Submitted", "All"]
 
 
