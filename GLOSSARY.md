@@ -7,15 +7,15 @@ How clinical trial site invoices that arrive by email are read, put in context, 
 ### Intake
 
 **Message**:
-One email received in the inbox, with its sender, subject, body and attachments.
+One arrival of invoice files: an email received in the inbox, with its sender, subject, body and attachments, or a file a Reviewer uploaded in the Hub.
 _Avoid_: Email (as a domain term), mail item
 
 **Invoice**:
-One PDF attachment of a Message, requesting payment from a sponsor for work a site did on a study. Each PDF is assumed to hold exactly one invoice.
+One PDF or image file of a Message, requesting payment from a sponsor for work a site did on a study. Each file is assumed to hold exactly one invoice.
 _Avoid_: Document, bill, attachment (when meaning the invoice)
 
 **Rejected Message**:
-A Message that yields no Invoice because it has no PDF attachment. It is kept, with the reason, rather than discarded.
+A Message that yields no Invoice because it has no PDF or image file. It is kept, with the reason, rather than discarded.
 _Avoid_: Spam, junk, dropped email
 
 **Possible Duplicate**:
@@ -78,7 +78,29 @@ _Avoid_: Uncertain (reserved for Context)
 A Line Match where the Line Item's unit price differs from the Catalog Item's price by more than the tolerance.
 _Avoid_: Price mismatch, overcharge
 
+### Processing
+
+**Stage**:
+One step of processing an Invoice: extraction, context resolution, matching, decision, submission.
+_Avoid_: Step, phase, node
+
+**Stage Run**:
+One execution of a Stage for an Invoice Version, with its inputs, output, timing and the reason it ran. Stage Runs are never overwritten; a rerun adds a new one.
+_Avoid_: Attempt (reserved for retries within a run), job
+
+**Invoice Version**:
+One state of an Invoice's processed content. The first comes from intake, and an Amendment creates the next. Earlier versions are kept.
+_Avoid_: Revision, copy
+
 ### Decision and review
+
+**Reviewer**:
+The person who checks the AI's Decisions after the fact and acts on Invoices: Correction, Release, Escalation, Amendment approval.
+_Avoid_: Approver, AP clerk, user
+
+**Operator**:
+The person responsible for the pipeline running: Failed Invoices, reruns, stage timings and traces.
+_Avoid_: Admin, support, DevOps
 
 **Hub**:
 The reviewer's workspace, showing what was extracted, what was matched, confidence and Hold Reasons, and each Decision, and where reviewers act on Invoices after the AI has decided.
