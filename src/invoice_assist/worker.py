@@ -21,11 +21,17 @@ def ingest(store: Store, path: Path) -> list[int]:
 
 
 def poll_once(store: Store, pipeline: Pipeline, inbox: Path) -> int:
-    processed_dir = inbox / "processed"
+    processed_dir, failed_dir = inbox / "processed", inbox / "failed"
     processed_dir.mkdir(parents=True, exist_ok=True)
+    failed_dir.mkdir(parents=True, exist_ok=True)
     count = 0
-    for path in sorted(inbox.glob("*.eml"), key=lambda p: p.stat().st_mtime):
-        invoice_ids = ingest(store, path)
+    for path in sorted(inbox.glob("*.eml"), key=lambda p: (p.stat().st_mtime, p.name)):
+        try:
+            invoice_ids = ingest(store, path)
+        except Exception:  # an unreadable file is set aside for the Operator; the worker keeps going
+            log.exception("Could not read %s; moved to %s", path.name, failed_dir)
+            path.rename(failed_dir / path.name)
+            continue
         path.rename(processed_dir / path.name)
         for invoice_id in invoice_ids:
             log.info("Invoice %s from %s -> %s", invoice_id, path.name, pipeline.process(invoice_id))

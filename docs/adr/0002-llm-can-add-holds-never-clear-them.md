@@ -1,6 +1,6 @@
 # The LLM can add Holds but never clear the hard checks
 
-With no human gate (ADR-0001), submitting to ClinRun is outward-facing and hard to undo, so the submit/hold Decision is a hybrid: deterministic hard checks (Unmatched, Ambiguous, Price Variance, uncertain Context, site not linked to study, totals inconsistent, unverified extraction, Possible Duplicate) force a Hold, and only when none fire does the LLM review the Invoice, where it may still Hold but can never turn a failed check into Submit. The brief asks for an "AI decision"; this keeps the AI's judgement in the loop while making a False Submit impossible to cause by a prompt slip, and it is why the eval gate requires zero False Submits.
+With no human gate (ADR-0001), submitting to ClinRun is outward-facing and hard to undo, so the submit/hold Decision is a hybrid: deterministic hard checks (Unmatched, Ambiguous, Price Variance, uncertain Context, site not linked to study, totals inconsistent, unverified extraction, Possible Duplicate; the last two are P2) force a Hold, and only when none fire does the LLM review the Invoice, where it may still Hold but can never turn a failed check into Submit. The brief asks for an "AI decision"; this keeps the AI's judgement in the loop while making a False Submit impossible to cause by a prompt slip, and it is why the eval gate requires zero False Submits.
 
 ## Considered Options
 

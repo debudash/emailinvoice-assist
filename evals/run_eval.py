@@ -59,7 +59,8 @@ def _evaluator(key: str):
 
 def main() -> int:
     if not os.getenv("LANGSMITH_API_KEY"):
-        print("LANGSMITH_API_KEY is not set: evals record their results as LangSmith experiments (decisions R2-6).")
+        print("LANGSMITH_API_KEY is not set: evals record their results as LangSmith experiments "
+              "(decisions.md, Design review outcomes: Eval platform).")
         return 2
     from langsmith import Client, evaluate
     client = Client()
@@ -80,7 +81,7 @@ def main() -> int:
               "summary": summary, "experiment": results.experiment_name, "rows": rows}
     out = ROOT / "evals" / "reports"
     out.mkdir(exist_ok=True)
-    (out / "latest.json").write_text(json.dumps(report, indent=2))
+    (out / "latest.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     lines = [f"# Eval report ({report['at']})", "", f"**Gate: {'PASSED' if passed else 'FAILED ' + str(summary['failures'])}**"
              f" · LangSmith experiment `{results.experiment_name}`", "", "| Metric | Value | Gate |", "|---|---|---|"]
     lines += [f"| {k} | {summary[k]:.2f} | {'= 0' if k == 'false_submits' else '>= ' + str(GATE[k])} |" for k in GATE]
@@ -89,7 +90,7 @@ def main() -> int:
               f"{' -> ' + r['prediction']['after_correction'] + ' after correction' if 'after_correction' in r['prediction'] else ''}"
               f" | {', '.join(r['prediction']['hold_reasons'])} | {r['false_submit']} | {r['context_correct']} | {r['line_accuracy']:.2f} |"
               for r in rows]
-    (out / "latest.md").write_text("\n".join(lines) + "\n")
+    (out / "latest.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
     return 0 if passed else 1
 

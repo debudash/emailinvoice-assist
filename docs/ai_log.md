@@ -64,3 +64,40 @@ Two layers:
   - **Test isolation:** the first ClinRun Client test wrote into the demo's ClinRun data. It now
     starts its own private mock.
 - **Developer decision:** keep refusal fallbacks on and record the serving model on each Stage Run.
+
+### S1–S5 and P1 (2026-10-19, built autonomously at the developer's request)
+- **Developer instruction:** "implement all the slices as much as you can without my intervention."
+  - Slices were combined to save time: S1+S2 on one branch, S3+S4 on another.
+  - Cheap P1 items (upload, images, metrics, poller controls, Line Correction) were folded into S3+S4.
+- **Agents:**
+  - Main agent: built every slice.
+  - Gold-label subagent: wrote `evals/gold` from the generator script and seed data.
+  - Reviewer subagents: one per slice. S1+S2 and S3+S4 each had a single reviewer covering both
+    axes, reported separately; S0 had the full two-agent `/code-review`.
+  - Docs subagent: wrote the documentation set and cross-checked code against the PRD.
+- **Found by review and fixed, with tests:**
+  - Two False Submit paths:
+    - A line the matcher dropped passed unchecked.
+    - An Operator rerun from submission could push a Held invoice out.
+  - Escalating a Submitted invoice.
+  - A note checked after the write.
+  - A lost Release reason on a rerun.
+  - Straight-Through counted after a Correction.
+  - Float rounding in the arithmetic check.
+- **Found by live runs and fixed:**
+  - After a Correction, the LLM review re-raised the question the Reviewer had just answered. It
+    now receives the Correction.
+- **Found by the docs cross-check and fixed:**
+  - The worker could die on an unreadable `.eml`.
+  - The submission's variance flag ignored the tolerance.
+  - The Hub's error boundary had gaps.
+- **Verified live:**
+  - All four samples reached their expected outcomes.
+  - Correct Context took mismatched to Submitted; Release took medium to Submitted with its reason.
+  - A ref-mcp outage took an invoice to Failed after 3 attempts, and an Operator rerun submitted it.
+  - The eval gate passed twice: `gold-3cb2e154` and `gold-37363ddd`, zero False Submits, all
+    metrics 1.00.
+- **Left for the developer:**
+  - Review the gold labels (judgement calls in `evals/gold/*.json` notes).
+  - The demo video.
+  - The accepted limitations in decisions.md.

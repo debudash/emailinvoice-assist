@@ -1,6 +1,6 @@
-# Eval report (2026-10-20T03:06:40+00:00)
+# Eval report (2026-10-20T03:15:33+00:00)
 
-**Gate: PASSED** · LangSmith experiment `gold-3cb2e154`
+**Gate: PASSED** · LangSmith experiment `gold-37363ddd`
 
 | Metric | Value | Gate |
 |---|---|---|
@@ -15,4 +15,4 @@
 | simple | submit |  | 0 | 1 | 1.00 |
 | mismatched-metadata | hold -> submit after correction | context_uncertain | 0 | 1 | 1.00 |
 | large | hold | ambiguous, price_variance, unmatched | 0 | 1 | 1.00 |
-| medium | hold | ambiguous, price_variance | 0 | 1 | 1.00 |
+| medium | hold | price_variance | 0 | 1 | 1.00 |

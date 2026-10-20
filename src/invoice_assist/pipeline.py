@@ -42,7 +42,7 @@ def build_submission(store: Store, invoice_id: int, ex: Extraction, ctx: Context
             "item_code": item["item_code"] if item else None,
             "description_as_billed": line.description,
             "qty": line.quantity, "unit_price": line.unit_price, "amount": line.amount,
-            "price_variance": bool(item) and round(line.unit_price, 2) != round(float(item["unit_price"]), 2),
+            "price_variance": bool(item) and decision.is_price_variance(line.unit_price, item["unit_price"]),
         })
     return {
         # The printed total only; a missing one is held by the decision (check_printed_total).
