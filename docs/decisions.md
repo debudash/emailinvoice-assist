@@ -167,4 +167,30 @@ Terms are defined in [GLOSSARY.md](../GLOSSARY.md).
 | D4 | Time-saved baseline | 5 minutes per Invoice plus 1 minute per Line Item, labelled on screen as an assumption |
 | D5 | Secrets | A git-ignored `.env` with a committed `.env.example`. Required: `ANTHROPIC_API_KEY`. Optional: `LANGSMITH_API_KEY`. |
 | — | Model | `claude-opus-5-5` for every LLM call, set in configuration |
-| — | Tooling (implementer's call) | Python 3.13 with uv; ref-mcp served over streamable HTTP as its own Compose service; LangChain's MCP adapters for the context agent; pytest for app tests |
+| — | Tooling (implementer's call) | Python 3.13 with uv (inside the project venv); ref-mcp served over streamable HTTP as its own Compose service (server on mcp 1.x FastMCP, app client on mcp 2.x); the Anthropic SDK tool runner with its MCP helper for the context agent; pytest for app tests |
+| — | LLM client (changed in S0) | Anthropic SDK directly; LangChain dropped because Opus 5.5 rejects the forced tool calls and `temperature` it relies on. See the ADR-0008 amendment. Server-side refusal fallbacks (`fallbacks: "default"`) are on for every call. |
+
+## S0 code review: deferred findings (2026-10-19)
+
+Fixed before the S0 merge:
+- glossary names in intake
+- the "Matched" status shown when matching was skipped
+- the total invented from the lines (a missing printed total now holds)
+- the study-belongs-to-sponsor check
+- Stage Run inputs and the model that served each call
+- the ClinRun Client test and the computed-confidence tests
+- one threshold per field
+- the agent restricted to the search tools
+- the unused `price_tolerance`
+
+Deferred:
+
+| Finding | Owner | Note |
+|---------|-------|------|
+| Retries with backoff (ADR-0009) | S4 | A failure is recorded as Failed on the first error until then |
+| "Matching did not run" filed under `context_uncertain` | S1 | Hold Reasons are revisited when the remaining checks land |
+| Stage defined in three places; status strings; Catalog as `list[dict]`; `build_submission` arguments | S1 | A refactor once S1 adds the remaining checks and the LLM review |
+| Unused `actions` table | S3 | Corrections are its first writer |
+| mock-clinrun race between two concurrent first submissions of the same key | Not planned | The worker is sequential; see the production story |
+| A rerun from submission adds a second `submissions` row with the same ClinRun ID | S4 | Harmless; the Hub reads the latest |
+| Refusal fallbacks | Kept | The model that served each call is now recorded on its Stage Run, so evals can attribute results |

@@ -1,0 +1,4 @@
+# ISSUE-001 lesson: cap every major so a fresh install today cannot pull a breaking release.
+fastapi>=0.115,<1
+uvicorn[standard]>=0.34,<1
+pydantic>=2.10,<3

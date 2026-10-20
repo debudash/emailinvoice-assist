@@ -1,0 +1,10 @@
+.venv
+.git
+data
+inbox
+samples
+docs
+tests
+services
+**/__pycache__
+.env

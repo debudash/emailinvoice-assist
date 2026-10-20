@@ -1,0 +1,6 @@
+# Upper bounds on majors (ISSUE-001 lesson: an unbounded pin pulled a breaking release).
+# mcp stays on 1.x: FastMCP was renamed MCPServer in mcp 2, and langchain-mcp-adapters
+# (the agent-side client) requires mcp<2, so client and server share one major.
+mcp>=1.27,<2
+httpx>=0.28,<1
+rapidfuzz>=3.10,<4
