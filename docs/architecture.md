@@ -85,8 +85,8 @@ Stage Run triggers: `automatic`, `correction by <actor>`, `release by <actor>`,
 
 ### Status lifecycle
 
-Statuses are set by `Pipeline.process` and `ReviewActions.escalate`. There is no separate "Decided"
-status: after the decision Stage the Invoice is either Held or goes on to submission.
+Statuses are set by `Pipeline.process` and `ReviewActions.escalate`. After the decision Stage the
+Invoice is Decided, then at once Held, or Submitted once the submission succeeds.
 
 ```mermaid
 stateDiagram-v2
@@ -95,19 +95,21 @@ stateDiagram-v2
     Received --> Extracted: extraction
     Extracted --> ContextResolved: context
     ContextResolved --> Matched: matching ran
-    ContextResolved --> Held: matching skipped, decision holds
-    Matched --> Held: decision holds
-    Matched --> Submitted: decision submits, submission succeeds
+    ContextResolved --> Decided: matching skipped, decision
+    Matched --> Decided: decision
+    Decided --> Held: decision holds
+    Decided --> Submitted: decision submits, submission succeeds
     Held --> Escalated: Escalate
     Held --> Submitted: Release
     Escalated --> Submitted: Release
     Held --> Matched: Correct context, matching reruns
     Escalated --> Matched: Correct context
-    Held --> Submitted: Correct a line, decision submits
+    Held --> Decided: Correct a line, decision reruns
     Received --> Failed: retries exhausted
     Extracted --> Failed: retries exhausted
     ContextResolved --> Failed: retries exhausted
     Matched --> Failed: retries exhausted
+    Decided --> Failed: submission fails
     Held --> Failed: Release, submission fails
     Failed --> Extracted: rerun from extraction
     Failed --> ContextResolved: rerun from context
@@ -119,8 +121,10 @@ stateDiagram-v2
 Notes on the diagram:
 - A context Correction writes the corrected context Stage Run directly and reruns from matching, so
   the status goes from Held (or Escalated) to Matched, then to Held or Submitted.
-- A line Correction reruns from the decision Stage, which sets no status of its own: the Invoice
-  stays Held (with the new reasons) or moves to Submitted. Each of these can also end in Failed.
+- A line Correction reruns from the decision Stage: the Invoice is Decided, then Held (with the new
+  reasons) or Submitted. Each of these can also end in Failed.
+- A Correction that would change nothing (the same confident Catalog Item, or the same confident
+  records) is refused before anything reruns (ISSUE-007).
 - An Operator rerun resumes at the chosen Stage (the failed one or earlier), and the status follows
   the Stages that run from there.
 - Amendment Pending and Amended (P2) are not built; a Submitted Invoice cannot be corrected.
@@ -265,7 +269,8 @@ sequenceDiagram
 
 | Check | Hold Reason | Fires when |
 |---|---|---|
-| `check_source` | `extraction_unverifiable` | The Invoice is an image (no text layer to check numbers against) |
+| `check_source` | `extraction_unverifiable` | The Invoice is an image, or a PDF with no text layer (a scan, ISSUE-005): nothing to check the numbers against |
+| `check_source` | `extraction_unverified` | An extracted unit price, line amount, total or the invoice number is not printed in the PDF's text (`verify.py`, [ADR-0007](adr/0007-native-pdf-extraction-with-text-check.md)) |
 | `check_context` | `context_uncertain` | Any of sponsor, study, site is not confident; or the study does not belong to the sponsor; or matching did not run and nothing else explains it |
 | `check_context` | `site_not_linked` | The site is not linked to the study |
 | `check_arithmetic` | `arithmetic` | A line's quantity × unit price differs from its amount; no printed total; or the lines do not sum to the printed total. Money is `Decimal`, rounded half up to the cent |
@@ -281,6 +286,14 @@ Invoice has any `correct_*` Action.
 
 **Release eligibility.** `RELEASABLE` = `price_variance`, `unmatched`, `ambiguous`, `llm_concern`,
 `extraction_unverifiable`. Release is allowed only when every Hold Reason is in that set.
+A Release with a Price Variance can pay those lines at the Catalog price instead of as billed
+(PRD story 52a): the submission carries the Catalog unit price and amount, plus the billed ones in
+`billed_unit_price` and `billed_amount`, and the release carries `at_catalog_price`.
+
+**What the Hub shows for a Hold.** `models.NEXT_STEP` names what clears each Hold Reason, listed
+under the Decision as "What clears it" (ISSUE-007). `decision.line_findings` gives the match
+findings per line, the same rule `check_matches` uses; the Hub's Matched table flags those lines
+first and **Correct a line** lists only them, so a fixed line drops off after the rerun (ISSUE-008).
 
 ## Context Confidence computation
 
@@ -323,7 +336,7 @@ data.
 | [0004](adr/0004-context-confidence-is-computed.md) Computed confidence | `context.score_context`, `config.threshold_*`; the agent prompt's "Do not state how confident you are" |
 | [0005](adr/0005-corroboration-ranks-but-cannot-lift.md) Corroboration ranks, cannot lift | `scoring.site_rank_score`; `search_sites` keeps `score = name_score`; `score_context` reads `name_score` |
 | [0006](adr/0006-whole-catalog-in-one-matching-call.md) Whole Catalog, one call | `matching.match`; `get_catalog` fetching every page |
-| [0007](adr/0007-native-pdf-extraction-with-text-check.md) Native extraction | `extraction.extract` (document or image block); `decision.check_source` for images. The text-layer number check is P2, not built |
+| [0007](adr/0007-native-pdf-extraction-with-text-check.md) Native extraction | `extraction.extract` (document or image block); `decision.check_source` for images and scanned PDFs; the text-layer number check in `verify.py` (built ahead of its P2 tier) |
 | [0008](adr/0008-fixed-stages-one-agent-loop.md) Fixed Stages, one agent loop, Anthropic SDK | `pipeline.STAGES`; `context._propose` (the SDK tool runner) is the only loop; `llm.py` |
 | [0009](adr/0009-failed-is-not-held.md) Failed is not Held | `Pipeline._attempt` (backoff `(1, 4)`), `_Exhausted` → status Failed with `failed_stage`; `ReviewActions.rerun` |
 | [0010](adr/0010-amend-never-withdraw.md) Amend, never withdraw | Only the refusal: `ReviewActions._held` rejects a Submitted Invoice ("Amendments (P2)"). Amendments are not built |
