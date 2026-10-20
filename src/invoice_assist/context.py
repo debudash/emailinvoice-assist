@@ -107,11 +107,15 @@ async def score_context(call: ToolCall, header: InvoiceHeader, proposal: Context
 
 async def _propose(session: ClientSession, header: InvoiceHeader) -> tuple[ContextProposal, list[str]]:
     tools = [t for t in (await session.list_tools()).tools if t.name in AGENT_TOOLS]
+    # ISSUE-011: every Invoice opened an async Anthropic client that was never closed. Root cause:
+    # resolve() runs this under asyncio.run, which closes its event loop on return, so the client's
+    # connections outlived the loop they belong to. Fix: close the client here, inside the loop,
+    # whether the agent succeeds or fails.
     client = llm.async_client()
     try:
         return await _run_agent(client, session, tools, header)
     finally:
-        await client.close()  # close inside this event loop; asyncio.run closes the loop after
+        await client.close()
 
 
 async def _run_agent(client, session: ClientSession, tools, header: InvoiceHeader) -> tuple[ContextProposal, list[str]]:
