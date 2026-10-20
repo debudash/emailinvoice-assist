@@ -22,6 +22,9 @@ class Settings:
     threshold_study: float = float(os.getenv("THRESHOLD_STUDY", "0.85"))
     threshold_site: float = float(os.getenv("THRESHOLD_SITE", "0.85"))
 
+    # Price tolerance as a fraction of the catalog price; 0 means exact to the cent (decisions.md 5a).
+    price_tolerance: float = float(os.getenv("PRICE_TOLERANCE", "0"))
+
     def threshold(self, field: str) -> float:
         return getattr(self, f"threshold_{field}")
 

@@ -3,8 +3,9 @@ from pathlib import Path
 
 import pytest
 
+from invoice_assist.decision import decide
 from invoice_assist.models import (Context, ContextField, Extraction, InvoiceHeader, LineItem, LineMatch,
-                                   Matching, MatchConfidence)
+                                   Matching, MatchConfidence, Review)
 from invoice_assist.pipeline import Pipeline, Stages
 from invoice_assist.store import Store
 from invoice_assist.worker import ingest
@@ -48,6 +49,11 @@ def matching(unmatched_line: int | None = None) -> Matching:
                   confidence=MatchConfidence.high, ambiguous=False, reason="fake")])
 
 
+def fake_review(*args) -> Review:
+    """Stands in for the LLM review: no concern, a fixed rationale."""
+    return Review(concern=None, rationale="Every hard check passed.")
+
+
 class FakeClinRun:
     def __init__(self):
         self.calls = []
@@ -70,7 +76,8 @@ def simple_invoice(store):
 def make_pipeline(store, **overrides) -> tuple[Pipeline, FakeClinRun]:
     clinrun = overrides.pop("submit", FakeClinRun())
     stages = Stages(extract=lambda data, mt: extraction(), resolve=lambda header: context(),
-                    catalog=lambda s, st: CATALOG, match=lambda lines, cat: matching(), submit=clinrun)
+                    catalog=lambda s, st: CATALOG, match=lambda lines, cat: matching(), submit=clinrun,
+                    decide=lambda ex, ctx, m, cat: decide(ex, ctx, m, cat, fake_review))
     for name, fn in overrides.items():
         setattr(stages, name, fn)
     return Pipeline(store, stages), clinrun

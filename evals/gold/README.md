@@ -1,0 +1,9 @@
+# Gold labels for the four sample invoices
+
+One JSON file per sample email in `samples/emails/` (`simple`, `medium`, `large`, `mismatched-metadata`): the correct Context, the correct Line Match for every Line Item, and the expected Decision and Hold Reasons. These are the hand-labelled seed of the eval set (see docs/decisions.md, "Gold set").
+
+**How they were made:** an AI agent derived them from `scripts/generate_sample_invoices.py` (the exact printed lines and the comments describing the planted anomalies) and the seed data in `services/api/seed/data/`. It checked each item code against the invoice's own sponsor+study Catalog and compared unit prices exactly. **The developer still needs to review them.** The `notes` field in each file records the judgement calls.
+
+**Fields:** `context`: true sponsor/study/site ids. `context_should_be_confident`: false only when the header should cause a Hold for uncertain Context. `lines[]`: `line_no` is 1-based in printed order. `description` is as printed. `expected_item_code` is the best Catalog Item, or `null` for Unmatched. `acceptable_item_codes` lists every defensible code (`[null]` for Unmatched lines). `ambiguous` is true when more than one Catalog Item is plausible. `price_variance` is true when the unit price differs from the `expected_item_code` item's `unit_price`. `expected_decision` is `submit` or `hold`. `expected_hold_reasons` uses these values: `context_uncertain`, `site_not_linked`, `unmatched`, `ambiguous`, `price_variance`, `arithmetic`, `llm_concern`.
+
+For mismatched-metadata, lines are labelled against the true context (VERITAS, Prairie Field), so they can grade the run after a Reviewer Correction. That run is expected to Submit.

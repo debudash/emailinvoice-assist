@@ -1,7 +1,7 @@
 """Behaviour required by the S0 code review (spec findings a1, a3, a4, c1-c3)."""
 import asyncio
 
-from conftest import context, extraction, make_pipeline
+from conftest import CATALOG, context, extraction, fake_review, make_pipeline
 
 from invoice_assist.context import score_context
 from invoice_assist.decision import decide
@@ -24,7 +24,7 @@ def test_missing_printed_total_holds_instead_of_inventing_one():
     ex = extraction()
     ex.header.total = None
 
-    d = decide(ex, context(), matching())
+    d = decide(ex, context(), matching(), CATALOG, fake_review)
 
     assert d.outcome == "hold" and "arithmetic" in d.hold_reasons
 
@@ -33,7 +33,7 @@ def test_study_from_another_sponsor_holds():
     ctx = context()
     ctx.study_belongs_to_sponsor = False
 
-    d = decide(extraction(), ctx, matching())
+    d = decide(extraction(), ctx, matching(), CATALOG, fake_review)
 
     assert d.outcome == "hold" and "context_uncertain" in d.hold_reasons
 

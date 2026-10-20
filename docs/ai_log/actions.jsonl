@@ -143,3 +143,21 @@
 {"ts": "2026-10-20T02:22:37+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_clinrun_client.py"}, "ok": true}
 {"ts": "2026-10-20T02:23:53+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Run full suite with isolated ClinRun test"}, "ok": true}
 {"ts": "2026-10-20T02:25:57+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Reset demo volumes and rerun two samples"}, "ok": true}
+{"ts": "2026-10-20T02:26:42+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Commit fixes, merge S0 to main, tag, push"}, "ok": true}
+{"ts": "2026-10-20T02:27:09+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Confirm main and tag are pushed"}, "ok": true}
+{"ts": "2026-10-20T02:31:30+00:00", "session": "f5c00250", "agent": "main", "tool": "Agent", "input": {"description": "Write eval gold labels", "subagent_type": "general-purpose"}, "ok": true}
+{"ts": "2026-10-20T02:31:52+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Create the S1+S2 branch"}, "ok": true}
+{"ts": "2026-10-20T02:32:09+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_decision.py"}, "ok": true}
+{"ts": "2026-10-20T02:32:19+00:00", "session": "f5c00250", "agent": "a74eb08e3b8df02e5", "tool": "Bash", "input": {}, "ok": true}
+{"ts": "2026-10-20T02:32:37+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\models.py"}, "ok": true}
+{"ts": "2026-10-20T02:32:38+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\decision.py"}, "ok": true}
+{"ts": "2026-10-20T02:32:39+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\config.py"}, "ok": true}
+{"ts": "2026-10-20T02:32:51+00:00", "session": "f5c00250", "agent": "a74eb08e3b8df02e5", "tool": "Bash", "input": {}, "ok": true}
+{"ts": "2026-10-20T02:33:08+00:00", "session": "f5c00250", "agent": "a74eb08e3b8df02e5", "tool": "Bash", "input": {}, "ok": true}
+{"ts": "2026-10-20T02:33:33+00:00", "session": "f5c00250", "agent": "a74eb08e3b8df02e5", "tool": "Bash", "input": {}, "ok": true}
+{"ts": "2026-10-20T02:33:36+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Wire decision into pipeline and tests, run suite"}, "ok": true}
+{"ts": "2026-10-20T02:34:21+00:00", "session": "f5c00250", "agent": "a74eb08e3b8df02e5", "tool": "Bash", "input": {}, "ok": true}
+{"ts": "2026-10-20T02:34:49+00:00", "session": "f5c00250", "agent": "a74eb08e3b8df02e5", "tool": "Bash", "input": {}, "ok": true}
+{"ts": "2026-10-20T02:34:58+00:00", "session": "f5c00250", "agent": "a74eb08e3b8df02e5", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\evals\\gold\\README.md"}, "ok": true}
+{"ts": "2026-10-20T02:40:13+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Live run medium and large samples"}, "ok": true}
+{"ts": "2026-10-20T02:40:42+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Show medium and large invoice results"}, "ok": true}

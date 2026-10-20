@@ -1,0 +1,87 @@
+{
+  "sample": "mismatched-metadata",
+  "email": "samples/emails/04-mismatched-metadata-invoice.eml",
+  "context": {
+    "sponsor_id": 1,
+    "study_id": 2,
+    "site_id": 6
+  },
+  "context_should_be_confident": false,
+  "lines": [
+    {
+      "line_no": 1,
+      "description": "Site Admin Fee",
+      "expected_item_code": "ADMIN-SITE",
+      "acceptable_item_codes": [
+        "ADMIN-SITE"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 2,
+      "description": "Screening",
+      "expected_item_code": "VISIT-SCR",
+      "acceptable_item_codes": [
+        "VISIT-SCR"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 3,
+      "description": "Baseline",
+      "expected_item_code": "VISIT-BL",
+      "acceptable_item_codes": [
+        "VISIT-BL"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 4,
+      "description": "Month 3 Follow-up",
+      "expected_item_code": "VISIT-MONTH3",
+      "acceptable_item_codes": [
+        "VISIT-MONTH3"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 5,
+      "description": "ECG",
+      "expected_item_code": "PROC-ECG",
+      "acceptable_item_codes": [
+        "PROC-ECG"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 6,
+      "description": "CBC",
+      "expected_item_code": "LAB-CBC",
+      "acceptable_item_codes": [
+        "LAB-CBC"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 7,
+      "description": "Lipid Profile",
+      "expected_item_code": "LAB-LIPID",
+      "acceptable_item_codes": [
+        "LAB-LIPID"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    }
+  ],
+  "expected_decision": "hold",
+  "expected_hold_reasons": [
+    "context_uncertain"
+  ],
+  "notes": "True context: Northwind / VERITAS (study 2) at Prairie Field Research Group (site 6, linked). Header is fuzzy: site 'Prairie Clinical Research' matches no seeded site, sponsor 'Northwind Pharmaceuticals Inc.', study 'VERITAS Phase 2 Study', protocol printed NWD-VER-2024-002 vs seeded NWD-VER-2023-002. Expected first pass: Hold for uncertain Context, matching skipped. Lines are labelled against the true VERITAS catalog for the post-Correction run: all clean, prices equal catalog, so after Correction the invoice should Submit."
+}

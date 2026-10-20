@@ -9,11 +9,12 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 from . import clinrun, context, decision, extraction, llm, matching
-from .models import Context, Decision, Extraction, Matching, Outcome
+from .models import Context, Decision, Extraction, InvoiceStatus, Matching, Outcome
 from .store import Store, now
 
 STAGES = ["extraction", "context", "matching", "decision", "submission"]
-STATUS_AFTER = {"extraction": "Extracted", "context": "Context Resolved", "matching": "Matched"}
+STATUS_AFTER = {"extraction": InvoiceStatus.extracted, "context": InvoiceStatus.context_resolved,
+                "matching": InvoiceStatus.matched}
 
 
 @dataclass
@@ -76,8 +77,8 @@ class Pipeline:
             except Exception as exc:  # recorded as a failed Stage Run (ADR-0009); retries arrive in S4
                 self.store.add_stage_run(invoice_id, inv["version"], stage, trigger, "failed", inputs, None,
                                          _describe(exc), served, started)
-                self.store.set_status(invoice_id, "Failed", failed_stage=stage)
-                return "Failed"
+                self.store.set_status(invoice_id, InvoiceStatus.failed, failed_stage=stage)
+                return InvoiceStatus.failed
             finally:
                 llm.served_by.reset(token)
             self.store.add_stage_run(invoice_id, inv["version"], stage, trigger, "succeeded", inputs, output,
@@ -85,10 +86,10 @@ class Pipeline:
             if stage in STATUS_AFTER and not output.get("skipped"):
                 self.store.set_status(invoice_id, STATUS_AFTER[stage])
             if stage == "decision" and output["outcome"] == Outcome.hold:
-                self.store.set_status(invoice_id, "Held")
-                return "Held"
-        self.store.set_status(invoice_id, "Submitted")
-        return "Submitted"
+                self.store.set_status(invoice_id, InvoiceStatus.held)
+                return InvoiceStatus.held
+        self.store.set_status(invoice_id, InvoiceStatus.submitted)
+        return InvoiceStatus.submitted
 
     def _read(self, invoice_id: int, stage: str, inputs: dict) -> dict:
         run = self.store.latest_run(invoice_id, stage)
@@ -111,7 +112,7 @@ class Pipeline:
         matching_output = self._read(invoice_id, "matching", inputs)
         m = None if matching_output.get("skipped") else Matching.model_validate(matching_output)
         if stage == "decision":
-            return s.decide(ex, ctx, m).model_dump()
+            return s.decide(ex, ctx, m, matching_output.get("catalog", [])).model_dump()
         if stage == "submission":
             d = Decision.model_validate(self._read(invoice_id, "decision", inputs))
             catalog_by_id = {item["id"]: item for item in matching_output["catalog"]}

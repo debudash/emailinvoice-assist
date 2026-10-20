@@ -1,0 +1,127 @@
+{
+  "sample": "medium",
+  "email": "samples/emails/02-medium-invoice.eml",
+  "context": {
+    "sponsor_id": 1,
+    "study_id": 1,
+    "site_id": 2
+  },
+  "context_should_be_confident": true,
+  "lines": [
+    {
+      "line_no": 1,
+      "description": "Site Administration Fee",
+      "expected_item_code": "ADMIN-SITE",
+      "acceptable_item_codes": [
+        "ADMIN-SITE"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 2,
+      "description": "Screening Visit",
+      "expected_item_code": "VISIT-SCR",
+      "acceptable_item_codes": [
+        "VISIT-SCR"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 3,
+      "description": "Baseline Assessment",
+      "expected_item_code": "VISIT-BL",
+      "acceptable_item_codes": [
+        "VISIT-BL"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 4,
+      "description": "Week 4 Follow-up",
+      "expected_item_code": "VISIT-WK4",
+      "acceptable_item_codes": [
+        "VISIT-WK4"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 5,
+      "description": "Week 8 Follow-up",
+      "expected_item_code": "VISIT-WK8",
+      "acceptable_item_codes": [
+        "VISIT-WK8"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 6,
+      "description": "12-Lead ECG",
+      "expected_item_code": "PROC-ECG",
+      "acceptable_item_codes": [
+        "PROC-ECG"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 7,
+      "description": "CBC",
+      "expected_item_code": "LAB-CBC",
+      "acceptable_item_codes": [
+        "LAB-CBC"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 8,
+      "description": "CMP",
+      "expected_item_code": "LAB-CMP",
+      "acceptable_item_codes": [
+        "LAB-CMP"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 9,
+      "description": "Drug Infusion",
+      "expected_item_code": "PROC-INFUS",
+      "acceptable_item_codes": [
+        "PROC-INFUS"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 10,
+      "description": "PK Blood Draw",
+      "expected_item_code": "PROC-PK",
+      "acceptable_item_codes": [
+        "PROC-PK"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 11,
+      "description": "IRB/Ethics Fees",
+      "expected_item_code": "ADMIN-IRB",
+      "acceptable_item_codes": [
+        "ADMIN-IRB"
+      ],
+      "ambiguous": false,
+      "price_variance": true
+    }
+  ],
+  "expected_decision": "hold",
+  "expected_hold_reasons": [
+    "price_variance"
+  ],
+  "notes": "Northwind / LUMIN-2024 (study 1) at Harborview (site 2, linked). Fuzzy wording but each line has one clear item. 'Week N Follow-up' is the week-specific visit (VISIT-WK4/WK8 at 475, matching price), not generic VISIT-FU (400). Only anomaly: IRB/Ethics Fees $550 vs ADMIN-IRB $500."
+}

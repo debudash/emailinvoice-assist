@@ -99,9 +99,30 @@ class HoldReason(StrEnum):
     llm_concern = "llm_concern"
 
 
+# Hold Reasons a Reviewer may Release with a reason; the rest need a Correction (PRD: Thresholds and rules).
+RELEASABLE = {HoldReason.price_variance, HoldReason.unmatched, HoldReason.ambiguous, HoldReason.llm_concern}
+
+
 class Outcome(StrEnum):
     submit = "submit"
     hold = "hold"
+
+
+class InvoiceStatus(StrEnum):
+    received = "Received"
+    extracted = "Extracted"
+    context_resolved = "Context Resolved"
+    matched = "Matched"
+    submitted = "Submitted"
+    held = "Held"
+    failed = "Failed"
+    escalated = "Escalated"
+
+
+class Review(BaseModel):
+    """The LLM's review of an Invoice after the hard checks (ADR-0002)."""
+    concern: str | None = Field(description="A specific risk the hard checks did not cover, or null")
+    rationale: str = Field(description="Two or three sentences explaining the outcome to a Reviewer")
 
 
 class Decision(BaseModel):
