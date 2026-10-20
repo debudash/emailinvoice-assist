@@ -34,3 +34,7 @@ class Settings:
 
 
 settings = Settings()
+
+# Who can be selected in the Hub. Authentication is assumed upstream; this records who acted.
+SME = "Pat (SME)"
+ACTORS = ["Dana (Reviewer)", "Sam (Reviewer)", "Ops (Operator)", SME]

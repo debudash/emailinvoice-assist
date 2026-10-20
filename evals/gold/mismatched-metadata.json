@@ -11,6 +11,8 @@
     {
       "line_no": 1,
       "description": "Site Admin Fee",
+      "qty": 1,
+      "billed_unit_price": "325.00",
       "expected_item_code": "ADMIN-SITE",
       "acceptable_item_codes": [
         "ADMIN-SITE"
@@ -21,6 +23,8 @@
     {
       "line_no": 2,
       "description": "Screening",
+      "qty": 2,
+      "billed_unit_price": "425.00",
       "expected_item_code": "VISIT-SCR",
       "acceptable_item_codes": [
         "VISIT-SCR"
@@ -31,6 +35,8 @@
     {
       "line_no": 3,
       "description": "Baseline",
+      "qty": 2,
+      "billed_unit_price": "500.00",
       "expected_item_code": "VISIT-BL",
       "acceptable_item_codes": [
         "VISIT-BL"
@@ -41,6 +47,8 @@
     {
       "line_no": 4,
       "description": "Month 3 Follow-up",
+      "qty": 1,
+      "billed_unit_price": "475.00",
       "expected_item_code": "VISIT-MONTH3",
       "acceptable_item_codes": [
         "VISIT-MONTH3"
@@ -51,6 +59,8 @@
     {
       "line_no": 5,
       "description": "ECG",
+      "qty": 3,
+      "billed_unit_price": "80.00",
       "expected_item_code": "PROC-ECG",
       "acceptable_item_codes": [
         "PROC-ECG"
@@ -61,6 +71,8 @@
     {
       "line_no": 6,
       "description": "CBC",
+      "qty": 2,
+      "billed_unit_price": "90.00",
       "expected_item_code": "LAB-CBC",
       "acceptable_item_codes": [
         "LAB-CBC"
@@ -71,6 +83,8 @@
     {
       "line_no": 7,
       "description": "Lipid Profile",
+      "qty": 2,
+      "billed_unit_price": "75.00",
       "expected_item_code": "LAB-LIPID",
       "acceptable_item_codes": [
         "LAB-LIPID"
@@ -83,5 +97,6 @@
   "expected_hold_reasons": [
     "context_uncertain"
   ],
-  "notes": "True context: Northwind / VERITAS (study 2) at Prairie Field Research Group (site 6, linked). Header is fuzzy: site 'Prairie Clinical Research' matches no seeded site, sponsor 'Northwind Pharmaceuticals Inc.', study 'VERITAS Phase 2 Study', protocol printed NWD-VER-2024-002 vs seeded NWD-VER-2023-002. Expected first pass: Hold for uncertain Context, matching skipped. Lines are labelled against the true VERITAS catalog for the post-Correction run: all clean, prices equal catalog, so after Correction the invoice should Submit."
+  "notes": "True context: Northwind / VERITAS (study 2) at Prairie Field Research Group (site 6, linked). Header is fuzzy: site 'Prairie Clinical Research' matches no seeded site, sponsor 'Northwind Pharmaceuticals Inc.', study 'VERITAS Phase 2 Study', protocol printed NWD-VER-2024-002 vs seeded NWD-VER-2023-002. Expected first pass: Hold for uncertain Context, matching skipped. Lines are labelled against the true VERITAS catalog for the post-Correction run: all clean, prices equal catalog, so after Correction the invoice should Submit.",
+  "outcome_note": "The sponsor, protocol and site printed on the header don't match the reference data, so the AI should hold for an uncertain Context. Once a Reviewer corrects the Context (Northwind / VERITAS / Prairie Field), every line matches and it should submit."
 }

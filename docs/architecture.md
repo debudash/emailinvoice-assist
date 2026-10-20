@@ -56,6 +56,9 @@ Two points the diagram makes explicit:
 | `clinrun.py` | `idempotency_key(sha256, version)`; `submit(submission, key) -> clinrun_id` | HTTP and the `Idempotency-Key` header |
 | `llm.py` | `parse(output, system, content, effort)`; `client()`, `async_client()`; `served_by`, `record_served`; `LLMRefusal` | SDK options (structured outputs, effort, refusal fallbacks), the LangSmith wrapper, recording which model served a call |
 | `worker.py` | `ingest(store, path)`, `poll_once(store, pipeline, inbox)`, `main()` | The poll loop, oldest-first by file time, moving files to `processed/`, the pause and check-now flags |
+| `app.py` | The Hub entry point | Navigation between the Invoices page and the Gold review page |
+| `gold_review.py` | A Streamlit page | The subject matter expert's review of the gold labels: judgement lines first, one Save |
+| `gold.py` | `samples()`, `why_review(line, catalog)`, `save_review(...)` | Reading the gold files and seed catalog, the plain-language reason a line needs judgement, writing changed answers and the review record |
 | `hub.py` | A Streamlit page | Layout, auto-refreshing fragments, one Store connection per browser session, the one error boundary |
 | `metrics.py` | `summary(store, minutes_per_invoice, minutes_per_line) -> dict` | The queries and the manual baseline arithmetic |
 | `config.py`, `models.py` | `settings`; pydantic models, `HoldReason`, `InvoiceStatus`, `RELEASABLE` | Environment parsing; schemas |

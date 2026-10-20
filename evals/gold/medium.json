@@ -11,6 +11,8 @@
     {
       "line_no": 1,
       "description": "Site Administration Fee",
+      "qty": 1,
+      "billed_unit_price": "350.00",
       "expected_item_code": "ADMIN-SITE",
       "acceptable_item_codes": [
         "ADMIN-SITE"
@@ -21,6 +23,8 @@
     {
       "line_no": 2,
       "description": "Screening Visit",
+      "qty": 3,
+      "billed_unit_price": "450.00",
       "expected_item_code": "VISIT-SCR",
       "acceptable_item_codes": [
         "VISIT-SCR"
@@ -31,6 +35,8 @@
     {
       "line_no": 3,
       "description": "Baseline Assessment",
+      "qty": 2,
+      "billed_unit_price": "525.00",
       "expected_item_code": "VISIT-BL",
       "acceptable_item_codes": [
         "VISIT-BL"
@@ -41,26 +47,34 @@
     {
       "line_no": 4,
       "description": "Week 4 Follow-up",
+      "qty": 2,
+      "billed_unit_price": "475.00",
       "expected_item_code": "VISIT-WK4",
       "acceptable_item_codes": [
         "VISIT-WK4"
       ],
       "ambiguous": false,
-      "price_variance": false
+      "price_variance": false,
+      "review_note": "The week-specific visit, not the generic Follow-up visit ($400); the billed price matches it."
     },
     {
       "line_no": 5,
       "description": "Week 8 Follow-up",
+      "qty": 2,
+      "billed_unit_price": "475.00",
       "expected_item_code": "VISIT-WK8",
       "acceptable_item_codes": [
         "VISIT-WK8"
       ],
       "ambiguous": false,
-      "price_variance": false
+      "price_variance": false,
+      "review_note": "The week-specific visit, not the generic Follow-up visit ($400); the billed price matches it."
     },
     {
       "line_no": 6,
       "description": "12-Lead ECG",
+      "qty": 5,
+      "billed_unit_price": "85.00",
       "expected_item_code": "PROC-ECG",
       "acceptable_item_codes": [
         "PROC-ECG"
@@ -71,6 +85,8 @@
     {
       "line_no": 7,
       "description": "CBC",
+      "qty": 4,
+      "billed_unit_price": "95.00",
       "expected_item_code": "LAB-CBC",
       "acceptable_item_codes": [
         "LAB-CBC"
@@ -81,6 +97,8 @@
     {
       "line_no": 8,
       "description": "CMP",
+      "qty": 4,
+      "billed_unit_price": "110.00",
       "expected_item_code": "LAB-CMP",
       "acceptable_item_codes": [
         "LAB-CMP"
@@ -91,6 +109,8 @@
     {
       "line_no": 9,
       "description": "Drug Infusion",
+      "qty": 2,
+      "billed_unit_price": "200.00",
       "expected_item_code": "PROC-INFUS",
       "acceptable_item_codes": [
         "PROC-INFUS"
@@ -101,6 +121,8 @@
     {
       "line_no": 10,
       "description": "PK Blood Draw",
+      "qty": 4,
+      "billed_unit_price": "75.00",
       "expected_item_code": "PROC-PK",
       "acceptable_item_codes": [
         "PROC-PK"
@@ -111,6 +133,8 @@
     {
       "line_no": 11,
       "description": "IRB/Ethics Fees",
+      "qty": 1,
+      "billed_unit_price": "550.00",
       "expected_item_code": "ADMIN-IRB",
       "acceptable_item_codes": [
         "ADMIN-IRB"

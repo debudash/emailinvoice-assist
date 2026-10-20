@@ -1,0 +1,913 @@
+{
+  "at": "2026-10-20T22:18:59+00:00",
+  "passed": true,
+  "gate": {
+    "false_submits": 0,
+    "decision_accuracy": 0.9,
+    "hold_reason_recall": 0.9,
+    "context_accuracy": 0.95,
+    "line_match_accuracy": 0.9
+  },
+  "summary": {
+    "examples": 4,
+    "false_submits": 0,
+    "decision_accuracy": 1.0,
+    "hold_reason_recall": 1.0,
+    "context_accuracy": 1.0,
+    "line_match_accuracy": 1.0,
+    "failures": [],
+    "rationale_faithfulness (reported, not gated)": 0.75
+  },
+  "experiment": "gold-025c7ee8",
+  "rows": [
+    {
+      "sample": "simple",
+      "prediction": {
+        "decision": "submit",
+        "hold_reasons": [],
+        "context": {
+          "sponsor_id": 2,
+          "study_id": 3,
+          "site_id": 1
+        },
+        "context_confident": true,
+        "rationale": "Submitted: the hard checks found no issues, the total of $2,230.00 reconciles to the line amounts, and all five lines match catalog items at high confidence with prices equal to catalog prices. The two Screening Visits at $480 each are a minor quantity point, but a rescreen is plausible and the invoice gives no sign of duplication, so I did not raise a concern.",
+        "details": [],
+        "evidence": {
+          "invoice": {
+            "header": {
+              "invoice_number": "INV-2024-001",
+              "invoice_date": "2024-03-15",
+              "site_name": "Willow Creek Clinical Research Center",
+              "pi_name": "Dr. Alex Morgan",
+              "sponsor_name": "Contoso Therapeutics",
+              "study_name": "CATALYST Trial",
+              "protocol_number": "CON-CAT-2024-101",
+              "total": 2230.0
+            },
+            "line_items": [
+              {
+                "line_no": 1,
+                "description": "Site Management Fee",
+                "quantity": 1.0,
+                "unit_price": 400.0,
+                "amount": 400.0
+              },
+              {
+                "line_no": 2,
+                "description": "Screening Visit",
+                "quantity": 2.0,
+                "unit_price": 480.0,
+                "amount": 960.0
+              },
+              {
+                "line_no": 3,
+                "description": "Baseline Visit",
+                "quantity": 1.0,
+                "unit_price": 550.0,
+                "amount": 550.0
+              },
+              {
+                "line_no": 4,
+                "description": "Complete Blood Count",
+                "quantity": 1.0,
+                "unit_price": 95.0,
+                "amount": 95.0
+              },
+              {
+                "line_no": 5,
+                "description": "IV Infusion Administration",
+                "quantity": 1.0,
+                "unit_price": 225.0,
+                "amount": 225.0
+              }
+            ]
+          },
+          "matching_skipped": false,
+          "matches": [
+            {
+              "line_no": 1,
+              "item_code": "ADMIN-SITE",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "400.00"
+            },
+            {
+              "line_no": 2,
+              "item_code": "VISIT-SCR",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "480.00"
+            },
+            {
+              "line_no": 3,
+              "item_code": "VISIT-BL",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "550.00"
+            },
+            {
+              "line_no": 4,
+              "item_code": "LAB-CBC",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "95.00"
+            },
+            {
+              "line_no": 5,
+              "item_code": "PROC-INFUS",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "225.00"
+            }
+          ]
+        },
+        "lines": {
+          "1": "ADMIN-SITE",
+          "2": "VISIT-SCR",
+          "3": "VISIT-BL",
+          "4": "LAB-CBC",
+          "5": "PROC-INFUS"
+        }
+      },
+      "false_submit": 0,
+      "decision_correct": 1,
+      "hold_reason_recall": 1.0,
+      "context_correct": 1,
+      "line_accuracy": 1.0,
+      "rationale_faithfulness": 0.6666666666666666
+    },
+    {
+      "sample": "mismatched-metadata",
+      "prediction": {
+        "decision": "hold",
+        "hold_reasons": [
+          "context_uncertain",
+          "llm_concern"
+        ],
+        "context": {
+          "sponsor_id": 1,
+          "study_id": 2,
+          "site_id": 6
+        },
+        "context_confident": false,
+        "rationale": "The invoice stays held because the site name 'Prairie Clinical Research' resolved to 'Prairie Field Research Group' at confidence 0.78, below the threshold, so the billing site is not confirmed. The header total of 3220.00 does reconcile to the line amounts, but with no catalog matches the prices also need checking before release.",
+        "details": [
+          "Site 'Prairie Clinical Research' resolved to 'Prairie Field Research Group' with confidence 0.78, below threshold",
+          "No line items matched a catalog entry (matches is empty), so the unit prices for all seven lines are unverified against the sponsor's rate card."
+        ],
+        "evidence": {
+          "invoice": {
+            "header": {
+              "invoice_number": "INV-2024-077",
+              "invoice_date": "2024-07-30",
+              "site_name": "Prairie Clinical Research",
+              "pi_name": "Dr. Riley H. Foster",
+              "sponsor_name": "Northwind Pharmaceuticals Inc.",
+              "study_name": "VERITAS Phase 2 Study",
+              "protocol_number": "NWD-VER-2024-002",
+              "total": 3220.0
+            },
+            "line_items": [
+              {
+                "line_no": 1,
+                "description": "Site Admin Fee",
+                "quantity": 1.0,
+                "unit_price": 325.0,
+                "amount": 325.0
+              },
+              {
+                "line_no": 2,
+                "description": "Screening",
+                "quantity": 2.0,
+                "unit_price": 425.0,
+                "amount": 850.0
+              },
+              {
+                "line_no": 3,
+                "description": "Baseline",
+                "quantity": 2.0,
+                "unit_price": 500.0,
+                "amount": 1000.0
+              },
+              {
+                "line_no": 4,
+                "description": "Month 3 Follow-up",
+                "quantity": 1.0,
+                "unit_price": 475.0,
+                "amount": 475.0
+              },
+              {
+                "line_no": 5,
+                "description": "ECG",
+                "quantity": 3.0,
+                "unit_price": 80.0,
+                "amount": 240.0
+              },
+              {
+                "line_no": 6,
+                "description": "CBC",
+                "quantity": 2.0,
+                "unit_price": 90.0,
+                "amount": 180.0
+              },
+              {
+                "line_no": 7,
+                "description": "Lipid Profile",
+                "quantity": 2.0,
+                "unit_price": 75.0,
+                "amount": 150.0
+              }
+            ]
+          },
+          "matching_skipped": true,
+          "matches": []
+        },
+        "after_correction": "submit",
+        "lines": {
+          "1": "ADMIN-SITE",
+          "2": "VISIT-SCR",
+          "3": "VISIT-BL",
+          "4": "VISIT-MONTH3",
+          "5": "PROC-ECG",
+          "6": "LAB-CBC",
+          "7": "LAB-LIPID"
+        }
+      },
+      "false_submit": 0,
+      "decision_correct": 1,
+      "hold_reason_recall": 1.0,
+      "context_correct": 1,
+      "line_accuracy": 1.0,
+      "rationale_faithfulness": 0.6666666666666666
+    },
+    {
+      "sample": "large",
+      "prediction": {
+        "decision": "hold",
+        "hold_reasons": [
+          "price_variance",
+          "ambiguous",
+          "unmatched"
+        ],
+        "context": {
+          "sponsor_id": 1,
+          "study_id": 1,
+          "site_id": 3
+        },
+        "context_confident": true,
+        "rationale": "Held, as the hard checks determined. The CT Scan line bills 475.00 against a catalog price of 450.00, the cold-chain shipping line is an ambiguous match, and the parking, patient stipend, and translator lines have no Catalog Item. I found no additional material risk beyond these findings, and the line amounts reconcile to the invoice total of 29,191.00.",
+        "details": [
+          "Line 20 'CT Scan - Chest/Abdomen' billed at 475.00, catalog IMG-CT is 450.00",
+          "Line 22 'Drug Shipping (cold chain)' matched PASS-COLD (medium confidence); also plausible: PASS-SHIP",
+          "Line 25 'Parking Reimbursement' has no Catalog Item",
+          "Line 26 'Patient Stipend' has no Catalog Item",
+          "Line 27 'Translator Services' has no Catalog Item"
+        ],
+        "evidence": {
+          "invoice": {
+            "header": {
+              "invoice_number": "INV-2024-108",
+              "invoice_date": "2024-09-12",
+              "site_name": "Highland Ridge Hospital - Research Unit",
+              "pi_name": "Dr. Taylor Reed",
+              "sponsor_name": "Northwind Pharma",
+              "study_name": "LUMIN-2024",
+              "protocol_number": "NWD-LUM-2024-001",
+              "total": 29191.0
+            },
+            "line_items": [
+              {
+                "line_no": 1,
+                "description": "Site Admin",
+                "quantity": 1.0,
+                "unit_price": 350.0,
+                "amount": 350.0
+              },
+              {
+                "line_no": 2,
+                "description": "Screening Visit",
+                "quantity": 5.0,
+                "unit_price": 450.0,
+                "amount": 2250.0
+              },
+              {
+                "line_no": 3,
+                "description": "Baseline Visit",
+                "quantity": 4.0,
+                "unit_price": 525.0,
+                "amount": 2100.0
+              },
+              {
+                "line_no": 4,
+                "description": "Wk 4 Visit",
+                "quantity": 4.0,
+                "unit_price": 475.0,
+                "amount": 1900.0
+              },
+              {
+                "line_no": 5,
+                "description": "Wk 8 Visit",
+                "quantity": 4.0,
+                "unit_price": 475.0,
+                "amount": 1900.0
+              },
+              {
+                "line_no": 6,
+                "description": "Week 12 Visit",
+                "quantity": 4.0,
+                "unit_price": 500.0,
+                "amount": 2000.0
+              },
+              {
+                "line_no": 7,
+                "description": "Week 16 Visit",
+                "quantity": 4.0,
+                "unit_price": 500.0,
+                "amount": 2000.0
+              },
+              {
+                "line_no": 8,
+                "description": "Wk 24 Visit",
+                "quantity": 3.0,
+                "unit_price": 525.0,
+                "amount": 1575.0
+              },
+              {
+                "line_no": 9,
+                "description": "End of Study Visit",
+                "quantity": 2.0,
+                "unit_price": 550.0,
+                "amount": 1100.0
+              },
+              {
+                "line_no": 10,
+                "description": "ECG",
+                "quantity": 12.0,
+                "unit_price": 85.0,
+                "amount": 1020.0
+              },
+              {
+                "line_no": 11,
+                "description": "Vitals",
+                "quantity": 20.0,
+                "unit_price": 45.0,
+                "amount": 900.0
+              },
+              {
+                "line_no": 12,
+                "description": "Physical Exam",
+                "quantity": 10.0,
+                "unit_price": 120.0,
+                "amount": 1200.0
+              },
+              {
+                "line_no": 13,
+                "description": "IV Drug Administration",
+                "quantity": 8.0,
+                "unit_price": 200.0,
+                "amount": 1600.0
+              },
+              {
+                "line_no": 14,
+                "description": "Pharmacokinetic Sampling",
+                "quantity": 16.0,
+                "unit_price": 75.0,
+                "amount": 1200.0
+              },
+              {
+                "line_no": 15,
+                "description": "CBC w/ Differential",
+                "quantity": 10.0,
+                "unit_price": 95.0,
+                "amount": 950.0
+              },
+              {
+                "line_no": 16,
+                "description": "Comprehensive Metabolic Panel",
+                "quantity": 10.0,
+                "unit_price": 110.0,
+                "amount": 1100.0
+              },
+              {
+                "line_no": 17,
+                "description": "UA",
+                "quantity": 8.0,
+                "unit_price": 55.0,
+                "amount": 440.0
+              },
+              {
+                "line_no": 18,
+                "description": "Hepatic Function Panel",
+                "quantity": 8.0,
+                "unit_price": 88.0,
+                "amount": 704.0
+              },
+              {
+                "line_no": 19,
+                "description": "Lipid Panel",
+                "quantity": 6.0,
+                "unit_price": 78.0,
+                "amount": 468.0
+              },
+              {
+                "line_no": 20,
+                "description": "CT Scan - Chest/Abdomen",
+                "quantity": 2.0,
+                "unit_price": 475.0,
+                "amount": 950.0
+              },
+              {
+                "line_no": 21,
+                "description": "IRB Annual Maintenance",
+                "quantity": 1.0,
+                "unit_price": 500.0,
+                "amount": 500.0
+              },
+              {
+                "line_no": 22,
+                "description": "Drug Shipping (cold chain)",
+                "quantity": 3.0,
+                "unit_price": 125.0,
+                "amount": 375.0
+              },
+              {
+                "line_no": 23,
+                "description": "Lab Supplies",
+                "quantity": 10.0,
+                "unit_price": 42.0,
+                "amount": 420.0
+              },
+              {
+                "line_no": 24,
+                "description": "Sample Transport",
+                "quantity": 8.0,
+                "unit_price": 58.0,
+                "amount": 464.0
+              },
+              {
+                "line_no": 25,
+                "description": "Parking Reimbursement",
+                "quantity": 15.0,
+                "unit_price": 25.0,
+                "amount": 375.0
+              },
+              {
+                "line_no": 26,
+                "description": "Patient Stipend",
+                "quantity": 12.0,
+                "unit_price": 75.0,
+                "amount": 900.0
+              },
+              {
+                "line_no": 27,
+                "description": "Translator Services",
+                "quantity": 3.0,
+                "unit_price": 150.0,
+                "amount": 450.0
+              }
+            ]
+          },
+          "matching_skipped": false,
+          "matches": [
+            {
+              "line_no": 1,
+              "item_code": "ADMIN-SITE",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "350.00"
+            },
+            {
+              "line_no": 2,
+              "item_code": "VISIT-SCR",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "450.00"
+            },
+            {
+              "line_no": 3,
+              "item_code": "VISIT-BL",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "525.00"
+            },
+            {
+              "line_no": 4,
+              "item_code": "VISIT-WK4",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "475.00"
+            },
+            {
+              "line_no": 5,
+              "item_code": "VISIT-WK8",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "475.00"
+            },
+            {
+              "line_no": 6,
+              "item_code": "VISIT-WK12",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "500.00"
+            },
+            {
+              "line_no": 7,
+              "item_code": "VISIT-WK16",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "500.00"
+            },
+            {
+              "line_no": 8,
+              "item_code": "VISIT-WK24",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "525.00"
+            },
+            {
+              "line_no": 9,
+              "item_code": "VISIT-EOS",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "550.00"
+            },
+            {
+              "line_no": 10,
+              "item_code": "PROC-ECG",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "85.00"
+            },
+            {
+              "line_no": 11,
+              "item_code": "PROC-VITAL",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "45.00"
+            },
+            {
+              "line_no": 12,
+              "item_code": "PROC-PHYS",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "120.00"
+            },
+            {
+              "line_no": 13,
+              "item_code": "PROC-INFUS",
+              "confidence": "medium",
+              "ambiguous": false,
+              "catalog_price": "200.00"
+            },
+            {
+              "line_no": 14,
+              "item_code": "PROC-PK",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "75.00"
+            },
+            {
+              "line_no": 15,
+              "item_code": "LAB-CBC",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "95.00"
+            },
+            {
+              "line_no": 16,
+              "item_code": "LAB-CMP",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "110.00"
+            },
+            {
+              "line_no": 17,
+              "item_code": "LAB-URINAL",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "55.00"
+            },
+            {
+              "line_no": 18,
+              "item_code": "LAB-LFT",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "88.00"
+            },
+            {
+              "line_no": 19,
+              "item_code": "LAB-LIPID",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "78.00"
+            },
+            {
+              "line_no": 20,
+              "item_code": "IMG-CT",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "450.00"
+            },
+            {
+              "line_no": 21,
+              "item_code": "ADMIN-IRB",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "500.00"
+            },
+            {
+              "line_no": 22,
+              "item_code": "PASS-COLD",
+              "confidence": "medium",
+              "ambiguous": true,
+              "catalog_price": "125.00"
+            },
+            {
+              "line_no": 23,
+              "item_code": "PASS-KIT",
+              "confidence": "medium",
+              "ambiguous": false,
+              "catalog_price": "42.00"
+            },
+            {
+              "line_no": 24,
+              "item_code": "PASS-SPEC",
+              "confidence": "medium",
+              "ambiguous": false,
+              "catalog_price": "58.00"
+            },
+            {
+              "line_no": 25,
+              "item_code": null,
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": null
+            },
+            {
+              "line_no": 26,
+              "item_code": null,
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": null
+            },
+            {
+              "line_no": 27,
+              "item_code": null,
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": null
+            }
+          ]
+        },
+        "lines": {
+          "1": "ADMIN-SITE",
+          "2": "VISIT-SCR",
+          "3": "VISIT-BL",
+          "4": "VISIT-WK4",
+          "5": "VISIT-WK8",
+          "6": "VISIT-WK12",
+          "7": "VISIT-WK16",
+          "8": "VISIT-WK24",
+          "9": "VISIT-EOS",
+          "10": "PROC-ECG",
+          "11": "PROC-VITAL",
+          "12": "PROC-PHYS",
+          "13": "PROC-INFUS",
+          "14": "PROC-PK",
+          "15": "LAB-CBC",
+          "16": "LAB-CMP",
+          "17": "LAB-URINAL",
+          "18": "LAB-LFT",
+          "19": "LAB-LIPID",
+          "20": "IMG-CT",
+          "21": "ADMIN-IRB",
+          "22": "PASS-COLD",
+          "23": "PASS-KIT",
+          "24": "PASS-SPEC",
+          "25": null,
+          "26": null,
+          "27": null
+        }
+      },
+      "false_submit": 0,
+      "decision_correct": 1,
+      "hold_reason_recall": 1.0,
+      "context_correct": 1,
+      "line_accuracy": 1.0,
+      "rationale_faithfulness": 1.0
+    },
+    {
+      "sample": "medium",
+      "prediction": {
+        "decision": "hold",
+        "hold_reasons": [
+          "price_variance"
+        ],
+        "context": {
+          "sponsor_id": 1,
+          "study_id": 1,
+          "site_id": 2
+        },
+        "context_confident": true,
+        "rationale": "Outcome is held: line 11 'IRB/Ethics Fees' is billed at 550.00 against a catalog price of 500.00 for ADMIN-IRB, and that match is only medium confidence. The other ten lines match at high confidence with prices that agree with the catalog, and the line amounts sum to the invoice total of 7145.00. I found no additional risk the hard checks missed, so no concern is raised.",
+        "details": [
+          "Line 11 'IRB/Ethics Fees' billed at 550.00, catalog ADMIN-IRB is 500.00"
+        ],
+        "evidence": {
+          "invoice": {
+            "header": {
+              "invoice_number": "INV-2024-042",
+              "invoice_date": "2024-06-20",
+              "site_name": "Harborview Medical Institute",
+              "pi_name": "Dr. Jordan Blake",
+              "sponsor_name": "Northwind Pharma",
+              "study_name": "LUMIN-2024",
+              "protocol_number": "NWD-LUM-2024-001",
+              "total": 7145.0
+            },
+            "line_items": [
+              {
+                "line_no": 1,
+                "description": "Site Administration Fee",
+                "quantity": 1.0,
+                "unit_price": 350.0,
+                "amount": 350.0
+              },
+              {
+                "line_no": 2,
+                "description": "Screening Visit",
+                "quantity": 3.0,
+                "unit_price": 450.0,
+                "amount": 1350.0
+              },
+              {
+                "line_no": 3,
+                "description": "Baseline Assessment",
+                "quantity": 2.0,
+                "unit_price": 525.0,
+                "amount": 1050.0
+              },
+              {
+                "line_no": 4,
+                "description": "Week 4 Follow-up",
+                "quantity": 2.0,
+                "unit_price": 475.0,
+                "amount": 950.0
+              },
+              {
+                "line_no": 5,
+                "description": "Week 8 Follow-up",
+                "quantity": 2.0,
+                "unit_price": 475.0,
+                "amount": 950.0
+              },
+              {
+                "line_no": 6,
+                "description": "12-Lead ECG",
+                "quantity": 5.0,
+                "unit_price": 85.0,
+                "amount": 425.0
+              },
+              {
+                "line_no": 7,
+                "description": "CBC",
+                "quantity": 4.0,
+                "unit_price": 95.0,
+                "amount": 380.0
+              },
+              {
+                "line_no": 8,
+                "description": "CMP",
+                "quantity": 4.0,
+                "unit_price": 110.0,
+                "amount": 440.0
+              },
+              {
+                "line_no": 9,
+                "description": "Drug Infusion",
+                "quantity": 2.0,
+                "unit_price": 200.0,
+                "amount": 400.0
+              },
+              {
+                "line_no": 10,
+                "description": "PK Blood Draw",
+                "quantity": 4.0,
+                "unit_price": 75.0,
+                "amount": 300.0
+              },
+              {
+                "line_no": 11,
+                "description": "IRB/Ethics Fees",
+                "quantity": 1.0,
+                "unit_price": 550.0,
+                "amount": 550.0
+              }
+            ]
+          },
+          "matching_skipped": false,
+          "matches": [
+            {
+              "line_no": 1,
+              "item_code": "ADMIN-SITE",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "350.00"
+            },
+            {
+              "line_no": 2,
+              "item_code": "VISIT-SCR",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "450.00"
+            },
+            {
+              "line_no": 3,
+              "item_code": "VISIT-BL",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "525.00"
+            },
+            {
+              "line_no": 4,
+              "item_code": "VISIT-WK4",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "475.00"
+            },
+            {
+              "line_no": 5,
+              "item_code": "VISIT-WK8",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "475.00"
+            },
+            {
+              "line_no": 6,
+              "item_code": "PROC-ECG",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "85.00"
+            },
+            {
+              "line_no": 7,
+              "item_code": "LAB-CBC",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "95.00"
+            },
+            {
+              "line_no": 8,
+              "item_code": "LAB-CMP",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "110.00"
+            },
+            {
+              "line_no": 9,
+              "item_code": "PROC-INFUS",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "200.00"
+            },
+            {
+              "line_no": 10,
+              "item_code": "PROC-PK",
+              "confidence": "high",
+              "ambiguous": false,
+              "catalog_price": "75.00"
+            },
+            {
+              "line_no": 11,
+              "item_code": "ADMIN-IRB",
+              "confidence": "medium",
+              "ambiguous": false,
+              "catalog_price": "500.00"
+            }
+          ]
+        },
+        "lines": {
+          "1": "ADMIN-SITE",
+          "2": "VISIT-SCR",
+          "3": "VISIT-BL",
+          "4": "VISIT-WK4",
+          "5": "VISIT-WK8",
+          "6": "PROC-ECG",
+          "7": "LAB-CBC",
+          "8": "LAB-CMP",
+          "9": "PROC-INFUS",
+          "10": "PROC-PK",
+          "11": "ADMIN-IRB"
+        }
+      },
+      "false_submit": 0,
+      "decision_correct": 1,
+      "hold_reason_recall": 1.0,
+      "context_correct": 1,
+      "line_accuracy": 1.0,
+      "rationale_faithfulness": 0.6666666666666666
+    }
+  ]
+}
