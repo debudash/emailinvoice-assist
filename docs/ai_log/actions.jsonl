@@ -327,3 +327,58 @@
 {"ts": "2026-10-20T20:56:53+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Show uncommitted changes"}, "ok": true}
 {"ts": "2026-10-20T21:03:20+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Show recent commit style"}, "ok": true}
 {"ts": "2026-10-20T21:03:26+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Commit README and AI log"}, "ok": true}
+{"ts": "2026-10-20T21:03:49+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Split into README and AI log commits"}, "ok": true}
+{"ts": "2026-10-20T21:03:54+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Launch the gold label review app"}, "ok": true}
+{"ts": "2026-10-20T21:03:55+00:00", "session": "51fc2031", "agent": "main", "tool": "Skill", "input": {"skill": "code-review"}, "ok": true}
+{"ts": "2026-10-20T21:04:01+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Resolve fixed point, list commits, find spec/standards"}, "ok": true}
+{"ts": "2026-10-20T21:04:05+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Find run command and standards docs"}, "ok": true}
+{"ts": "2026-10-20T21:04:09+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Launch gold review app via uv"}, "ok": true}
+{"ts": "2026-10-20T21:04:11+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Inspect tooling config, ADRs and PRD outline"}, "ok": true}
+{"ts": "2026-10-20T21:04:34+00:00", "session": "51fc2031", "agent": "main", "tool": "Agent", "input": {"description": "Standards axis code review", "subagent_type": "general-purpose"}, "ok": true}
+{"ts": "2026-10-20T21:04:34+00:00", "session": "51fc2031", "agent": "main", "tool": "Agent", "input": {"description": "Spec axis code review", "subagent_type": "general-purpose"}, "ok": true}
+{"ts": "2026-10-20T21:04:39+00:00", "session": "51fc2031", "agent": "ae9e1408a82fc34df", "tool": "Bash", "input": {"description": "Show diff stats and commit messages"}, "ok": true}
+{"ts": "2026-10-20T21:04:39+00:00", "session": "51fc2031", "agent": "a58a6b39537c3ba1a", "tool": "Bash", "input": {"description": "Show diff stats and P1 stories"}, "ok": true}
+{"ts": "2026-10-20T21:04:43+00:00", "session": "51fc2031", "agent": "ae9e1408a82fc34df", "tool": "Bash", "input": {"description": "Show code diff"}, "ok": true}
+{"ts": "2026-10-20T21:04:44+00:00", "session": "51fc2031", "agent": "a58a6b39537c3ba1a", "tool": "Bash", "input": {"description": "Read PRD user stories"}, "ok": true}
+{"ts": "2026-10-20T21:04:44+00:00", "session": "51fc2031", "agent": "a58a6b39537c3ba1a", "tool": "Bash", "input": {"description": "Show code diff"}, "ok": true}
+{"ts": "2026-10-20T21:04:45+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Launch gold review app from project venv"}, "ok": true}
+{"ts": "2026-10-20T21:04:47+00:00", "session": "51fc2031", "agent": "ae9e1408a82fc34df", "tool": "Bash", "input": {"description": "Show src and tests diff"}, "ok": true}
+{"ts": "2026-10-20T21:04:48+00:00", "session": "51fc2031", "agent": "a58a6b39537c3ba1a", "tool": "Bash", "input": {"description": "Show src diff"}, "ok": true}
+{"ts": "2026-10-20T21:04:57+00:00", "session": "51fc2031", "agent": "ae9e1408a82fc34df", "tool": "Bash", "input": {"description": "Check commit stats, glossary, issue log, ADRs"}, "ok": true}
+{"ts": "2026-10-20T21:04:57+00:00", "session": "51fc2031", "agent": "a58a6b39537c3ba1a", "tool": "Bash", "input": {"description": "Read ADR-0007 and related spec"}, "ok": true}
+{"ts": "2026-10-20T21:05:02+00:00", "session": "51fc2031", "agent": "ae9e1408a82fc34df", "tool": "Bash", "input": {"description": "Check glossary for statuses"}, "ok": true}
+{"ts": "2026-10-20T21:05:04+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Wait for gold review app to be ready"}, "ok": true}
+{"ts": "2026-10-20T21:05:06+00:00", "session": "51fc2031", "agent": "a58a6b39537c3ba1a", "tool": "Bash", "input": {"description": "Check docs changes and status usage"}, "ok": true}
+{"ts": "2026-10-20T21:05:06+00:00", "session": "51fc2031", "agent": "ae9e1408a82fc34df", "tool": "Bash", "input": {"description": "Check architecture and decisions text"}, "ok": true}
+{"ts": "2026-10-20T21:05:14+00:00", "session": "51fc2031", "agent": "a58a6b39537c3ba1a", "tool": "Bash", "input": {"description": "Check P1 features in code"}, "ok": true}
+{"ts": "2026-10-20T21:05:18+00:00", "session": "51fc2031", "agent": "ae9e1408a82fc34df", "tool": "Bash", "input": {"description": "Get line numbers for findings"}, "ok": true}
+{"ts": "2026-10-20T21:05:25+00:00", "session": "51fc2031", "agent": "a58a6b39537c3ba1a", "tool": "Bash", "input": {"description": "Check review actions and unverified usage"}, "ok": true}
+{"ts": "2026-10-20T21:05:32+00:00", "session": "51fc2031", "agent": "a58a6b39537c3ba1a", "tool": "Bash", "input": {"description": "Check judge in PRD and ordering"}, "ok": true}
+{"ts": "2026-10-20T21:05:54+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check verify.py, hub queue selection, rerun"}, "ok": true}
+{"ts": "2026-10-20T21:05:57+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check text-less PDF handling and queue keys"}, "ok": true}
+{"ts": "2026-10-20T21:18:50+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read ADR-0007 and unverified references"}, "ok": true}
+{"ts": "2026-10-20T21:18:58+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read review actions and decision hold logic"}, "ok": true}
+{"ts": "2026-10-20T21:19:03+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check hold reasons and releasability docs"}, "ok": true}
+{"ts": "2026-10-20T21:19:07+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Look for extraction correction in PRD"}, "ok": true}
+{"ts": "2026-10-20T21:19:18+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read issue log, verify tests, ISSUE-003 commit"}, "ok": true}
+{"ts": "2026-10-20T21:19:24+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Branch; read hub queue code and its tests"}, "ok": true}
+{"ts": "2026-10-20T21:19:32+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read extraction module and model; check PDF libs"}, "ok": true}
+{"ts": "2026-10-20T21:19:49+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_issue_005_scanned_pdf.py"}, "ok": true}
+{"ts": "2026-10-20T21:20:10+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\verify.py"}, "ok": true}
+{"ts": "2026-10-20T21:20:15+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\models.py"}, "ok": true}
+{"ts": "2026-10-20T21:20:16+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\decision.py"}, "ok": true}
+{"ts": "2026-10-20T21:20:38+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Run full test suite"}, "ok": true}
+{"ts": "2026-10-20T21:20:42+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Find other readers of unverified field"}, "ok": true}
+{"ts": "2026-10-20T21:20:49+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Commit ISSUE-005 fix"}, "ok": true}
+{"ts": "2026-10-20T21:20:54+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\docs\\issue_log.md"}, "ok": true}
+{"ts": "2026-10-20T21:20:55+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Commit issue log entry"}, "ok": true}
+{"ts": "2026-10-20T21:21:05+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check streamlit version and test helper"}, "ok": true}
+{"ts": "2026-10-20T21:21:22+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Probe AppTest dataframe element API"}, "ok": true}
+{"ts": "2026-10-20T21:21:38+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Probe setting dataframe selection in AppTest"}, "ok": true}
+{"ts": "2026-10-20T21:21:57+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Reproduce the queue row-shift bug"}, "ok": true}
+{"ts": "2026-10-20T21:22:09+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_issue_006_queue_row_shift.py"}, "ok": true}
+{"ts": "2026-10-20T21:22:43+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\hub.py"}, "ok": true}
+{"ts": "2026-10-20T21:23:05+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Run full test suite"}, "ok": true}
+{"ts": "2026-10-20T21:23:12+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Commit ISSUE-006 fix"}, "ok": true}
+{"ts": "2026-10-20T21:23:17+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\docs\\issue_log.md"}, "ok": true}
+{"ts": "2026-10-20T21:23:19+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Commit issue log entry, show branch"}, "ok": true}

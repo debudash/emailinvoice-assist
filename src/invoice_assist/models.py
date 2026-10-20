@@ -33,7 +33,8 @@ class Extraction(BaseModel):
     line_items: list[LineItem]
     # Set by the Stage, never by the LLM (kept out of the output schema).
     source_media_type: SkipJsonSchema[str] = "application/pdf"
-    unverified: SkipJsonSchema[list[str]] = []  # extracted values not found in the document text
+    # Extracted values not found in the document text; None when a PDF has no text layer (scanned).
+    unverified: SkipJsonSchema[list[str] | None] = []
 
 
 # --- Context ------------------------------------------------------------------

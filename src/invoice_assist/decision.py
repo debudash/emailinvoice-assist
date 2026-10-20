@@ -33,6 +33,8 @@ def check_source(extraction: Extraction, context: Context, matching: Matching | 
     if extraction.source_media_type.startswith("image/"):
         return [(HoldReason.extraction_unverifiable,
                  f"Read from an image ({extraction.source_media_type}); numbers not verifiable")]
+    if extraction.unverified is None:  # ISSUE-005: a scanned PDF is unverifiable, not unverified
+        return [(HoldReason.extraction_unverifiable, "Scanned PDF with no text layer; numbers not verifiable")]
     # Values the model extracted that are not printed on the document (ADR-0007): never Releasable.
     return [(HoldReason.extraction_unverified, f"Extracted {value} does not appear on the document")
             for value in extraction.unverified]
