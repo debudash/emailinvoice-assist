@@ -31,6 +31,7 @@ services:
   # MCP server wrapping the reference API (ADR-0003).
   ref-mcp:
     build: ./services/ref-mcp
+    restart: unless-stopped
     ports:
       - "8200:8200"
     environment:
@@ -41,6 +42,7 @@ services:
   # Stand-in for ClinRun, the sponsor's payment backend (ADR-0011).
   mock-clinrun:
     build: ./services/mock-clinrun
+    restart: unless-stopped
     ports:
       - "8100:8100"
     volumes:
@@ -49,6 +51,7 @@ services:
   # Polls the inbox and runs the pipeline, one Invoice at a time.
   worker:
     build: .
+    restart: unless-stopped
     env_file:
       - path: .env
         required: false
@@ -67,6 +70,7 @@ services:
   # The Reviewer's Hub.
   hub:
     build: .
+    restart: unless-stopped
     command: ["streamlit", "run", "src/invoice_assist/hub.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
     env_file:
       - path: .env

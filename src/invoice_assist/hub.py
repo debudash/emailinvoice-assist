@@ -36,14 +36,15 @@ def reference() -> Reference:
     return Reference.load()
 
 
-def actions() -> ReviewActions:
-    return ReviewActions(store(), Pipeline(store()), reference())
+def actions(with_reference: bool = True) -> ReviewActions:
+    return ReviewActions(store(), Pipeline(store()), reference() if with_reference else None)
 
 
-def run_action(label: str, fn, *args):
+def run_action(label: str, action: str, *args):
+    """The one friendly error boundary: every Review Action is built and called inside it."""
     with st.spinner(f"{label}… the pipeline reruns the affected Stages"):
         try:
-            status = fn(*args)
+            status = getattr(actions(), action)(*args)
         except ActionRefused as refused:
             st.error(str(refused), title=f"{label} refused", icon=":material/block:")
             return
@@ -149,22 +150,38 @@ elif decision:
 
 # --- Actions --------------------------------------------------------------------------------
 if inv["status"] in (InvoiceStatus.held, InvoiceStatus.escalated) and decision:
-    needs_correction = actions().release_blockers(invoice_id)
-    ref = reference()
+    needs_correction = actions(with_reference=False).release_blockers(invoice_id)
+    try:
+        ref = reference()
+    except Exception as exc:  # ref-mcp down: show it, keep the rest of the page usable
+        ref = None
+        st.warning(f"Reference data is unavailable ({type(exc).__name__}); Context corrections are disabled "
+                   "until ref-mcp is back.", icon=":material/cloud_off:")
     with st.container(border=True):
         st.subheader("Act on this invoice")
         tabs = st.tabs(["Correct context", "Correct a line", "Release", "Escalate"])
-        with tabs[0], st.form("correct_context"):
-            st.caption("Choose any record; the Suggested Context is preselected. Matching and the Decision rerun.")
-            sponsor = st.selectbox("Sponsor", ref.sponsors, format_func=lambda r: r["name"],
-                                   index=next((i for i, r in enumerate(ref.sponsors) if r["id"] == ctx["sponsor"]["record_id"]), 0))
-            study = st.selectbox("Study", ref.studies, format_func=lambda r: f"{r['name']} ({r['protocol_number']})",
-                                 index=next((i for i, r in enumerate(ref.studies) if r["id"] == ctx["study"]["record_id"]), 0))
-            site = st.selectbox("Site", ref.sites, format_func=lambda r: f"{r['name']} · {r.get('pi_name') or ''}",
-                                index=next((i for i, r in enumerate(ref.sites) if r["id"] == ctx["site"]["record_id"]), 0))
-            note = st.text_input("Why (required)")
-            if st.form_submit_button("Apply correction and rerun", type="primary"):
-                run_action("Correction", actions().correct_context, invoice_id, actor, sponsor["id"], study["id"], site["id"], note)
+        with tabs[0]:
+            if ref is None:
+                st.caption("Unavailable while reference data cannot be loaded.")
+            else:
+                with st.form("correct_context"):
+                    st.caption("Choose any record; the Suggested Context is preselected where there is one. "
+                               "Matching and the Decision rerun.")
+
+                    def pick(label, rows, field, fmt):
+                        suggested = ctx[field]["record_id"]
+                        index = next((i for i, r in enumerate(rows) if r["id"] == suggested), None)
+                        return st.selectbox(label, rows, format_func=fmt, index=index, placeholder="Choose a record")
+                    sponsor = pick("Sponsor", ref.sponsors, "sponsor", lambda r: r["name"])
+                    study = pick("Study", ref.studies, "study", lambda r: f"{r['name']} ({r['protocol_number']})")
+                    site = pick("Site", ref.sites, "site", lambda r: f"{r['name']} · {r.get('pi_name') or ''}")
+                    note = st.text_input("Why (required)")
+                    if st.form_submit_button("Apply correction and rerun", type="primary"):
+                        if None in (sponsor, study, site):
+                            st.error("Choose a sponsor, a study and a site.", icon=":material/rule:")
+                        else:
+                            run_action("Correction", "correct_context", invoice_id, actor, sponsor["id"], study["id"],
+                                       site["id"], note)
         with tabs[1]:
             if m and not m.get("skipped") and ex:
                 with st.form("correct_line"):
@@ -175,7 +192,7 @@ if inv["status"] in (InvoiceStatus.held, InvoiceStatus.escalated) and decision:
                                         else f"{r['item_code']}: {r['description']} ({r['unit_price']})")
                     note = st.text_input("Why (required)", key="line_note")
                     if st.form_submit_button("Apply and rerun the Decision", type="primary"):
-                        run_action("Line correction", actions().correct_line, invoice_id, actor, line_no,
+                        run_action("Line correction", "correct_line", invoice_id, actor, line_no,
                                    item["id"] if item else None, note)
             else:
                 st.caption("Matching has not run; correct the Context first.")
@@ -187,14 +204,14 @@ if inv["status"] in (InvoiceStatus.held, InvoiceStatus.escalated) and decision:
                     st.caption("Submits as-is. Your reason travels with the submission to ClinRun.")
                     reason = st.text_input("Release reason (required)")
                     if st.form_submit_button("Release to ClinRun", type="primary"):
-                        run_action("Release", actions().release, invoice_id, actor, reason)
+                        run_action("Release", "release", invoice_id, actor, reason)
         with tabs[3], st.form("escalate"):
             note = st.text_area("What needs a second look (required)")
             if st.form_submit_button("Escalate"):
-                run_action("Escalation", actions().escalate, invoice_id, actor, note)
+                run_action("Escalation", "escalate", invoice_id, actor, note)
 elif inv["status"] == InvoiceStatus.failed:
     if st.button(f"Rerun from {inv['failed_stage']}", type="primary", icon=":material/replay:"):
-        run_action("Rerun", actions().rerun, invoice_id, actor, inv["failed_stage"])
+        run_action("Rerun", "rerun", invoice_id, actor, inv["failed_stage"])
 elif inv["status"] == InvoiceStatus.submitted:
     st.caption("Corrections to a submitted invoice become Amendments (planned, P2).")
 

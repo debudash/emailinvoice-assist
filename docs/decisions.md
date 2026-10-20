@@ -70,7 +70,7 @@ newer document and wins by default. Each call below was agreed on 2026-10-19.
 
 - **Both documents:** nothing is provided.
 - **Decision:** a separate mock FastAPI service in Compose, with `POST /submissions`,
-  `GET /submissions` and `POST /submissions/{id}/amendments`. The idempotency key is the invoice hash,
+  `GET /submissions` and `POST /submissions/{id}/amendments`. The idempotency key is the invoice hash, *(Amendments endpoint: P2, not built.)*
   so a rerun cannot double-submit. It returns a ClinRun ID that the hub displays.
 - **Why:** a visible boundary to an external system, which the real ClinRun would replace.
 
@@ -115,7 +115,7 @@ Terms are defined in [GLOSSARY.md](../GLOSSARY.md).
 | Name matching | The ref-mcp server provides `search_*` tools returning scored candidates (rapidfuzz), and `get_catalog` fetches every page (the default page size of 50 would cut LUMIN's 100 items). |
 | Line Match confidence | The LLM gives a high/medium/low label, a reason and alternatives; Ambiguous means more than one plausible item. The price check runs independently. |
 | Large catalog | The whole scoped Catalog goes in one call. An embedding pre-filter is documented for catalogs in the thousands; no Chroma. |
-| Extraction | The PDF goes natively to Claude with a structured schema. Extracted numbers are cross-checked against local pdfplumber text; a number that isn't found is a Hold Reason. |
+| Extraction | The PDF goes natively to Claude with a structured schema. Extracted numbers are cross-checked against local pdfplumber text; a number that isn't found is a Hold Reason. | *(P2: the text cross-check is not built; image invoices hold as extraction_unverifiable.)*
 | $0.00 catalog prices | Taken literally: any billed amount is a Price Variance (Releasable). |
 | Price as tie-break | Price is evidence for the matcher, but the line is still marked Ambiguous and the alternative is recorded. |
 | Release | Allowed with a required reason for Price Variance, Unmatched, Ambiguous and LLM concern. Not allowed for uncertain Context, Possible Duplicate or unverified extraction. |
@@ -123,11 +123,11 @@ Terms are defined in [GLOSSARY.md](../GLOSSARY.md).
 | Stage failure | Two retries with backoff, then Failed at that stage (distinct from a Hold), with a "Rerun from stage" button. |
 | Rerun after Correction | Decides autonomously; a clean rerun submits. |
 | Lifecycle | Received → Extracted → Context Resolved → Matched → Submitted or Held. Held can be Corrected, Released or Escalated. A Submitted invoice can be Corrected into an Amendment. Any stage can end in Failed. |
-| Agent placement | Fixed Python stages. The only agent loop is context resolution, a LangChain tool-calling agent over ref-mcp. Other LLM work is single structured calls. |
+| Agent placement | Fixed Python stages. The only agent loop is context resolution, a LangChain tool-calling agent over ref-mcp. Other LLM work is single structured calls. | *(Superseded in S0: the Anthropic SDK tool runner, see the ADR-0008 amendment.)*
 | Learning from Corrections | None (audited only). Site alias memory is a documented next step. |
 | Hub | Streamlit, built for responsiveness: cached reads, `st.fragment`, and the pipeline in a separate worker. |
 | Time saved | Metrics strip: Straight-Through rate, stage timings, and estimated manual time vs actual (assumptions shown). |
-| Gold set | Synthetic now: the 4 originals hand-labelled plus about 20 scenario-built invoices whose labels are true by construction, also emitted as `.eml` files. Rewordings come from a curated, frozen variant table. |
+| Gold set | Synthetic now: the 4 originals hand-labelled plus about 20 scenario-built invoices whose labels are true by construction, also emitted as `.eml` files. Rewordings come from a curated, frozen variant table. | *(Revised in the PRD split: P0 ships the 4 hand-labelled samples; the synthetic set is P2.)*
 | Eval gate | False Submits = 0 (hard). Decision accuracy ≥ 90%, Hold Reason recall ≥ 90%, Context accuracy ≥ 95%, Line Match accuracy ≥ 90%. Straight-Through rate is reported only. |
 | Eval platform | LangSmith first (datasets plus experiments). LLM-as-judge grades rationale faithfulness only, reported and not gated. |
 
@@ -237,3 +237,29 @@ Deferred:
 | Metrics cover all time, with no time window | P2 |
 | Roles inferred from the actor name, so any actor can rerun | Auth is out of scope; roles are a production-story item |
 | Metrics make several queries per Invoice (N+1) | Fine at demo volume; P2 |
+
+## P1 consistency pass (2026-10-19)
+
+From the docs agent's cross-check of the code against the PRD:
+- **Fixed:**
+  - An unreadable `.eml` is moved to `inbox/failed/` and the worker keeps going.
+  - The Compose services restart unless stopped.
+  - The submission's `price_variance` flag uses the same tolerance rule as the decision
+    (`decision.is_price_variance`).
+  - The Hub builds and calls Review Actions inside its one error boundary.
+  - The Correction picker starts empty when the agent proposed no record.
+  - The eval report is written as UTF-8.
+  - Superseded statements are annotated.
+- **Accepted limitation:**
+  - Hub actions (Correction, Release, rerun) run the Pipeline in the Hub process, so the
+    Reviewer waits on the LLM (about 10–60 s, behind a spinner). Automatic processing still runs
+    only in the worker.
+  - Moving actions onto the worker's queue is the production design: SQS plus workers (deploy.md).
+- **Not built, by tier:**
+  - P1: showing the original document beside the extraction (story 13), the before/after
+    Decision view (story 59), and a separate "Decided" status. Statuses go straight from Matched to
+    Submitted or Held.
+  - P2: the MessageSource adapter. The worker reads the folder directly; upload writes into the
+    same folder.
+- **Store:** Stage Runs and Actions are append-only. `invoices.status` and the `control` table are
+  current-state fields, updated in place by design.

@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-20T03:06:40+00:00",
+  "at": "2026-10-20T03:15:33+00:00",
   "passed": true,
   "gate": {
     "false_submits": 0,
@@ -17,7 +17,7 @@
     "line_match_accuracy": 1.0,
     "failures": []
   },
-  "experiment": "gold-3cb2e154",
+  "experiment": "gold-37363ddd",
   "rows": [
     {
       "sample": "simple",
@@ -30,7 +30,7 @@
           "site_id": 1
         },
         "context_confident": true,
-        "rationale": "Submitted: there are no hard-check findings. All five lines match catalog items with high confidence at catalog prices, and the line amounts sum to the $2,230.00 header total. Billing two screening visits against one baseline visit is consistent with a routine screen failure, so it is not flagged.",
+        "rationale": "This invoice is submitted. All five lines match catalog items with high confidence at the catalog prices, the line amounts sum to the $2,230.00 header total, and the hard checks found nothing. Two screening visits against one baseline visit is consistent with a screen failure, so it is not flagged.",
         "lines": {
           "1": "ADMIN-SITE",
           "2": "VISIT-SCR",
@@ -58,7 +58,7 @@
           "site_id": 6
         },
         "context_confident": false,
-        "rationale": "Held: the invoice's site name 'Prairie Clinical Research' matched 'Prairie Field Research Group' with only 0.78 confidence, below the threshold, so a Reviewer must confirm the site before it can proceed. No catalog price matches were produced, so the line prices still need checking once the Context is confirmed. The line amounts add up to the $3,220.00 total, and the quantities look plausible for two patients.",
+        "rationale": "Held: the invoice's site name 'Prairie Clinical Research' matched 'Prairie Field Research Group' with only 0.78 confidence, below the threshold, so a Reviewer must confirm the site. No line items were matched to catalog prices, so pricing has not been verified. The line amounts add up to the $3,220.00 total, and the quantities look reasonable for two screened and baselined patients plus one Month 3 visit.",
         "after_correction": "submit",
         "lines": {
           "1": "ADMIN-SITE",
@@ -91,7 +91,7 @@
           "site_id": 3
         },
         "context_confident": true,
-        "rationale": "This invoice is held. Line 20 (CT Scan) is billed at 475.00 against a catalog price of 450.00, a 50.00 overbilling across 2 units. Lines 25-27 (parking, patient stipend, translator services, 1,725.00 total) have no catalog item, and lines 2, 13 and 22 have plausible alternative catalog matches that a Reviewer needs to confirm.",
+        "rationale": "Held: line 20 (CT Scan) is billed at 475.00 against a catalog price of 450.00, a 50.00 overbilling across 2 units. Lines 25-27 (parking, patient stipend, translator) have no catalog item. Lines 2, 10, 13 and 22 matched with only medium confidence and need the catalog item confirmed; quantities follow a plausible visit schedule and the line amounts sum to the 29,191.00 total.",
         "lines": {
           "1": "ADMIN-SITE",
           "2": "VISIT-SCR",
@@ -133,7 +133,6 @@
       "prediction": {
         "decision": "hold",
         "hold_reasons": [
-          "ambiguous",
           "price_variance"
         ],
         "context": {
@@ -142,7 +141,7 @@
           "site_id": 2
         },
         "context_confident": true,
-        "rationale": "The invoice is held because line 11 (IRB/Ethics Fees) is billed at 550.00 against the catalog ADMIN-IRB price of 500.00, a 50.00 overcharge. Lines 4 and 5 (Week 4 and Week 8 Follow-up) are medium-confidence matches that could instead be the generic VISIT-FU, so a Reviewer should confirm them. Quantities fit 3 screened and 2 enrolled patients, and the line amounts sum to the 7,145.00 header total.",
+        "rationale": "Held: line 11 'IRB/Ethics Fees' is billed at 550.00 against the ADMIN-IRB catalog price of 500.00, a 50.00 overcharge. All other lines match catalog prices, and the line amounts sum to the stated total of 7,145.00. The visit and procedure quantities look plausible for 3 screened and 2 enrolled patients, so there is no additional concern.",
         "lines": {
           "1": "ADMIN-SITE",
           "2": "VISIT-SCR",

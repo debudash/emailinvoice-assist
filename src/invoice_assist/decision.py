@@ -22,6 +22,12 @@ def money(value) -> Decimal:
     return Decimal(str(value)).quantize(CENT, rounding=ROUND_HALF_UP)
 
 
+def is_price_variance(billed, catalog_price) -> bool:
+    """Billed unit price outside the tolerance of the catalog price ($0.00 taken literally)."""
+    billed, catalog_price = money(billed), money(catalog_price)
+    return abs(billed - catalog_price) > catalog_price * Decimal(str(settings.price_tolerance))
+
+
 def check_source(extraction: Extraction, context: Context, matching: Matching | None, catalog: dict) -> list[Finding]:
     # An image has no text layer to check extracted numbers against (ADR-0007): a human glances first.
     if extraction.source_media_type.startswith("image/"):
@@ -77,12 +83,12 @@ def check_matches(extraction: Extraction, context: Context, matching: Matching |
             findings.append((HoldReason.ambiguous, f"Line {line.line_no} '{line.description}' matched "
                                                    f"{match.item_code} ({match.confidence} confidence){also}"))
         item = catalog[match.catalog_item_id]
-        catalog_price, billed = money(item["unit_price"]), money(line.unit_price)
         # $0.00 is taken literally: any billed amount is a variance (decisions.md); this supersedes
         # the earlier "pass-through items skip the check".
-        if abs(billed - catalog_price) > catalog_price * Decimal(str(settings.price_tolerance)):
-            findings.append((HoldReason.price_variance, f"Line {line.line_no} '{line.description}' billed at {billed}, "
-                                                        f"catalog {item['item_code']} is {catalog_price}"))
+        if is_price_variance(line.unit_price, item["unit_price"]):
+            findings.append((HoldReason.price_variance, f"Line {line.line_no} '{line.description}' billed at "
+                                                        f"{money(line.unit_price)}, catalog {item['item_code']} is "
+                                                        f"{money(item['unit_price'])}"))
     return findings
 
 

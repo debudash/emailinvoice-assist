@@ -79,3 +79,31 @@ def test_metrics_report_straight_through_and_time_saved(store, simple_invoice):
     assert summary["manual_minutes"] == 5 + 2  # two line items
     assert summary["holds_by_reason"] == {}
     assert Extraction  # model import kept for readability of the image test
+
+
+def test_unreadable_email_is_set_aside_and_the_worker_keeps_going(store, tmp_path):
+    from conftest import SIMPLE_EML
+    from invoice_assist.worker import poll_once
+    inbox = tmp_path / "inbox"
+    inbox.mkdir()
+    (inbox / "01-broken.eml").write_bytes(b"From: x\nDate: not a date at all\n\nbody")
+    (inbox / "02-good.eml").write_bytes(SIMPLE_EML.read_bytes())
+    pipeline, clinrun = make_pipeline(store)
+
+    assert poll_once(store, pipeline, inbox) == 1
+    assert (inbox / "failed" / "01-broken.eml").exists() and len(clinrun.calls) == 1
+
+
+def test_submission_flags_variance_using_the_same_tolerance_as_the_decision(store, simple_invoice, monkeypatch):
+    import invoice_assist.decision as decision
+    from invoice_assist.config import Settings
+    monkeypatch.setattr(decision, "settings", Settings(price_tolerance=0.02))
+
+    def slightly_high():
+        ex = extraction()
+        ex.line_items[0].unit_price, ex.line_items[0].amount, ex.header.total = 404, 404, 1364
+        return ex
+    pipeline, clinrun = make_pipeline(store, extract=lambda d, mt: slightly_high())
+
+    assert pipeline.process(simple_invoice) == "Submitted"
+    assert clinrun.calls[0][0]["lines"][0]["price_variance"] is False
