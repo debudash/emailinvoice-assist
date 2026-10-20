@@ -22,6 +22,13 @@ class Settings:
     threshold_study: float = float(os.getenv("THRESHOLD_STUDY", "0.85"))
     threshold_site: float = float(os.getenv("THRESHOLD_SITE", "0.85"))
 
+    # Price tolerance as a fraction of the catalog price; 0 means exact to the cent (decisions.md 5a).
+    price_tolerance: float = float(os.getenv("PRICE_TOLERANCE", "0"))
+
+    # Manual baseline for "time saved" (D4): an assumption, shown on screen.
+    minutes_per_invoice: float = float(os.getenv("MANUAL_MINUTES_PER_INVOICE", "5"))
+    minutes_per_line: float = float(os.getenv("MANUAL_MINUTES_PER_LINE", "1"))
+
     def threshold(self, field: str) -> float:
         return getattr(self, f"threshold_{field}")
 

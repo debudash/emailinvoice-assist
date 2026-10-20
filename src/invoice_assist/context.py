@@ -147,3 +147,24 @@ async def _catalog(sponsor_id: int, study_id: int) -> list[dict]:
 
 def catalog(sponsor_id: int, study_id: int) -> list[dict]:
     return asyncio.run(_catalog(sponsor_id, study_id))
+
+
+class Reference:
+    """Every sponsor, study and site, for a Reviewer's Correction picker (via the list_* tools)."""
+
+    def __init__(self, sponsors: list[dict], studies: list[dict], sites: list[dict]):
+        self.sponsors, self.studies, self.sites = sponsors, studies, sites
+
+    @classmethod
+    def load(cls) -> "Reference":
+        async def fetch():
+            async with ref_mcp() as session:
+                call = tool_caller(session)
+                return cls(await call("list_sponsors"), await call("list_studies"), await call("list_sites"))
+        return asyncio.run(fetch())
+
+    def study_sites(self, study_id: int) -> list[int]:
+        async def fetch():
+            async with ref_mcp() as session:
+                return [link["site_id"] for link in await tool_caller(session)("list_study_sites", study_id=study_id)]
+        return asyncio.run(fetch())

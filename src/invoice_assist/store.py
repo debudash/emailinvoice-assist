@@ -15,13 +15,14 @@ CREATE TABLE IF NOT EXISTS invoices (
 CREATE TABLE IF NOT EXISTS stage_runs (
     id INTEGER PRIMARY KEY, invoice_id INTEGER REFERENCES invoices(id), version INTEGER,
     stage TEXT, run_no INTEGER, trigger TEXT, outcome TEXT, inputs TEXT, output TEXT, error TEXT,
-    served_by TEXT, started_at TEXT, ended_at TEXT);
+    served_by TEXT, attempts INTEGER, started_at TEXT, ended_at TEXT);
 CREATE TABLE IF NOT EXISTS submissions (
     id INTEGER PRIMARY KEY, invoice_id INTEGER REFERENCES invoices(id), version INTEGER,
     clinrun_id TEXT, idempotency_key TEXT, sent_at TEXT);
 CREATE TABLE IF NOT EXISTS actions (
     id INTEGER PRIMARY KEY, invoice_id INTEGER REFERENCES invoices(id), actor TEXT, kind TEXT,
     note TEXT, before TEXT, after TEXT, at TEXT);
+CREATE TABLE IF NOT EXISTS control (key TEXT PRIMARY KEY, value TEXT);
 """
 
 
@@ -39,11 +40,11 @@ class Store:
         self.db.executescript(SCHEMA)
 
     # --- writes ---------------------------------------------------------------
-    def add_message(self, m, source: str = "inbox") -> int:
+    def add_message(self, m) -> int:
         cur = self.db.execute(
             "INSERT INTO messages (message_id, source, sender, subject, body, received_at, rejection_reason, created_at)"
             " VALUES (?,?,?,?,?,?,?,?)",
-            (m.message_id, source, m.sender, m.subject, m.body, m.received_at, m.rejection_reason, now()))
+            (m.message_id, m.source, m.sender, m.subject, m.body, m.received_at, m.rejection_reason, now()))
         self.db.commit()
         return cur.lastrowid
 
@@ -62,15 +63,16 @@ class Store:
 
     def add_stage_run(self, invoice_id: int, version: int, stage: str, trigger: str, outcome: str,
                       inputs: dict, output: dict | None, error: str | None, served_by: list[str],
-                      started_at: str) -> int:
+                      started_at: str, attempts: int = 1) -> int:
         """inputs: the Stage Run ids this run read from, so any Decision can be rebuilt from its rows."""
         run_no = self.db.execute("SELECT COUNT(*) FROM stage_runs WHERE invoice_id=? AND version=? AND stage=?",
                                  (invoice_id, version, stage)).fetchone()[0] + 1
         cur = self.db.execute(
             "INSERT INTO stage_runs (invoice_id, version, stage, run_no, trigger, outcome, inputs, output, error,"
-            " served_by, started_at, ended_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            " served_by, attempts, started_at, ended_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
             (invoice_id, version, stage, run_no, trigger, outcome, json.dumps(inputs),
-             json.dumps(output) if output is not None else None, error, ",".join(served_by), started_at, now()))
+             json.dumps(output) if output is not None else None, error, ",".join(served_by), attempts,
+             started_at, now()))
         self.db.commit()
         return cur.lastrowid
 
@@ -79,7 +81,24 @@ class Store:
                         " VALUES (?,?,?,?,?)", (invoice_id, version, clinrun_id, key, now()))
         self.db.commit()
 
+    def add_action(self, invoice_id: int, actor: str, kind: str, note: str, before=None, after=None):
+        self.db.execute("INSERT INTO actions (invoice_id, actor, kind, note, before, after, at) VALUES (?,?,?,?,?,?,?)",
+                        (invoice_id, actor, kind, note, json.dumps(before), json.dumps(after), now()))
+        self.db.commit()
+
+    def set_control(self, key: str, value: str):
+        self.db.execute("INSERT INTO control (key, value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+                        (key, value))
+        self.db.commit()
+
+    def control(self, key: str, default: str = "") -> str:
+        row = self.db.execute("SELECT value FROM control WHERE key=?", (key,)).fetchone()
+        return row["value"] if row else default
+
     # --- reads ----------------------------------------------------------------
+    def actions(self, invoice_id: int) -> list[sqlite3.Row]:
+        return self.db.execute("SELECT * FROM actions WHERE invoice_id=? ORDER BY id", (invoice_id,)).fetchall()
+
     def invoice(self, invoice_id: int) -> sqlite3.Row:
         return self.db.execute("SELECT * FROM invoices WHERE id=?", (invoice_id,)).fetchone()
 

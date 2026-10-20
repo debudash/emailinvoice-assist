@@ -194,3 +194,46 @@ Deferred:
 | mock-clinrun race between two concurrent first submissions of the same key | Not planned | The worker is sequential; see the production story |
 | A rerun from submission adds a second `submissions` row with the same ClinRun ID | S4 | Harmless; the Hub reads the latest |
 | Refusal fallbacks | Kept | The model that served each call is now recorded on its Stage Run, so evals can attribute results |
+
+## S1–S4 notes (2026-10-19)
+
+- **$0.00 rule:** it supersedes 5a's "pass-through items with no fixed price skip the check". Every
+  line is checked, and $0.00 is taken literally.
+- **Low-confidence Line Matches** hold as `ambiguous`, as decision 5.1 requires.
+- **Lines the matcher leaves out** count as Unmatched. The checks iterate the Line Items, not the
+  matcher's answer, which closes a False Submit path found in review.
+- **Release eligibility (Q8):** a Release is allowed only when every Hold Reason is in `RELEASABLE`:
+  price_variance, unmatched, ambiguous, llm_concern, extraction_unverifiable. Otherwise it needs a
+  Correction.
+- **After a Correction,** the LLM review is told the Reviewer confirmed the Context. Without that,
+  it re-raised the very question the Reviewer had answered, which caused a needless Over-Hold.
+- **Refactors deferred to S1 were not done:** typed Catalog, a Stage registry, `build_submission`'s
+  argument list. They are judgement-call smells with no behaviour impact, so they are moved to "not
+  planned" in favour of shipping. The checks keep one shared signature on purpose, so `HARD_CHECKS`
+  stays a plain list.
+
+## S3/S4 code review notes (2026-10-19)
+
+Fixed before merge:
+- **Rerun guard:** an Operator rerun is allowed only for a Failed Invoice, from its failed Stage or
+  earlier, and never into submission past a Hold. This closes a False Submit path.
+- **Escalation** is allowed only for a Held Invoice.
+- **Guards before writes:** every guard runs before anything is written, so a Correction without a
+  note leaves nothing behind.
+- **Release survives reruns:** a Release carries over to a rerun of a failed submission.
+- **Straight-Through:** a Corrected Invoice is never counted as Straight-Through.
+- **Missing lines:** a line the matcher left out can be corrected.
+- **Hub:**
+  - One Store connection per browser session.
+  - The single friendly error boundary now also catches unexpected errors.
+  - Upload messages are built in Intake.
+  - Release eligibility comes from Review Actions.
+  - The manual baseline is configuration.
+
+Deferred:
+| Finding | Decision |
+|---------|----------|
+| Rejected Messages shown in an expander, not a queue | Kept; they are not Invoices and need no action, only visibility |
+| Metrics cover all time, with no time window | P2 |
+| Roles inferred from the actor name, so any actor can rerun | Auth is out of scope; roles are a production-story item |
+| Metrics make several queries per Invoice (N+1) | Fine at demo volume; P2 |

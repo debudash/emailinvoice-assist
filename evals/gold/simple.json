@@ -1,0 +1,65 @@
+{
+  "sample": "simple",
+  "email": "samples/emails/01-simple-invoice.eml",
+  "context": {
+    "sponsor_id": 2,
+    "study_id": 3,
+    "site_id": 1
+  },
+  "context_should_be_confident": true,
+  "lines": [
+    {
+      "line_no": 1,
+      "description": "Site Management Fee",
+      "expected_item_code": "ADMIN-SITE",
+      "acceptable_item_codes": [
+        "ADMIN-SITE"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 2,
+      "description": "Screening Visit",
+      "expected_item_code": "VISIT-SCR",
+      "acceptable_item_codes": [
+        "VISIT-SCR"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 3,
+      "description": "Baseline Visit",
+      "expected_item_code": "VISIT-BL",
+      "acceptable_item_codes": [
+        "VISIT-BL"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 4,
+      "description": "Complete Blood Count",
+      "expected_item_code": "LAB-CBC",
+      "acceptable_item_codes": [
+        "LAB-CBC"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 5,
+      "description": "IV Infusion Administration",
+      "expected_item_code": "PROC-INFUS",
+      "acceptable_item_codes": [
+        "PROC-INFUS"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    }
+  ],
+  "expected_decision": "submit",
+  "expected_hold_reasons": [],
+  "notes": "Contoso / CATALYST Trial (study 3) at Willow Creek (site 1, linked). Light wording variation only ('Site Management Fee' -> ADMIN-SITE 'Site Fee'); every price equals the catalog. Clean Submit."
+}

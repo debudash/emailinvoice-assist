@@ -1,0 +1,167 @@
+{
+  "at": "2026-10-20T03:06:40+00:00",
+  "passed": true,
+  "gate": {
+    "false_submits": 0,
+    "decision_accuracy": 0.9,
+    "hold_reason_recall": 0.9,
+    "context_accuracy": 0.95,
+    "line_match_accuracy": 0.9
+  },
+  "summary": {
+    "examples": 4,
+    "false_submits": 0,
+    "decision_accuracy": 1.0,
+    "hold_reason_recall": 1.0,
+    "context_accuracy": 1.0,
+    "line_match_accuracy": 1.0,
+    "failures": []
+  },
+  "experiment": "gold-3cb2e154",
+  "rows": [
+    {
+      "sample": "simple",
+      "prediction": {
+        "decision": "submit",
+        "hold_reasons": [],
+        "context": {
+          "sponsor_id": 2,
+          "study_id": 3,
+          "site_id": 1
+        },
+        "context_confident": true,
+        "rationale": "Submitted: there are no hard-check findings. All five lines match catalog items with high confidence at catalog prices, and the line amounts sum to the $2,230.00 header total. Billing two screening visits against one baseline visit is consistent with a routine screen failure, so it is not flagged.",
+        "lines": {
+          "1": "ADMIN-SITE",
+          "2": "VISIT-SCR",
+          "3": "VISIT-BL",
+          "4": "LAB-CBC",
+          "5": "PROC-INFUS"
+        }
+      },
+      "false_submit": 0,
+      "decision_correct": 1,
+      "hold_reason_recall": 1.0,
+      "context_correct": 1,
+      "line_accuracy": 1.0
+    },
+    {
+      "sample": "mismatched-metadata",
+      "prediction": {
+        "decision": "hold",
+        "hold_reasons": [
+          "context_uncertain"
+        ],
+        "context": {
+          "sponsor_id": 1,
+          "study_id": 2,
+          "site_id": 6
+        },
+        "context_confident": false,
+        "rationale": "Held: the invoice's site name 'Prairie Clinical Research' matched 'Prairie Field Research Group' with only 0.78 confidence, below the threshold, so a Reviewer must confirm the site before it can proceed. No catalog price matches were produced, so the line prices still need checking once the Context is confirmed. The line amounts add up to the $3,220.00 total, and the quantities look plausible for two patients.",
+        "after_correction": "submit",
+        "lines": {
+          "1": "ADMIN-SITE",
+          "2": "VISIT-SCR",
+          "3": "VISIT-BL",
+          "4": "VISIT-MONTH3",
+          "5": "PROC-ECG",
+          "6": "LAB-CBC",
+          "7": "LAB-LIPID"
+        }
+      },
+      "false_submit": 0,
+      "decision_correct": 1,
+      "hold_reason_recall": 1.0,
+      "context_correct": 1,
+      "line_accuracy": 1.0
+    },
+    {
+      "sample": "large",
+      "prediction": {
+        "decision": "hold",
+        "hold_reasons": [
+          "ambiguous",
+          "price_variance",
+          "unmatched"
+        ],
+        "context": {
+          "sponsor_id": 1,
+          "study_id": 1,
+          "site_id": 3
+        },
+        "context_confident": true,
+        "rationale": "This invoice is held. Line 20 (CT Scan) is billed at 475.00 against a catalog price of 450.00, a 50.00 overbilling across 2 units. Lines 25-27 (parking, patient stipend, translator services, 1,725.00 total) have no catalog item, and lines 2, 13 and 22 have plausible alternative catalog matches that a Reviewer needs to confirm.",
+        "lines": {
+          "1": "ADMIN-SITE",
+          "2": "VISIT-SCR",
+          "3": "VISIT-BL",
+          "4": "VISIT-WK4",
+          "5": "VISIT-WK8",
+          "6": "VISIT-WK12",
+          "7": "VISIT-WK16",
+          "8": "VISIT-WK24",
+          "9": "VISIT-EOS",
+          "10": "PROC-ECG",
+          "11": "PROC-VITAL",
+          "12": "PROC-PHYS",
+          "13": "PROC-INFUS",
+          "14": "PROC-PK",
+          "15": "LAB-CBC",
+          "16": "LAB-CMP",
+          "17": "LAB-URINAL",
+          "18": "LAB-LFT",
+          "19": "LAB-LIPID",
+          "20": "IMG-CT",
+          "21": "ADMIN-IRB",
+          "22": "PASS-COLD",
+          "23": "PASS-KIT",
+          "24": "PASS-SPEC",
+          "25": null,
+          "26": null,
+          "27": null
+        }
+      },
+      "false_submit": 0,
+      "decision_correct": 1,
+      "hold_reason_recall": 1.0,
+      "context_correct": 1,
+      "line_accuracy": 1.0
+    },
+    {
+      "sample": "medium",
+      "prediction": {
+        "decision": "hold",
+        "hold_reasons": [
+          "ambiguous",
+          "price_variance"
+        ],
+        "context": {
+          "sponsor_id": 1,
+          "study_id": 1,
+          "site_id": 2
+        },
+        "context_confident": true,
+        "rationale": "The invoice is held because line 11 (IRB/Ethics Fees) is billed at 550.00 against the catalog ADMIN-IRB price of 500.00, a 50.00 overcharge. Lines 4 and 5 (Week 4 and Week 8 Follow-up) are medium-confidence matches that could instead be the generic VISIT-FU, so a Reviewer should confirm them. Quantities fit 3 screened and 2 enrolled patients, and the line amounts sum to the 7,145.00 header total.",
+        "lines": {
+          "1": "ADMIN-SITE",
+          "2": "VISIT-SCR",
+          "3": "VISIT-BL",
+          "4": "VISIT-WK4",
+          "5": "VISIT-WK8",
+          "6": "PROC-ECG",
+          "7": "LAB-CBC",
+          "8": "LAB-CMP",
+          "9": "PROC-INFUS",
+          "10": "PROC-PK",
+          "11": "ADMIN-IRB"
+        }
+      },
+      "false_submit": 0,
+      "decision_correct": 1,
+      "hold_reason_recall": 1.0,
+      "context_correct": 1,
+      "line_accuracy": 1.0
+    }
+  ]
+}

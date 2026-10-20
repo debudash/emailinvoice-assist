@@ -2,6 +2,7 @@
 from enum import StrEnum
 
 from pydantic import BaseModel, Field
+from pydantic.json_schema import SkipJsonSchema
 
 
 # --- Extraction ---------------------------------------------------------------
@@ -30,6 +31,8 @@ class LineItem(BaseModel):
 class Extraction(BaseModel):
     header: InvoiceHeader
     line_items: list[LineItem]
+    # Set by the Stage, never by the LLM (kept out of the output schema).
+    source_media_type: SkipJsonSchema[str] = "application/pdf"
 
 
 # --- Context ------------------------------------------------------------------
@@ -59,6 +62,7 @@ class Context(BaseModel):
     study_belongs_to_sponsor: bool
     explanation: str
     agent_lookups: list[str] = []
+    corrected_by: str | None = None
 
     @property
     def confident(self) -> bool:
@@ -81,6 +85,7 @@ class LineMatch(BaseModel):
     ambiguous: bool = Field(description="true when more than one Catalog Item is plausible")
     alternatives: list[str] = Field(default_factory=list, description="item_codes of other plausible items")
     reason: str
+    corrected_by: SkipJsonSchema[str | None] = None
 
 
 class Matching(BaseModel):
@@ -96,12 +101,35 @@ class HoldReason(StrEnum):
     ambiguous = "ambiguous"
     price_variance = "price_variance"
     arithmetic = "arithmetic"
+    extraction_unverifiable = "extraction_unverifiable"
     llm_concern = "llm_concern"
+
+
+# Hold Reasons a Reviewer may Release with a reason; the rest need a Correction (PRD: Thresholds and rules).
+RELEASABLE = {HoldReason.price_variance, HoldReason.unmatched, HoldReason.ambiguous, HoldReason.llm_concern,
+              HoldReason.extraction_unverifiable}
 
 
 class Outcome(StrEnum):
     submit = "submit"
     hold = "hold"
+
+
+class InvoiceStatus(StrEnum):
+    received = "Received"
+    extracted = "Extracted"
+    context_resolved = "Context Resolved"
+    matched = "Matched"
+    submitted = "Submitted"
+    held = "Held"
+    failed = "Failed"
+    escalated = "Escalated"
+
+
+class LLMReview(BaseModel):
+    """The LLM's review of an Invoice after the hard checks (ADR-0002)."""
+    concern: str | None = Field(description="A specific risk the hard checks did not cover, or null")
+    rationale: str = Field(description="Two or three sentences explaining the outcome to a Reviewer")
 
 
 class Decision(BaseModel):

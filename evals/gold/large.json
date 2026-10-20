@@ -1,0 +1,290 @@
+{
+  "sample": "large",
+  "email": "samples/emails/03-large-invoice.eml",
+  "context": {
+    "sponsor_id": 1,
+    "study_id": 1,
+    "site_id": 3
+  },
+  "context_should_be_confident": true,
+  "lines": [
+    {
+      "line_no": 1,
+      "description": "Site Admin",
+      "expected_item_code": "ADMIN-SITE",
+      "acceptable_item_codes": [
+        "ADMIN-SITE"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 2,
+      "description": "Screening Visit",
+      "expected_item_code": "VISIT-SCR",
+      "acceptable_item_codes": [
+        "VISIT-SCR"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 3,
+      "description": "Baseline Visit",
+      "expected_item_code": "VISIT-BL",
+      "acceptable_item_codes": [
+        "VISIT-BL"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 4,
+      "description": "Wk 4 Visit",
+      "expected_item_code": "VISIT-WK4",
+      "acceptable_item_codes": [
+        "VISIT-WK4"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 5,
+      "description": "Wk 8 Visit",
+      "expected_item_code": "VISIT-WK8",
+      "acceptable_item_codes": [
+        "VISIT-WK8"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 6,
+      "description": "Week 12 Visit",
+      "expected_item_code": "VISIT-WK12",
+      "acceptable_item_codes": [
+        "VISIT-WK12"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 7,
+      "description": "Week 16 Visit",
+      "expected_item_code": "VISIT-WK16",
+      "acceptable_item_codes": [
+        "VISIT-WK16"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 8,
+      "description": "Wk 24 Visit",
+      "expected_item_code": "VISIT-WK24",
+      "acceptable_item_codes": [
+        "VISIT-WK24"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 9,
+      "description": "End of Study Visit",
+      "expected_item_code": "VISIT-EOS",
+      "acceptable_item_codes": [
+        "VISIT-EOS"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 10,
+      "description": "ECG",
+      "expected_item_code": "PROC-ECG",
+      "acceptable_item_codes": [
+        "PROC-ECG"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 11,
+      "description": "Vitals",
+      "expected_item_code": "PROC-VITAL",
+      "acceptable_item_codes": [
+        "PROC-VITAL"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 12,
+      "description": "Physical Exam",
+      "expected_item_code": "PROC-PHYS",
+      "acceptable_item_codes": [
+        "PROC-PHYS"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 13,
+      "description": "IV Drug Administration",
+      "expected_item_code": "PROC-INFUS",
+      "acceptable_item_codes": [
+        "PROC-INFUS"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 14,
+      "description": "Pharmacokinetic Sampling",
+      "expected_item_code": "PROC-PK",
+      "acceptable_item_codes": [
+        "PROC-PK"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 15,
+      "description": "CBC w/ Differential",
+      "expected_item_code": "LAB-CBC",
+      "acceptable_item_codes": [
+        "LAB-CBC"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 16,
+      "description": "Comprehensive Metabolic Panel",
+      "expected_item_code": "LAB-CMP",
+      "acceptable_item_codes": [
+        "LAB-CMP"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 17,
+      "description": "UA",
+      "expected_item_code": "LAB-URINAL",
+      "acceptable_item_codes": [
+        "LAB-URINAL"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 18,
+      "description": "Hepatic Function Panel",
+      "expected_item_code": "LAB-LFT",
+      "acceptable_item_codes": [
+        "LAB-LFT"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 19,
+      "description": "Lipid Panel",
+      "expected_item_code": "LAB-LIPID",
+      "acceptable_item_codes": [
+        "LAB-LIPID"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 20,
+      "description": "CT Scan - Chest/Abdomen",
+      "expected_item_code": "IMG-CT",
+      "acceptable_item_codes": [
+        "IMG-CT"
+      ],
+      "ambiguous": false,
+      "price_variance": true
+    },
+    {
+      "line_no": 21,
+      "description": "IRB Annual Maintenance",
+      "expected_item_code": "ADMIN-IRB",
+      "acceptable_item_codes": [
+        "ADMIN-IRB"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 22,
+      "description": "Drug Shipping (cold chain)",
+      "expected_item_code": "PASS-COLD",
+      "acceptable_item_codes": [
+        "PASS-COLD",
+        "PASS-SHIP"
+      ],
+      "ambiguous": true,
+      "price_variance": false
+    },
+    {
+      "line_no": 23,
+      "description": "Lab Supplies",
+      "expected_item_code": "PASS-KIT",
+      "acceptable_item_codes": [
+        "PASS-KIT"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 24,
+      "description": "Sample Transport",
+      "expected_item_code": "PASS-SPEC",
+      "acceptable_item_codes": [
+        "PASS-SPEC"
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 25,
+      "description": "Parking Reimbursement",
+      "expected_item_code": null,
+      "acceptable_item_codes": [
+        null
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 26,
+      "description": "Patient Stipend",
+      "expected_item_code": null,
+      "acceptable_item_codes": [
+        null
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    },
+    {
+      "line_no": 27,
+      "description": "Translator Services",
+      "expected_item_code": null,
+      "acceptable_item_codes": [
+        null
+      ],
+      "ambiguous": false,
+      "price_variance": false
+    }
+  ],
+  "expected_decision": "hold",
+  "expected_hold_reasons": [
+    "unmatched",
+    "ambiguous",
+    "price_variance"
+  ],
+  "notes": "Northwind / LUMIN-2024 (study 1) at Highland Ridge (site 3, linked). Three Unmatched patient-reimbursement/service lines (Parking, Stipend, Translator: nothing like them in the catalog). One Ambiguous line: 'Drug Shipping (cold chain)' fits PASS-COLD 'Cold Chain Shipping' ($125, price matches) and PASS-SHIP 'Study Drug Shipping' ($75); expected is PASS-COLD (description + price tie-break) but per decisions.md price as tie-break still leaves it Ambiguous. One Price Variance: CT Scan $475 vs IMG-CT $450. Judgement calls: 'Lab Supplies' -> PASS-KIT 'Lab Kit - Standard' and 'Sample Transport' -> PASS-SPEC 'Specimen Shipping' are fuzzy but price-exact single candidates, so labelled matched (not ambiguous, not unmatched); 'Hepatic Function Panel' -> LAB-LFT (synonym, price-exact). 'ECG' -> PROC-ECG not PROC-ECG-Read, and 'IV Drug Administration' -> PROC-INFUS not PROC-IV (IV Placement): the alternatives are different services and the price agrees, so not marked ambiguous - reviewer may wish to revisit."
+}
