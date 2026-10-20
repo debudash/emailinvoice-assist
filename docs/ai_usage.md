@@ -117,8 +117,8 @@ and the P0/P1/P2 split.
 
 ## Limitations and what to double-check
 
-- **Gold labels are AI-derived.** `evals/gold/README.md` says the developer still needs to review
-  them; the `notes` field records the judgement calls (for example "Lab Supplies" → PASS-KIT).
+- **Gold labels are AI-derived.** The developer reviewed them on 2026-10-20 and agreed every label
+  (`evals/gold/review/`); the `notes` field records the judgement calls (for example "Lab Supplies" → PASS-KIT).
   A wrong label would make the gate pass for the wrong reason.
 - **Four samples are a thin gate.** The medium sample adds an `ambiguous` reason on some runs and
   not others. Rerun the eval just before presenting and check `evals/reports/latest.md`.

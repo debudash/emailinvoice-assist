@@ -50,8 +50,8 @@ its own mock-clinrun.
 The gold set is the four sample invoices, hand-labelled in [`evals/gold/`](../evals/gold/README.md):
 the true Context, whether the Context should be confident, the acceptable Catalog Item codes per
 line (`null` for Unmatched), and the expected Decision and Hold Reasons. The labels were derived by
-an AI agent from the invoice generator script and the seed data (`evals/make_gold.py`); the README
-there says the developer still needs to review them.
+an AI agent from the invoice generator script and the seed data (`evals/make_gold.py`); the developer
+reviewed and agreed them on 2026-10-20 (`evals/gold/review/`).
 
 `python -m evals.run_eval` runs each sample through the real Pipeline (real Claude, real ref-mcp)
 on a temporary Store with a fake ClinRun, so nothing is submitted. The mismatched-metadata sample is
@@ -126,7 +126,7 @@ samples miss: `arithmetic` (wrong total, bad line amount), `site_not_linked`, `e
 - **The Hub's component tests cover two views.** The Correction, Release and Escalation forms are
   covered at the Review Actions level, not by clicking through the Hub.
 - **The worker loop** (`poll_once`, the pause and check-now flags) has no direct test.
-- **Gold labels** are AI-derived; review them with `streamlit run evals/gold_review.py`.
+- **Gold labels** are AI-derived and human-reviewed once (2026-10-20); re-review after changing them with `streamlit run evals/gold_review.py`.
 
 ## Judge calibration (2026-10-20)
 

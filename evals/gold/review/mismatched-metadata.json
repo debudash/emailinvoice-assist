@@ -1,0 +1,52 @@
+{
+  "sample": "mismatched-metadata",
+  "reviewer": "DD",
+  "at": "2026-10-20T21:47:31+00:00",
+  "outcome_verdict": "agree",
+  "outcome_comment": "agreed",
+  "applied": false,
+  "lines": [
+    {
+      "line_no": 1,
+      "verdict": "agree",
+      "corrected_code": null,
+      "comment": ""
+    },
+    {
+      "line_no": 2,
+      "verdict": "agree",
+      "corrected_code": null,
+      "comment": ""
+    },
+    {
+      "line_no": 3,
+      "verdict": "agree",
+      "corrected_code": null,
+      "comment": ""
+    },
+    {
+      "line_no": 4,
+      "verdict": "agree",
+      "corrected_code": null,
+      "comment": ""
+    },
+    {
+      "line_no": 5,
+      "verdict": "agree",
+      "corrected_code": null,
+      "comment": ""
+    },
+    {
+      "line_no": 6,
+      "verdict": "agree",
+      "corrected_code": null,
+      "comment": ""
+    },
+    {
+      "line_no": 7,
+      "verdict": "agree",
+      "corrected_code": null,
+      "comment": ""
+    }
+  ]
+}
