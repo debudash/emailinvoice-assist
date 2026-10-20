@@ -308,3 +308,5 @@
 {"ts": "2026-10-20T14:26:18+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Check st.rerun scope and dataframe selection docs"}, "ok": true}
 {"ts": "2026-10-20T14:27:34+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Write regression tests and confirm they fail"}, "ok": true}
 {"ts": "2026-10-20T14:28:37+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Apply ISSUE-003 fix and run hub tests"}, "ok": true}
+{"ts": "2026-10-20T14:29:56+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Fix test premise, log and commit ISSUE-003"}, "ok": true}
+{"ts": "2026-10-20T14:31:00+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Apply ISSUE-004 fix and run the suite"}, "ok": true}
