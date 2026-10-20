@@ -55,3 +55,12 @@ Two layers:
   - A rerun from the failed Stage kept the failed Stage Run.
   - Re-sending the same email reused `CR-000001`, and ClinRun held 1 row.
 - **Developer decisions this slice:** keys provided in `.env`, and uv installed inside the project venv.
+- **`/code-review` (two parallel reviewer agents):**
+  - **Findings:** Standards found 5 documented violations and about 12 smells. Spec found 13 findings.
+  - **Fixed:** the correctness and spec items, before merging.
+  - **Deferred:** the rest, each with its owning slice, in decisions.md.
+  - **Regression during the fixes:** one, a tie in study scoring, caught by the live run.
+    I added a test first and fixed it before committing.
+  - **Test isolation:** the first ClinRun Client test wrote into the demo's ClinRun data. It now
+    starts its own private mock.
+- **Developer decision:** keep refusal fallbacks on and record the serving model on each Stage Run.
