@@ -76,6 +76,7 @@ services:
       - "8501:8501"
     volumes:
       - app_data:/data
+      - ./inbox:/inbox
     depends_on:
       - worker
 

@@ -12,11 +12,10 @@ Number line items from 1 in the order they appear."""
 
 
 def extract(data: bytes, media_type: str) -> Extraction:
-    document = {
-        "type": "document",
-        "source": {"type": "base64", "media_type": media_type,
-                   "data": base64.standard_b64encode(data).decode()},
-    }
-    return llm.parse(Extraction, SYSTEM,
-                     [document, {"type": "text", "text": "Transcribe this invoice."}],
-                     effort="medium")
+    block = "image" if media_type.startswith("image/") else "document"
+    source = {"type": "base64", "media_type": media_type, "data": base64.standard_b64encode(data).decode()}
+    extraction = llm.parse(Extraction, SYSTEM,
+                           [{"type": block, "source": source}, {"type": "text", "text": "Transcribe this invoice."}],
+                           effort="medium")
+    extraction.source_media_type = media_type
+    return extraction

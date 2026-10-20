@@ -161,3 +161,42 @@
 {"ts": "2026-10-20T02:34:58+00:00", "session": "f5c00250", "agent": "a74eb08e3b8df02e5", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\evals\\gold\\README.md"}, "ok": true}
 {"ts": "2026-10-20T02:40:13+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Live run medium and large samples"}, "ok": true}
 {"ts": "2026-10-20T02:40:42+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Show medium and large invoice results"}, "ok": true}
+{"ts": "2026-10-20T02:41:19+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Commit S1+S2 work"}, "ok": true}
+{"ts": "2026-10-20T02:41:20+00:00", "session": "f5c00250", "agent": "main", "tool": "Agent", "input": {"description": "Review S1+S2 (standards and spec)", "subagent_type": "general-purpose"}, "ok": true}
+{"ts": "2026-10-20T02:41:42+00:00", "session": "f5c00250", "agent": "a44ddf34da75c8451", "tool": "Bash", "input": {"description": "Show diff stats and doc listing"}, "ok": true}
+{"ts": "2026-10-20T02:42:03+00:00", "session": "f5c00250", "agent": "a44ddf34da75c8451", "tool": "Bash", "input": {"description": "Show source diff"}, "ok": true}
+{"ts": "2026-10-20T02:42:05+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Create the S3+S4 branch"}, "ok": true}
+{"ts": "2026-10-20T02:42:28+00:00", "session": "f5c00250", "agent": "a44ddf34da75c8451", "tool": "Bash", "input": {"description": "Read matching, llm, models, conftest"}, "ok": true}
+{"ts": "2026-10-20T02:42:37+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_review_actions.py"}, "ok": true}
+{"ts": "2026-10-20T02:42:38+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_reliability_and_intake.py"}, "ok": true}
+{"ts": "2026-10-20T02:42:46+00:00", "session": "f5c00250", "agent": "a44ddf34da75c8451", "tool": "Bash", "input": {"description": "Read glossary and decisions"}, "ok": true}
+{"ts": "2026-10-20T02:43:11+00:00", "session": "f5c00250", "agent": "a44ddf34da75c8451", "tool": "Bash", "input": {"description": "Read decisions rules and pass-through catalog items"}, "ok": true}
+{"ts": "2026-10-20T02:43:19+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Update models, intake and extraction for images"}, "ok": true}
+{"ts": "2026-10-20T02:43:38+00:00", "session": "f5c00250", "agent": "a44ddf34da75c8451", "tool": "Bash", "input": {"description": "Grep PRD for decision/matching rules"}, "ok": true}
+{"ts": "2026-10-20T02:43:54+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Add image check and store support"}, "ok": true}
+{"ts": "2026-10-20T02:44:04+00:00", "session": "f5c00250", "agent": "a44ddf34da75c8451", "tool": "Bash", "input": {"description": "Read ADR-0002 and ADR-0006"}, "ok": true}
+{"ts": "2026-10-20T02:44:22+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Add retries and release to the pipeline"}, "ok": true}
+{"ts": "2026-10-20T02:44:51+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\review.py"}, "ok": true}
+{"ts": "2026-10-20T02:44:52+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\metrics.py"}, "ok": true}
+{"ts": "2026-10-20T02:45:41+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Run the full suite"}, "ok": true}
+{"ts": "2026-10-20T02:46:29+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Add failing tests for review findings"}, "ok": true}
+{"ts": "2026-10-20T02:46:56+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\decision.py"}, "ok": true}
+{"ts": "2026-10-20T02:47:43+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Check renames and run the suite"}, "ok": true}
+{"ts": "2026-10-20T02:48:21+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Add Reference loader and test it live"}, "ok": true}
+{"ts": "2026-10-20T02:48:37+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\worker.py"}, "ok": true}
+{"ts": "2026-10-20T02:49:28+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\hub.py"}, "ok": true}
+{"ts": "2026-10-20T02:50:03+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Run the hub component test"}, "ok": true}
+{"ts": "2026-10-20T02:50:11+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\hub.py"}, "ok": true}
+{"ts": "2026-10-20T02:51:00+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Re-run the hub test"}, "ok": true}
+{"ts": "2026-10-20T02:51:34+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Render header values as text, run suite"}, "ok": true}
+{"ts": "2026-10-20T02:52:36+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Show the hub test failure"}, "ok": true}
+{"ts": "2026-10-20T02:52:48+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_hub.py"}, "ok": true}
+{"ts": "2026-10-20T02:53:22+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Run the full suite"}, "ok": true}
+{"ts": "2026-10-20T02:53:50+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Show the held-invoice hub test failure"}, "ok": true}
+{"ts": "2026-10-20T02:54:16+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Show the full held-invoice failure"}, "ok": true}
+{"ts": "2026-10-20T02:54:50+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Clear Streamlit caches per test, run suite"}, "ok": true}
+{"ts": "2026-10-20T02:57:54+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Reset demo data and run all four samples"}, "ok": true}
+{"ts": "2026-10-20T02:58:31+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Live QC flows: correct, release, escalate"}, "ok": true}
+{"ts": "2026-10-20T02:58:41+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Read the LLM concern on the corrected invoice"}, "ok": true}
+{"ts": "2026-10-20T02:59:57+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Pass correction to review, rerun mismatched"}, "ok": true}
+{"ts": "2026-10-20T03:01:02+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Live outage: retries, Failed, operator rerun"}, "ok": true}

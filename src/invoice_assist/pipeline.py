@@ -5,6 +5,7 @@ Matching is skipped when Context is uncertain (ADR-0001). Each Stage reads its i
 the latest successful Stage Runs and records which ones it read, so a rerun can start from
 any Stage and any Decision can be rebuilt from its rows.
 """
+import time
 from collections.abc import Callable
 from dataclasses import dataclass
 
@@ -29,7 +30,7 @@ class Stages:
 
 
 def build_submission(store: Store, invoice_id: int, ex: Extraction, ctx: Context, m: Matching,
-                     d: Decision, catalog_by_id: dict) -> dict:
+                     d: Decision, catalog_by_id: dict, release: dict | None = None) -> dict:
     msg = store.message_for(invoice_id)
     by_no = {mm.line_no: mm for mm in m.matches}
     lines = []
@@ -50,9 +51,14 @@ def build_submission(store: Store, invoice_id: int, ex: Extraction, ctx: Context
         "context": {"sponsor_id": ctx.sponsor.record_id, "study_id": ctx.study.record_id, "site_id": ctx.site.record_id},
         "lines": lines,
         "decision": {"rationale": d.rationale, "straight_through": d.straight_through},
-        "release": None,
+        "release": release,
         "source": {"message_id": msg["message_id"], "received_at": msg["received_at"]},
     }
+
+
+class _Exhausted(Exception):
+    def __init__(self, error: Exception, attempts: int):
+        self.error, self.attempts = error, attempts
 
 
 def _describe(exc: BaseException) -> str:
@@ -63,26 +69,29 @@ def _describe(exc: BaseException) -> str:
 
 
 class Pipeline:
-    def __init__(self, store: Store, stages: Stages | None = None):
+    def __init__(self, store: Store, stages: Stages | None = None, backoff: tuple[float, ...] = (1, 4)):
         self.store = store
         self.stages = stages or Stages()
+        self.backoff = backoff  # seconds before each retry; two retries by default (ADR-0009)
 
-    def process(self, invoice_id: int, from_stage: str = "extraction", trigger: str = "automatic") -> str:
+    def process(self, invoice_id: int, from_stage: str = "extraction", trigger: str = "automatic",
+                release: dict | None = None) -> str:
         inv = self.store.invoice(invoice_id)
+        self.release = release
         for stage in STAGES[STAGES.index(from_stage):]:
             started, inputs, served = now(), {}, []
             token = llm.served_by.set(served)
             try:
-                output = self._run(stage, invoice_id, inv, inputs)
-            except Exception as exc:  # recorded as a failed Stage Run (ADR-0009); retries arrive in S4
+                output, attempts = self._attempt(stage, invoice_id, inv, inputs)
+            except _Exhausted as failure:
                 self.store.add_stage_run(invoice_id, inv["version"], stage, trigger, "failed", inputs, None,
-                                         _describe(exc), served, started)
+                                         _describe(failure.error), served, started, failure.attempts)
                 self.store.set_status(invoice_id, InvoiceStatus.failed, failed_stage=stage)
                 return InvoiceStatus.failed
             finally:
                 llm.served_by.reset(token)
             self.store.add_stage_run(invoice_id, inv["version"], stage, trigger, "succeeded", inputs, output,
-                                     None, served, started)
+                                     None, served, started, attempts)
             if stage in STATUS_AFTER and not output.get("skipped"):
                 self.store.set_status(invoice_id, STATUS_AFTER[stage])
             if stage == "decision" and output["outcome"] == Outcome.hold:
@@ -90,6 +99,15 @@ class Pipeline:
                 return InvoiceStatus.held
         self.store.set_status(invoice_id, InvoiceStatus.submitted)
         return InvoiceStatus.submitted
+
+    def _attempt(self, stage: str, invoice_id: int, inv, inputs: dict) -> tuple[dict, int]:
+        for attempt, delay in enumerate((*self.backoff, None), start=1):
+            try:
+                return self._run(stage, invoice_id, inv, inputs), attempt
+            except Exception as exc:  # the one place errors are caught: a Stage that cannot complete
+                if delay is None:
+                    raise _Exhausted(exc, attempt)
+                time.sleep(delay)
 
     def _read(self, invoice_id: int, stage: str, inputs: dict) -> dict:
         run = self.store.latest_run(invoice_id, stage)
@@ -117,7 +135,8 @@ class Pipeline:
             d = Decision.model_validate(self._read(invoice_id, "decision", inputs))
             catalog_by_id = {item["id"]: item for item in matching_output["catalog"]}
             key = clinrun.idempotency_key(inv["sha256"], inv["version"])
-            clinrun_id = s.submit(build_submission(self.store, invoice_id, ex, ctx, m, d, catalog_by_id), key)
+            submission = build_submission(self.store, invoice_id, ex, ctx, m, d, catalog_by_id, self.release)
+            clinrun_id = s.submit(submission, key)
             self.store.add_submission(invoice_id, inv["version"], clinrun_id, key)
             return {"clinrun_id": clinrun_id, "idempotency_key": key}
         raise ValueError(stage)

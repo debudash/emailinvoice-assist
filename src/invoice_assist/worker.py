@@ -40,7 +40,12 @@ def main():
     settings.inbox_dir.mkdir(parents=True, exist_ok=True)
     log.info("Watching %s every %ss", settings.inbox_dir.resolve(), settings.poll_seconds)
     while True:
-        poll_once(store, pipeline, settings.inbox_dir)
+        # Operator controls, set from the Hub: pause the poller, or ask for one check now.
+        check_now = store.control("check_now") == "1"
+        if store.control("paused") != "1" or check_now:
+            store.set_control("check_now", "0")
+            poll_once(store, pipeline, settings.inbox_dir)
+        store.set_control("last_poll", time.strftime("%H:%M:%S"))
         time.sleep(settings.poll_seconds)
 
 

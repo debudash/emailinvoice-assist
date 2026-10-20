@@ -71,5 +71,5 @@ def test_message_without_pdf_is_rejected_not_dropped(store, tmp_path):
     eml.write_text("From: site@example.org\nSubject: see attached\nDate: Mon, 19 Oct 2026 09:00:00 +0000\n\nForgot it.\n")
 
     assert ingest(store, eml) == []
-    assert parse_eml(eml).rejection_reason == "No PDF attachment"
+    assert parse_eml(eml).rejection_reason == "No PDF or image attachment"
     assert store.rejected_messages()[0]["subject"] == "see attached"

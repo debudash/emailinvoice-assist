@@ -1,16 +1,30 @@
-"""Hub: the Reviewer's view of what the AI did. S0 is read-only; QC actions arrive in S3-S4.
+"""Hub: where Reviewers check the AI's Decisions after the fact and act on Invoices.
 
 Run: streamlit run src/invoice_assist/hub.py
+Every action goes through Review Actions, which enforces the rules and keeps the audit trail;
+the Hub only shows state and collects input. ActionRefused is the one error boundary.
 """
-import json
+from email.message import EmailMessage
+from email.utils import format_datetime, make_msgid
+from datetime import datetime, timezone
 
 import pandas as pd
 import streamlit as st
 
+from invoice_assist import metrics
 from invoice_assist.config import settings
+from invoice_assist.context import Reference
+from invoice_assist.models import RELEASABLE, HoldReason, InvoiceStatus
+from invoice_assist.pipeline import Pipeline
+from invoice_assist.review import ActionRefused, ReviewActions
 from invoice_assist.store import Store
 
 st.set_page_config(page_title="Invoice hub", page_icon=":material/receipt_long:", layout="wide")
+
+ACTORS = ["Dana (Reviewer)", "Sam (Reviewer)", "Ops (Operator)"]
+STATUS_ICON = {InvoiceStatus.submitted: ":material/check_circle:", InvoiceStatus.held: ":material/pause_circle:",
+               InvoiceStatus.failed: ":material/error:", InvoiceStatus.escalated: ":material/flag:"}
+QUEUES = ["Held", "Escalated", "Failed", "Submitted", "All"]
 
 
 @st.cache_resource
@@ -18,91 +32,215 @@ def store() -> Store:
     return Store(settings.db_path)
 
 
-STATUS_ICON = {"Submitted": ":material/check_circle:", "Held": ":material/pause_circle:",
-               "Failed": ":material/error:", "Escalated": ":material/flag:"}
+@st.cache_resource(ttl=600)
+def reference() -> Reference:
+    return Reference.load()
 
+
+def actions() -> ReviewActions:
+    return ReviewActions(store(), Pipeline(store()), reference())
+
+
+def run_action(label: str, fn, *args):
+    with st.spinner(f"{label}… the pipeline reruns the affected Stages"):
+        try:
+            status = fn(*args)
+        except ActionRefused as refused:
+            st.error(str(refused), title=f"{label} refused", icon=":material/block:")
+            return
+    st.session_state["flash"] = f"{label} done: invoice is now {status}"
+    st.rerun()
+
+
+# --- Sidebar: identity, Operator controls, upload ----------------------------------------
+with st.sidebar:
+    actor = st.selectbox("Acting as", ACTORS, help="Authentication is assumed upstream; this records who acted.")
+    st.subheader("Inbox poller")
+    s = store()
+    paused = st.toggle("Pause poller", value=s.control("paused") == "1")
+    s.set_control("paused", "1" if paused else "0")
+    if st.button("Check inbox now", icon=":material/refresh:", width="stretch"):
+        s.set_control("check_now", "1")
+        st.toast("The worker will check the inbox on its next tick")
+    st.caption(f"Last poll: {s.control('last_poll', 'not yet')}")
+    st.subheader("Upload an invoice")
+    upload = st.file_uploader("PDF or image", type=["pdf", "png", "jpg", "jpeg"], label_visibility="collapsed")
+    if upload and st.button("Add to inbox", icon=":material/upload:", width="stretch"):
+        msg = EmailMessage()
+        msg["From"], msg["Subject"] = actor, f"Uploaded in the Hub: {upload.name}"
+        msg["Date"], msg["Message-ID"] = format_datetime(datetime.now(timezone.utc)), make_msgid(domain="hub.local")
+        msg["X-Invoice-Source"] = "upload"
+        msg.set_content(f"Uploaded by {actor}.")
+        maintype, subtype = (upload.type or "application/pdf").split("/")
+        msg.add_attachment(upload.getvalue(), maintype=maintype, subtype=subtype, filename=upload.name)
+        settings.inbox_dir.mkdir(parents=True, exist_ok=True)
+        (settings.inbox_dir / f"upload-{datetime.now():%Y%m%d%H%M%S}.eml").write_bytes(bytes(msg))
+        st.toast("Added to the inbox; the worker picks it up on its next poll")
+
+# --- Header and metrics -------------------------------------------------------------------
 st.title("Invoice hub")
-st.caption("AI decides first; reviewers check after. Every Stage Run is recorded.")
+st.caption("The AI decides first; Reviewers check after. Every Stage Run and action is recorded.")
+if flash := st.session_state.pop("flash", None):
+    st.success(flash, icon=":material/task_alt:")
+
+
+@st.fragment(run_every=settings.hub_refresh_seconds or None)
+def metrics_strip():
+    m = metrics.summary(store())
+    with st.container(horizontal=True):
+        st.metric("Invoices", m["invoices"], border=True)
+        st.metric("Straight-through", f"{m['straight_through_rate']:.0%}", border=True)
+        st.metric("Manual estimate", f"{m['manual_minutes']:.0f} min", border=True)
+        st.metric("AI processing", f"{m['actual_minutes']:.1f} min", border=True)
+    holds = ", ".join(f"{k} ({v})" for k, v in m["holds_by_reason"].items()) or "none"
+    st.caption(f"Holds by reason: {holds} · Avg Stage seconds: {m['stage_seconds']} · "
+               f"Manual baseline assumption: 5 min per invoice + 1 min per line item")
+
+
+metrics_strip()
+
+# --- Queues -------------------------------------------------------------------------------
+queue_name = st.segmented_control("Queue", QUEUES, default="Held", key="queue_name")
 
 
 @st.fragment(run_every=settings.hub_refresh_seconds or None)
 def queue():
-    rows = store().invoices()
+    rows = [dict(r) for r in store().invoices()]
+    if queue_name and queue_name != "All":
+        rows = [r for r in rows if r["status"] == queue_name]
     if not rows:
-        st.info("No invoices yet. Drop .eml files into the inbox folder.", icon=":material/inbox:")
+        st.info(f"Nothing in {queue_name or 'this queue'}.", icon=":material/inbox:")
         return
-    df = pd.DataFrame([dict(r) for r in rows])
+    df = pd.DataFrame(rows)
+    df["reasons"] = [", ".join((store().latest_output(i, "decision") or {}).get("hold_reasons", [])) for i in df["id"]]
     df["status"] = [f"{STATUS_ICON.get(s, ':material/autorenew:')} {s}" for s in df["status"]]
-    event = st.dataframe(
-        df[["id", "status", "filename", "sender", "subject", "updated_at"]],
-        hide_index=True, on_select="rerun", selection_mode="single-row", key="queue",
-        alt="Invoices and their current status",
-    )
+    event = st.dataframe(df[["id", "status", "reasons", "filename", "sender", "updated_at"]], hide_index=True,
+                         on_select="rerun", selection_mode="single-row", key="queue_table",
+                         alt="Invoices in the selected queue")
     if event.selection.rows:
         st.session_state["selected"] = int(df.iloc[event.selection.rows[0]]["id"])
 
 
 queue()
+with st.expander("Rejected messages"):
+    rejected = store().rejected_messages()
+    if rejected:
+        st.dataframe(pd.DataFrame([{k: r[k] for k in ("sender", "subject", "received_at", "rejection_reason")}
+                                   for r in rejected]), hide_index=True, alt="Messages with no invoice file")
+    else:
+        st.caption("None")
 
 invoice_id = st.session_state.get("selected")
 if invoice_id is None:
     st.stop()
 
+# --- Invoice detail -----------------------------------------------------------------------
 s = store()
-inv = s.invoice(invoice_id)
-msg = s.message_for(invoice_id)
+inv, msg = s.invoice(invoice_id), s.message_for(invoice_id)
+ex, ctx = s.latest_output(invoice_id, "extraction"), s.latest_output(invoice_id, "context")
+m, decision, submission = s.latest_output(invoice_id, "matching"), s.latest_output(invoice_id, "decision"), s.submission(invoice_id)
 st.header(f"Invoice {invoice_id}: {inv['filename']}")
-st.markdown(f"**Status:** {inv['status']}" + (f" at `{inv['failed_stage']}`" if inv["failed_stage"] else ""))
-st.caption(f"From {msg['sender']} · {msg['subject']} · received {msg['received_at']}")
+st.caption(f"{msg['source']} · from {msg['sender']} · {msg['subject']} · received {msg['received_at']}")
 
-decision = s.latest_output(invoice_id, "decision")
-submission = s.submission(invoice_id)
-if decision:
-    if decision["outcome"] == "submit":
-        st.success(decision["rationale"], title=f"Submitted to ClinRun: {submission['clinrun_id'] if submission else '…'}",
-                   icon=":material/check_circle:")
-    else:
-        st.warning("\n".join(f"- {d}" for d in decision["details"]), title="Held: " + ", ".join(decision["hold_reasons"]),
-                   icon=":material/pause_circle:")
+if inv["status"] == InvoiceStatus.failed:
+    st.error(f"Failed at the {inv['failed_stage']} Stage: {s.stage_runs(invoice_id)[-1]['error']}",
+             title="No Decision was made", icon=":material/error:")
+elif decision and submission and inv["status"] == InvoiceStatus.submitted:
+    st.success(decision["rationale"], title=f"Submitted to ClinRun: {submission['clinrun_id']}", icon=":material/check_circle:")
+elif decision:
+    st.warning(decision["rationale"] + "\n\n" + "\n".join(f"- {d}" for d in decision["details"]),
+               title=f"{inv['status']}: " + ", ".join(decision["hold_reasons"]), icon=":material/pause_circle:")
 
+# --- Actions --------------------------------------------------------------------------------
+if inv["status"] in (InvoiceStatus.held, InvoiceStatus.escalated) and decision:
+    reasons = {HoldReason(r) for r in decision["hold_reasons"]}
+    needs_correction = sorted(reasons - RELEASABLE)
+    ref = reference()
+    with st.container(border=True):
+        st.subheader("Act on this invoice")
+        tabs = st.tabs(["Correct context", "Correct a line", "Release", "Escalate"])
+        with tabs[0], st.form("correct_context"):
+            st.caption("Choose any record; the Suggested Context is preselected. Matching and the Decision rerun.")
+            sponsor = st.selectbox("Sponsor", ref.sponsors, format_func=lambda r: r["name"],
+                                   index=next((i for i, r in enumerate(ref.sponsors) if r["id"] == ctx["sponsor"]["record_id"]), 0))
+            study = st.selectbox("Study", ref.studies, format_func=lambda r: f"{r['name']} ({r['protocol_number']})",
+                                 index=next((i for i, r in enumerate(ref.studies) if r["id"] == ctx["study"]["record_id"]), 0))
+            site = st.selectbox("Site", ref.sites, format_func=lambda r: f"{r['name']} · {r.get('pi_name') or ''}",
+                                index=next((i for i, r in enumerate(ref.sites) if r["id"] == ctx["site"]["record_id"]), 0))
+            note = st.text_input("Why (required)")
+            if st.form_submit_button("Apply correction and rerun", type="primary"):
+                run_action("Correction", actions().correct_context, invoice_id, actor, sponsor["id"], study["id"], site["id"], note)
+        with tabs[1]:
+            if m and not m.get("skipped") and ex:
+                with st.form("correct_line"):
+                    lines = {line["line_no"]: line for line in ex["line_items"]}
+                    line_no = st.selectbox("Line", list(lines), format_func=lambda n: f"{n}: {lines[n]['description']}")
+                    options = [None] + m["catalog"]
+                    item = st.selectbox("Catalog Item", options, format_func=lambda r: "Unmatched" if r is None
+                                        else f"{r['item_code']}: {r['description']} ({r['unit_price']})")
+                    note = st.text_input("Why (required)", key="line_note")
+                    if st.form_submit_button("Apply and rerun the Decision", type="primary"):
+                        run_action("Line correction", actions().correct_line, invoice_id, actor, line_no,
+                                   item["id"] if item else None, note)
+            else:
+                st.caption("Matching has not run; correct the Context first.")
+        with tabs[2]:
+            if needs_correction:
+                st.info(f"Release is not available: {', '.join(needs_correction)} needs a Correction.", icon=":material/lock:")
+            else:
+                with st.form("release"):
+                    st.caption("Submits as-is. Your reason travels with the submission to ClinRun.")
+                    reason = st.text_input("Release reason (required)")
+                    if st.form_submit_button("Release to ClinRun", type="primary"):
+                        run_action("Release", actions().release, invoice_id, actor, reason)
+        with tabs[3], st.form("escalate"):
+            note = st.text_area("What needs a second look (required)")
+            if st.form_submit_button("Escalate"):
+                run_action("Escalation", actions().escalate, invoice_id, actor, note)
+elif inv["status"] == InvoiceStatus.failed:
+    if st.button(f"Rerun from {inv['failed_stage']}", type="primary", icon=":material/replay:"):
+        run_action("Rerun", actions().rerun, invoice_id, actor, inv["failed_stage"])
+elif inv["status"] == InvoiceStatus.submitted:
+    st.caption("Corrections to a submitted invoice become Amendments (planned, P2).")
+
+# --- What the AI saw and did ------------------------------------------------------------------
 left, right = st.columns(2)
-with left:
-    with st.container(border=True):
-        st.subheader("Extracted")
-        ex = s.latest_output(invoice_id, "extraction")
-        if ex:
-            st.table(pd.Series(ex["header"], name="value"))
-            st.dataframe(pd.DataFrame(ex["line_items"]), hide_index=True, alt="Extracted line items")
-with right:
-    with st.container(border=True):
-        st.subheader("Context")
-        ctx = s.latest_output(invoice_id, "context")
-        if ctx:
-            st.dataframe(pd.DataFrame([
-                {"field": name, "header text": ctx[name]["header_text"], "resolved to": ctx[name]["record_name"],
-                 "confidence": ctx[name]["confidence"], "confident": ctx[name]["confident"]}
-                for name in ("sponsor", "study", "site")]), hide_index=True, alt="Resolved context with confidence")
-            st.caption(f"Site linked to study: {ctx['site_linked_to_study']} · {ctx['explanation']}")
-            with st.expander("Agent lookups"):
-                st.code("\n".join(ctx["agent_lookups"]) or "none", language="text")
+with left, st.container(border=True):
+    st.subheader("Extracted")
+    if ex:
+        st.table(pd.Series({k: "" if v is None else str(v) for k, v in ex["header"].items()}, name="value"))
+        st.dataframe(pd.DataFrame(ex["line_items"]), hide_index=True, alt="Extracted line items")
+with right, st.container(border=True):
+    st.subheader("Context")
+    if ctx:
+        st.dataframe(pd.DataFrame([
+            {"field": f, "header text": ctx[f]["header_text"], "resolved to": ctx[f]["record_name"],
+             "confidence": ctx[f]["confidence"], "confident": ctx[f]["confident"]} for f in ("sponsor", "study", "site")]),
+            hide_index=True, alt="Resolved context with computed confidence")
+        st.caption(f"Site linked to study: {ctx['site_linked_to_study']} · Study belongs to sponsor: "
+                   f"{ctx['study_belongs_to_sponsor']} · {ctx['explanation']}")
+        with st.expander("Agent lookups"):
+            st.code("\n".join(ctx["agent_lookups"]) or "none", language="text")
 
 with st.container(border=True):
     st.subheader("Matched")
-    m = s.latest_output(invoice_id, "matching")
     if m and m.get("skipped"):
-        st.info(m["reason"] + ": matching was skipped.", icon=":material/block:")
+        st.info(m["reason"] + ": matching was skipped so nothing is priced against the wrong Catalog.", icon=":material/block:")
     elif m and ex:
-        by_no = {line["line_no"]: line for line in ex["line_items"]}
-        catalog = {item["id"]: item for item in m["catalog"]}
+        lines, catalog = {l["line_no"]: l for l in ex["line_items"]}, {i["id"]: i for i in m["catalog"]}
         st.dataframe(pd.DataFrame([{
-            "line": mm["line_no"], "as billed": by_no[mm["line_no"]]["description"],
-            "unit price": by_no[mm["line_no"]]["unit_price"],
+            "line": mm["line_no"], "as billed": lines[mm["line_no"]]["description"], "unit price": lines[mm["line_no"]]["unit_price"],
             "catalog item": f"{mm['item_code']}: {catalog[mm['catalog_item_id']]['description']}" if mm["catalog_item_id"] else "UNMATCHED",
             "catalog price": catalog[mm["catalog_item_id"]]["unit_price"] if mm["catalog_item_id"] else None,
-            "confidence": mm["confidence"], "ambiguous": mm["ambiguous"], "reason": mm["reason"]}
-            for mm in m["matches"]]), hide_index=True, alt="Line matches against the catalog")
+            "confidence": mm["confidence"], "ambiguous": mm["ambiguous"], "alternatives": ", ".join(mm["alternatives"]),
+            "reason": mm["reason"]} for mm in m["matches"]]), hide_index=True, alt="Line matches against the catalog")
 
 with st.container(border=True):
-    st.subheader("Stage runs")
-    st.dataframe(pd.DataFrame([{k: r[k] for k in ("stage", "run_no", "trigger", "outcome", "started_at", "ended_at", "error")}
-                               for r in s.stage_runs(invoice_id)]), hide_index=True, alt="Stage run history")
+    st.subheader("History")
+    st.dataframe(pd.DataFrame([{k: r[k] for k in ("stage", "run_no", "trigger", "outcome", "attempts", "served_by",
+                                                   "started_at", "ended_at", "error")} for r in s.stage_runs(invoice_id)]),
+                 hide_index=True, alt="Stage run history")
+    audit = s.actions(invoice_id)
+    if audit:
+        st.dataframe(pd.DataFrame([{k: r[k] for k in ("at", "actor", "kind", "note")} for r in audit]),
+                     hide_index=True, alt="Reviewer and Operator actions")

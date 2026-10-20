@@ -2,15 +2,15 @@
 from conftest import CATALOG, context, extraction, matching
 
 from invoice_assist.decision import decide
-from invoice_assist.models import LineMatch, MatchConfidence, Review
+from invoice_assist.models import LLMReview, LineMatch, MatchConfidence
 
 
-def ok_review(*args) -> Review:
-    return Review(concern=None, rationale="All lines match the catalog at catalog prices.")
+def ok_review(*args) -> LLMReview:
+    return LLMReview(concern=None, rationale="All lines match the catalog at catalog prices.")
 
 
-def worried_review(*args) -> Review:
-    return Review(concern="Screening visits billed twice for one patient look unusual.", rationale="Concern noted.")
+def worried_review(*args) -> LLMReview:
+    return LLMReview(concern="Screening visits billed twice for one patient look unusual.", rationale="Concern noted.")
 
 
 def run(ex=None, ctx=None, m=None, review=ok_review):
@@ -72,12 +72,45 @@ def test_llm_cannot_clear_a_hard_check_hold():
     assert d.outcome == "hold" and "unmatched" in d.hold_reasons and not d.straight_through
 
 
-def test_review_sees_the_hard_check_findings():
-    seen = {}
 
-    def spy(ex, ctx, m, catalog, findings):
-        seen["findings"] = findings
-        return ok_review()
+def test_line_the_matcher_left_out_is_unmatched():
+    m = matching()
+    m.matches = m.matches[:1]  # line 2 silently missing from the matcher's answer
+    d = run(m=m)
+    assert d.outcome == "hold" and d.hold_reasons == ["unmatched"] and "Line 2" in d.details[0]
 
-    run(m=matching(unmatched_line=1), review=spy)
-    assert [reason for reason, _ in seen["findings"]] == ["unmatched"]
+
+def test_low_confidence_match_holds():
+    m = matching()
+    m.matches[0].confidence = MatchConfidence.low
+    assert "ambiguous" in run(m=m).hold_reasons
+
+
+def test_billing_below_catalog_price_is_also_a_variance():
+    ex = extraction()
+    ex.line_items[0].unit_price, ex.line_items[0].amount, ex.header.total = 350, 350, 1310
+    assert run(ex=ex).hold_reasons == ["price_variance"]
+
+
+def test_tolerance_allows_small_variances(monkeypatch):
+    import invoice_assist.decision as decision
+    from invoice_assist.config import Settings
+    monkeypatch.setattr(decision, "settings", Settings(price_tolerance=0.02))
+    ex = extraction()
+    ex.line_items[0].unit_price, ex.line_items[0].amount, ex.header.total = 404, 404, 1364  # +1%
+    assert run(ex=ex).outcome == "submit"
+
+
+def test_nothing_billed_against_a_zero_priced_item_is_not_a_variance():
+    catalog = [dict(CATALOG[0], unit_price="0.00"), CATALOG[1]]
+    ex = extraction()
+    ex.line_items[0].unit_price, ex.line_items[0].amount, ex.header.total = 0, 0, 960
+    assert decide(ex, context(), matching(), catalog, ok_review).outcome == "submit"
+
+
+def test_half_cent_amounts_round_half_up_not_to_even():
+    ex = extraction()
+    ex.line_items[0].quantity, ex.line_items[0].unit_price, ex.line_items[0].amount = 1.5, 6.75, 10.13  # 10.125
+    ex.header.total = 970.13
+    catalog = [dict(CATALOG[0], unit_price="6.75"), CATALOG[1]]
+    assert "arithmetic" not in decide(ex, context(), matching(), catalog, ok_review).hold_reasons
