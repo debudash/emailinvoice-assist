@@ -13,11 +13,11 @@
 - **Every False Submit path found in review gets a test** that fails without the fix (for example,
   a line the matcher leaves out, or a rerun pushing a Held Invoice into submission).
 - **Bug fixes go test first**, with the issue ID in the test's docstring and a "found by" line
-  (ISSUE-001 to ISSUE-011; see [issue_log.md](issue_log.md)).
+  (ISSUE-001 to ISSUE-012; see [issue_log.md](issue_log.md)).
 
 ## Levels
 
-### Interface and integration (app, `tests/`, 89 tests)
+### Interface and integration (app, `tests/`, 90 tests)
 
 Run with `python -m pytest` from the repository root (the `.venv` from `uv sync`). No stack and no
 API key are needed: the Store is in-memory SQLite or a temp file, and the ClinRun Client test starts
@@ -45,6 +45,7 @@ its own mock-clinrun.
 | `test_issue_009_unreadable_email.py` | 1 | ISSUE-009 regression: an unreadable `.eml` is set aside and recorded as a Rejected Message, and the worker keeps going |
 | `test_issue_010_submission_variance_flag.py` | 1 | ISSUE-010 regression: the submission's Price Variance flag uses the decision's tolerance |
 | `test_issue_011_context_client_close.py` | 2 | ISSUE-011 regression: the context agent closes its client inside the event loop, on success and on failure |
+| `test_issue_012_dollar_math.py` | 1 | ISSUE-012 regression (`AppTest`): dollar amounts in the AI's rationale are escaped, not drawn as math |
 
 ### Service suites
 

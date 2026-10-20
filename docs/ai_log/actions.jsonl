@@ -556,3 +556,33 @@
 {"ts": "2026-10-20T23:16:06+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Fine-tune tails to land at 2:20"}, "ok": true}
 {"ts": "2026-10-20T23:16:12+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Branch and locate Matched table"}, "ok": true}
 {"ts": "2026-10-20T23:16:17+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\hub.py"}, "ok": true}
+{"ts": "2026-10-20T23:16:40+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Test, commit, merge column width fix"}, "ok": true}
+{"ts": "2026-10-20T23:17:05+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Rebuild hub; read capture reference"}, "ok": true}
+{"ts": "2026-10-20T23:17:08+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read takes template and capture API"}, "ok": true}
+{"ts": "2026-10-20T23:17:10+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read capture kit in full"}, "ok": true}
+{"ts": "2026-10-20T23:18:08+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Find flash display and scroll container"}, "ok": true}
+{"ts": "2026-10-20T23:18:14+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Print word cue times per scene"}, "ok": true}
+{"ts": "2026-10-20T23:18:49+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Patch capture kit with CRLF handling"}, "ok": true}
+{"ts": "2026-10-20T23:19:30+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\videos\\lr-emailassist-demo\\capture\\prep_state.sh"}, "ok": true}
+{"ts": "2026-10-20T23:26:36+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Reset video DB and build starting state"}, "ok": true}
+{"ts": "2026-10-20T23:26:42+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Inspect video inbox and worker state"}, "ok": true}
+{"ts": "2026-10-20T23:26:45+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read the 400 error details"}, "ok": true}
+{"ts": "2026-10-20T23:36:58+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Test one API call on the key"}, "ok": true}
+{"ts": "2026-10-20T23:39:23+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Reset video DB and build starting state"}, "ok": true}
+{"ts": "2026-10-20T23:39:28+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Verify hold reasons of prepared state"}, "ok": true}
+{"ts": "2026-10-20T23:39:36+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Show full hold details for medium and large"}, "ok": true}
+{"ts": "2026-10-20T23:43:56+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Reword and re-narrate s04; recompute timing"}, "ok": true}
+{"ts": "2026-10-20T23:44:02+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Print s04 cues and scene durations"}, "ok": true}
+{"ts": "2026-10-20T23:44:39+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\videos\\lr-emailassist-demo\\capture\\takes.mjs"}, "ok": true}
+{"ts": "2026-10-20T23:44:41+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check all cue words exist in transcripts"}, "ok": true}
+{"ts": "2026-10-20T23:45:15+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Install playwright at root; record s01"}, "ok": true}
+{"ts": "2026-10-20T23:46:31+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Record takes s02 through s09"}, "ok": true}
+{"ts": "2026-10-20T23:46:42+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Fix locator; sample s02 frames; check state"}, "ok": true}
+{"ts": "2026-10-20T23:47:10+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Branch; find where LLM text is rendered"}, "ok": true}
+{"ts": "2026-10-20T23:48:09+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Write failing ISSUE-012 test"}, "ok": true}
+{"ts": "2026-10-20T23:48:51+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Apply ISSUE-012 fix and run all tests"}, "ok": true}
+{"ts": "2026-10-20T23:49:00+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\hub.py"}, "ok": true}
+{"ts": "2026-10-20T23:49:01+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\hub.py"}, "ok": true}
+{"ts": "2026-10-20T23:49:02+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\hub.py"}, "ok": true}
+{"ts": "2026-10-20T23:49:03+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\hub.py"}, "ok": true}
+{"ts": "2026-10-20T23:49:32+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Run all tests"}, "ok": true}

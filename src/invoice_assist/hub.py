@@ -40,6 +40,13 @@ def actions(with_reference: bool = True) -> ReviewActions:
     return ReviewActions(store(), Pipeline(store()), reference() if with_reference else None)
 
 
+# ISSUE-012: the AI's text showed part of a sentence in a monospace math font. Root cause: Streamlit
+# Markdown reads the text between two dollar signs as LaTeX, and rationales quote amounts like $400.
+# Fix: escape every dollar sign in AI-written text before it is rendered as Markdown.
+def no_math(text: str) -> str:
+    return text.replace("$", r"\$")
+
+
 def run_action(label: str, action: str, *args):
     """The one friendly error boundary: every Review Action is built and called inside it."""
     with st.spinner(f"{label}… the pipeline reruns the affected Stages"):
@@ -174,9 +181,9 @@ if inv["status"] == InvoiceStatus.failed:
     st.error(f"Failed at the {inv['failed_stage']} Stage: {s.stage_runs(invoice_id)[-1]['error']}",
              title="No Decision was made", icon=":material/error:")
 elif decision and submission and inv["status"] == InvoiceStatus.submitted:
-    st.success(decision["rationale"], title=f"Submitted to ClinRun: {submission['clinrun_id']}", icon=":material/check_circle:")
+    st.success(no_math(decision["rationale"]), title=f"Submitted to ClinRun: {submission['clinrun_id']}", icon=":material/check_circle:")
 elif decision:
-    st.warning(decision["rationale"] + "\n\n" + "\n".join(f"- {d}" for d in decision["details"]),
+    st.warning(no_math(decision["rationale"] + "\n\n" + "\n".join(f"- {d}" for d in decision["details"])),
                title=f"{inv['status']}: " + ", ".join(decision["hold_reasons"]), icon=":material/pause_circle:")
     # ISSUE-007: the Hub never said which action clears a Hold, so a Price Variance got Corrections
     # that could not clear it. Fix: name the next step for each Hold Reason on the hold.
@@ -283,7 +290,7 @@ with right, st.container(border=True):
              "confidence": ctx[f]["confidence"], "confident": ctx[f]["confident"]} for f in ("sponsor", "study", "site")]),
             hide_index=True, alt="Resolved context with computed confidence")
         st.caption(f"Site linked to study: {ctx['site_linked_to_study']} · Study belongs to sponsor: "
-                   f"{ctx['study_belongs_to_sponsor']} · {ctx['explanation']}")
+                   f"{ctx['study_belongs_to_sponsor']} · {no_math(ctx['explanation'])}")
         with st.expander("Agent lookups"):
             st.code("\n".join(ctx["agent_lookups"]) or "none", language="text")
 
