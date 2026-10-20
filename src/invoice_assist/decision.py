@@ -76,8 +76,14 @@ def check_arithmetic(extraction: Extraction, context: Context, matching: Matchin
 def check_matches(extraction: Extraction, context: Context, matching: Matching | None, catalog: dict) -> list[Finding]:
     if matching is None:
         return []
-    findings, by_line = [], {m.line_no: m for m in matching.matches}
+    return [finding for findings in line_findings(extraction, matching, catalog).values() for finding in findings]
+
+
+def line_findings(extraction: Extraction, matching: Matching, catalog: dict) -> dict[int, list[Finding]]:
+    """The match findings for each Line Item, by line number; the Hub flags the same lines (ISSUE-008)."""
+    by_line, result = {m.line_no: m for m in matching.matches}, {}
     for line in extraction.line_items:  # every Line Item, so one the matcher left out cannot slip through
+        findings = result[line.line_no] = []
         match = by_line.get(line.line_no)
         if match is None or match.catalog_item_id is None:
             findings.append((HoldReason.unmatched, f"Line {line.line_no} '{line.description}' has no Catalog Item"))
@@ -93,7 +99,7 @@ def check_matches(extraction: Extraction, context: Context, matching: Matching |
             findings.append((HoldReason.price_variance, f"Line {line.line_no} '{line.description}' billed at "
                                                         f"{money(line.unit_price)}, catalog {item['item_code']} is "
                                                         f"{money(item['unit_price'])}"))
-    return findings
+    return result
 
 
 HARD_CHECKS = [check_source, check_context, check_arithmetic, check_matches]

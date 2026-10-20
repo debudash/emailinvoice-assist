@@ -13,7 +13,8 @@ from invoice_assist import metrics
 from invoice_assist.config import settings
 from invoice_assist.context import Reference
 from invoice_assist.intake import write_upload
-from invoice_assist.models import NEXT_STEP, HoldReason, InvoiceStatus
+from invoice_assist.decision import line_findings
+from invoice_assist.models import NEXT_STEP, Extraction, HoldReason, InvoiceStatus, Matching
 from invoice_assist.pipeline import Pipeline
 from invoice_assist.review import ActionRefused, ReviewActions
 from invoice_assist.store import Store
@@ -159,6 +160,14 @@ s = store()
 inv, msg = s.invoice(invoice_id), s.message_for(invoice_id)
 ex, ctx = s.latest_output(invoice_id, "extraction"), s.latest_output(invoice_id, "context")
 m, decision, submission = s.latest_output(invoice_id, "matching"), s.latest_output(invoice_id, "decision"), s.submission(invoice_id)
+# ISSUE-008: "Correct a line" listed every line and nothing showed which lines were the problem.
+# Root cause: the Hub had only the Decision's text details, not which line each finding was on.
+# Fix: the Decision's own per-line check (decision.line_findings) flags the lines; the table puts
+# them first and the correction lists only them, so a fixed line drops off after the rerun.
+issues = {}
+if ex and m and not m.get("skipped"):
+    found = line_findings(Extraction.model_validate(ex), Matching.model_validate(m), {i["id"]: i for i in m["catalog"]})
+    issues = {line_no: list(dict.fromkeys(r for r, _ in f)) for line_no, f in found.items() if f}
 st.header(f"Invoice {invoice_id}: {inv['filename']}")
 st.caption(f"{msg['source']} · from {msg['sender']} · {msg['subject']} · received {msg['received_at']}")
 
@@ -188,6 +197,8 @@ if inv["status"] in (InvoiceStatus.held, InvoiceStatus.escalated) and decision:
         st.subheader("Act on this invoice")
         tabs = st.tabs(["Correct context", "Correct a line", "Release", "Escalate"])
         with tabs[0]:
+            if not {HoldReason.context_uncertain, HoldReason.site_not_linked} & set(decision["hold_reasons"]):
+                st.caption("Context is confident and linked; correct it only if the AI picked the wrong record.")
             if ref is None:
                 st.caption("Unavailable while reference data cannot be loaded.")
             else:
@@ -211,9 +222,13 @@ if inv["status"] in (InvoiceStatus.held, InvoiceStatus.escalated) and decision:
                                        site["id"], note)
         with tabs[1]:
             if m and not m.get("skipped") and ex:
+                lines = {line["line_no"]: line for line in ex["line_items"]}
+                show_all = not issues or st.toggle("Show all lines", key="all_lines",
+                                                   help="To fix a confident match that is still wrong")
                 with st.form("correct_line"):
-                    lines = {line["line_no"]: line for line in ex["line_items"]}
-                    line_no = st.selectbox("Line", list(lines), format_func=lambda n: f"{n}: {lines[n]['description']}")
+                    line_no = st.selectbox("Line", list(lines) if show_all else list(issues),
+                                           format_func=lambda n: f"{n}: {lines[n]['description']}"
+                                           + (f" ({', '.join(issues[n])})" if n in issues else ""))
                     options = [None] + m["catalog"]
                     item = st.selectbox("Catalog Item", options, format_func=lambda r: "Unmatched" if r is None
                                         else f"{r['item_code']}: {r['description']} ({r['unit_price']})")
@@ -280,11 +295,13 @@ with st.container(border=True):
     elif m and ex:
         lines, catalog = {l["line_no"]: l for l in ex["line_items"]}, {i["id"]: i for i in m["catalog"]}
         st.dataframe(pd.DataFrame([{
-            "line": mm["line_no"], "as billed": lines[mm["line_no"]]["description"], "unit price": lines[mm["line_no"]]["unit_price"],
+            "line": mm["line_no"], "issue": ", ".join(issues.get(mm["line_no"], [])),
+            "as billed": lines[mm["line_no"]]["description"], "unit price": lines[mm["line_no"]]["unit_price"],
             "catalog item": f"{mm['item_code']}: {catalog[mm['catalog_item_id']]['description']}" if mm["catalog_item_id"] else "UNMATCHED",
             "catalog price": catalog[mm["catalog_item_id"]]["unit_price"] if mm["catalog_item_id"] else None,
             "confidence": mm["confidence"], "ambiguous": mm["ambiguous"], "alternatives": ", ".join(mm["alternatives"]),
-            "reason": mm["reason"]} for mm in m["matches"]]), hide_index=True, alt="Line matches against the catalog")
+            "reason": mm["reason"]} for mm in sorted(m["matches"], key=lambda mm: (mm["line_no"] not in issues, mm["line_no"]))]),
+            hide_index=True, alt="Line matches against the catalog")
 
 with st.container(border=True):
     st.subheader("History")
