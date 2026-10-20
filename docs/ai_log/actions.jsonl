@@ -310,3 +310,6 @@
 {"ts": "2026-10-20T14:28:37+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Apply ISSUE-003 fix and run hub tests"}, "ok": true}
 {"ts": "2026-10-20T14:29:56+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Fix test premise, log and commit ISSUE-003"}, "ok": true}
 {"ts": "2026-10-20T14:31:00+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Apply ISSUE-004 fix and run the suite"}, "ok": true}
+{"ts": "2026-10-20T14:35:36+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Commit ISSUE-004, rebuild hub, merge, push"}, "ok": true}
+{"ts": "2026-10-20T14:36:07+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Recheck hub health and logs"}, "ok": true}
+{"ts": "2026-10-20T14:36:33+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Merge fix branch and push"}, "ok": true}
