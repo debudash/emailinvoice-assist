@@ -112,6 +112,19 @@ class HoldReason(StrEnum):
 RELEASABLE = {HoldReason.price_variance, HoldReason.unmatched, HoldReason.ambiguous, HoldReason.llm_concern,
               HoldReason.extraction_unverifiable}
 
+# What clears each Hold Reason, shown on the hold in the Hub (ISSUE-007).
+NEXT_STEP = {
+    HoldReason.price_variance: "Release to accept it as billed, or Escalate to dispute it with the site",
+    HoldReason.unmatched: "Correct the line to a Catalog Item, or Release to submit it unmatched",
+    HoldReason.ambiguous: "Correct the line to the right Catalog Item, or Release with the AI's choice",
+    HoldReason.llm_concern: "Read the concern; Release if it is fine, or Escalate",
+    HoldReason.extraction_unverifiable: "Check the numbers against the document, then Release",
+    HoldReason.context_uncertain: "Correct the Context to the right sponsor, study and site",
+    HoldReason.site_not_linked: "Correct the Context to a site linked to the study, or Escalate",
+    HoldReason.arithmetic: "Escalate: the site needs to send a corrected invoice",
+    HoldReason.extraction_unverified: "Compare with the document and Escalate; the site may need to resend",
+}
+
 
 class Outcome(StrEnum):
     submit = "submit"

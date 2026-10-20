@@ -55,6 +55,13 @@ class ReviewActions:
         self._held(invoice_id, "Correction")
         before = self.store.latest_output(invoice_id, "context")
         old = Context.model_validate(before)
+        # ISSUE-007: a Correction that changed nothing was accepted, reran the AI and held again, so a
+        # Reviewer "fixing" a Price Variance this way saw no effect. Root cause: no check that the
+        # Correction differs from what is there. Fix: refuse it and say which action clears the Hold.
+        if old.confident and (old.sponsor.record_id, old.study.record_id, old.site.record_id) == (
+                sponsor_id, study_id, site_id):
+            raise ActionRefused("The Context is already these records, all confident; a Correction would change "
+                                "nothing. Check what clears each Hold Reason on the hold.")
         sponsor = next(r for r in self.reference.sponsors if r["id"] == sponsor_id)
         study = next(r for r in self.reference.studies if r["id"] == study_id)
         site = next(r for r in self.reference.sites if r["id"] == site_id)
@@ -78,12 +85,16 @@ class ReviewActions:
         if not matching or matching.get("skipped"):
             raise ActionRefused("Matching has not run; correct the Context first")
         catalog = {item["id"]: item for item in matching["catalog"]}
+        before = next((m for m in matching["matches"] if m["line_no"] == line_no), None)
+        if (before and before["catalog_item_id"] == catalog_item_id and before["confidence"] == MatchConfidence.high
+                and not before["ambiguous"]):  # ISSUE-007: see correct_context
+            raise ActionRefused(f"Line {line_no} is already matched to {before['item_code'] or 'Unmatched'}; a "
+                                "Correction would change nothing. A Price Variance is cleared by a Release.")
         corrected_line = LineMatch(
             line_no=line_no, catalog_item_id=catalog_item_id,
             item_code=catalog[catalog_item_id]["item_code"] if catalog_item_id else None,
             confidence=MatchConfidence.high, ambiguous=False, alternatives=[],
             reason=f"Corrected by {actor}: {note}", corrected_by=actor).model_dump()
-        before = next((m for m in matching["matches"] if m["line_no"] == line_no), None)
         matches = sorted([m for m in matching["matches"] if m["line_no"] != line_no] + [corrected_line],
                          key=lambda m: m["line_no"])  # also covers a line the matcher left out
         return self._rerun_after_correction(invoice_id, actor, "matching", {**matching, "matches": matches},

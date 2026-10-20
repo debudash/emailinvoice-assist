@@ -13,7 +13,7 @@ from invoice_assist import metrics
 from invoice_assist.config import settings
 from invoice_assist.context import Reference
 from invoice_assist.intake import write_upload
-from invoice_assist.models import InvoiceStatus
+from invoice_assist.models import NEXT_STEP, HoldReason, InvoiceStatus
 from invoice_assist.pipeline import Pipeline
 from invoice_assist.review import ActionRefused, ReviewActions
 from invoice_assist.store import Store
@@ -170,6 +170,10 @@ elif decision and submission and inv["status"] == InvoiceStatus.submitted:
 elif decision:
     st.warning(decision["rationale"] + "\n\n" + "\n".join(f"- {d}" for d in decision["details"]),
                title=f"{inv['status']}: " + ", ".join(decision["hold_reasons"]), icon=":material/pause_circle:")
+    # ISSUE-007: the Hub never said which action clears a Hold, so a Price Variance got Corrections
+    # that could not clear it. Fix: name the next step for each Hold Reason on the hold.
+    st.markdown("**What clears it**\n\n" + "\n".join(f"- **{r}**: {NEXT_STEP[HoldReason(r)]}"
+                                                     for r in dict.fromkeys(decision["hold_reasons"])))
 
 # --- Actions --------------------------------------------------------------------------------
 if inv["status"] in (InvoiceStatus.held, InvoiceStatus.escalated) and decision:
