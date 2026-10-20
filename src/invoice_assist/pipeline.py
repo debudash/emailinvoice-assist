@@ -39,6 +39,9 @@ def build_submission(store: Store, invoice_id: int, ex: Extraction, ctx: Context
     for line in ex.line_items:
         mm = by_no.get(line.line_no)
         item = catalog_by_id.get(mm.catalog_item_id) if mm else None
+        # ISSUE-010: with a price tolerance set, a line the Decision accepted went to ClinRun flagged as
+        # a Price Variance. Root cause: this flag compared prices exactly, while the Decision applied
+        # PRICE_TOLERANCE. Fix: both use decision.is_price_variance, so they cannot disagree.
         variance = bool(item) and decision.is_price_variance(line.unit_price, item["unit_price"])
         adjusted = variance and at_catalog_price  # paid at the Catalog price; the billed figures travel with it
         unit_price, amount = line.unit_price, line.amount

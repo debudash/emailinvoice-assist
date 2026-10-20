@@ -4,9 +4,9 @@ import time
 from pathlib import Path
 
 from .config import settings
-from .intake import parse_eml
+from .intake import Message, parse_eml
 from .pipeline import Pipeline
-from .store import Store
+from .store import Store, now
 
 log = logging.getLogger("worker")
 
@@ -26,11 +26,19 @@ def poll_once(store: Store, pipeline: Pipeline, inbox: Path) -> int:
     failed_dir.mkdir(parents=True, exist_ok=True)
     count = 0
     for path in sorted(inbox.glob("*.eml"), key=lambda p: (p.stat().st_mtime, p.name)):
+        # ISSUE-009: one unreadable .eml crashed the worker loop, and later, once set aside, it
+        # vanished from the Hub. Root cause: parsing errors were not caught per file, and the set-aside
+        # file was only logged. Fix: this per-file catch (the worker's error boundary, as the Pipeline
+        # is the Stages') moves the file to inbox/failed/ and records it as a Rejected Message, so the
+        # worker keeps going and the Reviewer sees it in the Rejected list (PRD story 4).
         try:
             invoice_ids = ingest(store, path)
-        except Exception:  # an unreadable file is set aside for the Operator; the worker keeps going
+        except Exception as exc:
             log.exception("Could not read %s; moved to %s", path.name, failed_dir)
             path.rename(failed_dir / path.name)
+            store.add_message(Message(message_id="", sender="(unreadable)", subject=path.name, body="",
+                                      received_at=now(), rejection_reason=f"Unreadable email ({type(exc).__name__});"
+                                      f" the file is in inbox/failed/{path.name}"))
             continue
         path.rename(processed_dir / path.name)
         for invoice_id in invoice_ids:
