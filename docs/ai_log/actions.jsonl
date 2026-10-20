@@ -519,3 +519,40 @@
 {"ts": "2026-10-20T22:57:41+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Run all tests and commit ISSUE-011"}, "ok": true}
 {"ts": "2026-10-20T22:57:57+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "C:\\Users\\debud\\AppData\\Local\\Temp\\claude\\d--Dev-lr-emailassist\\51fc2031-1dcd-47ae-b40b-1570aef29a12\\scratchpad\\log_pass.py"}, "ok": true}
 {"ts": "2026-10-20T22:58:00+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Add issue log entries and update test plan"}, "ok": true}
+{"ts": "2026-10-20T22:58:24+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Verify log, commit, merge, run tests"}, "ok": true}
+{"ts": "2026-10-20T22:59:03+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Rebuild worker and hub"}, "ok": true}
+{"ts": "2026-10-20T22:59:19+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "C:\\Users\\debud\\.claude\\projects\\d--Dev-lr-emailassist\\memory\\project-status.md"}, "ok": true}
+{"ts": "2026-10-20T23:01:20+00:00", "session": "51fc2031", "agent": "main", "tool": "Skill", "input": {"skill": "demo-video"}, "ok": true}
+{"ts": "2026-10-20T23:01:30+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Record hold decision in decisions.md"}, "ok": true}
+{"ts": "2026-10-20T23:02:10+00:00", "session": "51fc2031", "agent": "main", "tool": "Skill", "input": {"skill": "hyperframes"}, "ok": true}
+{"ts": "2026-10-20T23:02:39+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check HyperFrames usage; read script reference"}, "ok": true}
+{"ts": "2026-10-20T23:03:03+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read pitfalls and storyboard input format"}, "ok": true}
+{"ts": "2026-10-20T23:03:25+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read project brief; check voice setup"}, "ok": true}
+{"ts": "2026-10-20T23:04:56+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Init HyperFrames video project and copy kit"}, "ok": true}
+{"ts": "2026-10-20T23:05:13+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Install Playwright; read brief format"}, "ok": true}
+{"ts": "2026-10-20T23:05:28+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\videos\\lr-emailassist-demo\\BRIEF.md"}, "ok": true}
+{"ts": "2026-10-20T23:05:29+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\videos\\lr-emailassist-demo\\compose.video.yml"}, "ok": true}
+{"ts": "2026-10-20T23:05:50+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Switch to Opus; start worker and hub on video DB"}, "ok": true}
+{"ts": "2026-10-20T23:08:29+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Process the four samples on the video DB"}, "ok": true}
+{"ts": "2026-10-20T23:08:37+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read timings, hold reasons and metrics"}, "ok": true}
+{"ts": "2026-10-20T23:09:20+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Create a Failed invoice via a ref-mcp outage"}, "ok": true}
+{"ts": "2026-10-20T23:09:33+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\videos\\lr-emailassist-demo\\capture\\probe.mjs"}, "ok": true}
+{"ts": "2026-10-20T23:09:39+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Probe Hub DOM structure"}, "ok": true}
+{"ts": "2026-10-20T23:09:56+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\videos\\lr-emailassist-demo\\capture\\stills.mjs"}, "ok": true}
+{"ts": "2026-10-20T23:10:16+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Capture storyboard stills"}, "ok": true}
+{"ts": "2026-10-20T23:10:27+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\videos\\lr-emailassist-demo\\capture\\stills.mjs"}, "ok": true}
+{"ts": "2026-10-20T23:10:49+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Recapture stills"}, "ok": true}
+{"ts": "2026-10-20T23:11:22+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\videos\\lr-emailassist-demo\\script\\narration.md"}, "ok": true}
+{"ts": "2026-10-20T23:11:23+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Count words and estimate durations"}, "ok": true}
+{"ts": "2026-10-20T23:11:36+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Trim narration and re-estimate"}, "ok": true}
+{"ts": "2026-10-20T23:11:47+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Verify attempts; fix metric claim"}, "ok": true}
+{"ts": "2026-10-20T23:12:13+00:00", "session": "51fc2031", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\videos\\lr-emailassist-demo\\storyboard\\scenes.json"}, "ok": true}
+{"ts": "2026-10-20T23:12:15+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Generate STORYBOARD.md and review page"}, "ok": true}
+{"ts": "2026-10-20T23:12:20+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Open storyboard review page in the browser"}, "ok": true}
+{"ts": "2026-10-20T23:13:34+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Lock storyboard; read tts usage"}, "ok": true}
+{"ts": "2026-10-20T23:15:45+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Narrate all scenes with DDVoice"}, "ok": true}
+{"ts": "2026-10-20T23:15:55+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Compute scene timing against target"}, "ok": true}
+{"ts": "2026-10-20T23:16:02+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Recompute timing with longer tails"}, "ok": true}
+{"ts": "2026-10-20T23:16:06+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Fine-tune tails to land at 2:20"}, "ok": true}
+{"ts": "2026-10-20T23:16:12+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Branch and locate Matched table"}, "ok": true}
+{"ts": "2026-10-20T23:16:17+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\hub.py"}, "ok": true}
