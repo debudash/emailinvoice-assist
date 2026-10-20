@@ -13,7 +13,7 @@ from invoice_assist import metrics
 from invoice_assist.config import settings
 from invoice_assist.context import Reference
 from invoice_assist.intake import write_upload
-from invoice_assist.models import InvoiceStatus
+from invoice_assist.models import NEXT_STEP, HoldReason, InvoiceStatus
 from invoice_assist.pipeline import Pipeline
 from invoice_assist.review import ActionRefused, ReviewActions
 from invoice_assist.store import Store
@@ -170,6 +170,10 @@ elif decision and submission and inv["status"] == InvoiceStatus.submitted:
 elif decision:
     st.warning(decision["rationale"] + "\n\n" + "\n".join(f"- {d}" for d in decision["details"]),
                title=f"{inv['status']}: " + ", ".join(decision["hold_reasons"]), icon=":material/pause_circle:")
+    # ISSUE-007: the Hub never said which action clears a Hold, so a Price Variance got Corrections
+    # that could not clear it. Fix: name the next step for each Hold Reason on the hold.
+    st.markdown("**What clears it**\n\n" + "\n".join(f"- **{r}**: {NEXT_STEP[HoldReason(r)]}"
+                                                     for r in dict.fromkeys(decision["hold_reasons"])))
 
 # --- Actions --------------------------------------------------------------------------------
 if inv["status"] in (InvoiceStatus.held, InvoiceStatus.escalated) and decision:
@@ -224,10 +228,17 @@ if inv["status"] in (InvoiceStatus.held, InvoiceStatus.escalated) and decision:
                 st.info(f"Release is not available: {', '.join(needs_correction)} needs a Correction.", icon=":material/lock:")
             else:
                 with st.form("release"):
-                    st.caption("Submits as-is. Your reason travels with the submission to ClinRun.")
+                    st.caption("Your reason and name travel with the submission to ClinRun.")
+                    at_catalog_price = False
+                    if "price_variance" in decision["hold_reasons"]:
+                        at_catalog_price = st.radio(
+                            "Price Variance lines", [False, True], horizontal=True,
+                            format_func=lambda c: "Pay the catalog price" if c else "Accept as billed",
+                            help="Paying the catalog price sends the catalog price to ClinRun and keeps the "
+                                 "billed price on the record.")
                     reason = st.text_input("Release reason (required)")
                     if st.form_submit_button("Release to ClinRun", type="primary"):
-                        run_action("Release", "release", invoice_id, actor, reason)
+                        run_action("Release", "release", invoice_id, actor, reason, at_catalog_price)
         with tabs[3], st.form("escalate"):
             note = st.text_area("What needs a second look (required)")
             if st.form_submit_button("Escalate"):

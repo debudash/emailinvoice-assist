@@ -57,7 +57,8 @@ def test_release_submits_a_price_variance_with_reason_and_reviewer(store, simple
     assert actions.release(simple_invoice, "Dana", "Site fee agreed by sponsor email 2024-03-01") == "Submitted"
 
     submission, _ = clinrun.calls[0]
-    assert submission["release"] == {"reason": "Site fee agreed by sponsor email 2024-03-01", "reviewer": "Dana"}
+    assert submission["release"] == {"reason": "Site fee agreed by sponsor email 2024-03-01", "reviewer": "Dana",
+                                     "at_catalog_price": False}
     assert submission["decision"]["straight_through"] is False
 
 
@@ -160,7 +161,8 @@ def test_release_reason_survives_a_failed_submission_rerun(store, simple_invoice
     assert actions.release(simple_invoice, "Dana", "approved by sponsor") == "Failed"
 
     assert actions.rerun(simple_invoice, "Ops", "submission") == "Submitted"
-    assert attempts[-1]["release"] == {"reason": "approved by sponsor", "reviewer": "Dana"}
+    assert attempts[-1]["release"] == {"reason": "approved by sponsor", "reviewer": "Dana",
+                                     "at_catalog_price": False}
 
 
 def test_a_line_the_matcher_left_out_can_be_corrected(store, simple_invoice):

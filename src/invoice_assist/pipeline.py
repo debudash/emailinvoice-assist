@@ -8,6 +8,7 @@ any Stage and any Decision can be rebuilt from its rows.
 import time
 from collections.abc import Callable
 from dataclasses import dataclass
+from decimal import Decimal
 
 from . import clinrun, context, decision, extraction, llm, matching
 from .models import Context, Decision, Extraction, InvoiceStatus, Matching, Outcome
@@ -33,16 +34,25 @@ def build_submission(store: Store, invoice_id: int, ex: Extraction, ctx: Context
                      d: Decision, catalog_by_id: dict, release: dict | None = None) -> dict:
     msg = store.message_for(invoice_id)
     by_no = {mm.line_no: mm for mm in m.matches}
+    at_catalog_price = bool(release and release.get("at_catalog_price"))
     lines = []
     for line in ex.line_items:
         mm = by_no.get(line.line_no)
         item = catalog_by_id.get(mm.catalog_item_id) if mm else None
+        variance = bool(item) and decision.is_price_variance(line.unit_price, item["unit_price"])
+        adjusted = variance and at_catalog_price  # paid at the Catalog price; the billed figures travel with it
+        unit_price, amount = line.unit_price, line.amount
+        if adjusted:
+            price = decision.money(item["unit_price"])
+            unit_price, amount = float(price), float(decision.money(price * Decimal(str(line.quantity))))
         lines.append({
             "catalog_item_id": item["id"] if item else None,
             "item_code": item["item_code"] if item else None,
             "description_as_billed": line.description,
-            "qty": line.quantity, "unit_price": line.unit_price, "amount": line.amount,
-            "price_variance": bool(item) and decision.is_price_variance(line.unit_price, item["unit_price"]),
+            "qty": line.quantity, "unit_price": unit_price, "amount": amount,
+            "price_variance": variance,
+            "billed_unit_price": line.unit_price if adjusted else None,
+            "billed_amount": line.amount if adjusted else None,
         })
     return {
         # The printed total only; a missing one is held by the decision (check_printed_total).

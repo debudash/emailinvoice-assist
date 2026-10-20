@@ -119,7 +119,7 @@ One specific cause of a Hold, such as Price Variance, Unmatched, Ambiguous, unce
 _Avoid_: Error, flag, issue
 
 **Release**:
-A reviewer's choice to submit a held Invoice as-is, with a required reason. It is allowed only for Hold Reasons that are business judgements.
+A reviewer's choice to submit a held Invoice, with a required reason: as billed, or with Price Variance lines paid at the Catalog price (the billed price is kept on the record). It is allowed only for Hold Reasons that are business judgements.
 _Avoid_: Override, approve, force-submit
 
 **Correction**:

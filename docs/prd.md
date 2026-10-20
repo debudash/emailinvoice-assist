@@ -122,6 +122,7 @@ Context ready for the Reviewer ([ADR-0001](adr/0001-no-human-gate-hold-on-uncert
 50. **P0** As a Reviewer, I want to correct the Context by choosing any sponsor, study or site from the full reference lists, not only from the suggestions, so that I can fix a header the AI couldn't place at all.
 51. **P0** As a Reviewer, I want a Correction to rerun the affected Stages automatically, and the new Decision to be made by the AI, so that a corrected Invoice can still go straight through.
 52. **P0** As a Reviewer, I want to Release a Hold with a required reason when every Hold Reason is a business judgement (Price Variance, Unmatched, Ambiguous, LLM concern, image unverifiable), so that agreed exceptions can be paid.
+52a. **P1** As a Reviewer, I want to Release a Price Variance at the Catalog price, with a required reason, so that I can pay what the Catalog allows without changing what the site billed (the billed price travels with the submission).
 53. **P0** As a Reviewer, I want Release refused while a Hold Reason that needs a Correction remains (uncertain Context, unlinked site, arithmetic inconsistency), so that we never bill the wrong study.
 54. **P0** As a Reviewer, I want to Escalate an Invoice with a required note, so that what I can't resolve gets a second look.
 55. **P0** As a Reviewer, I want an Escalated queue that any Reviewer can work, so that escalations don't depend on one person.
@@ -218,9 +219,9 @@ most of the deterministic tests sit behind their interfaces.
 - **Idempotency key:** a hash of the file plus the Invoice Version.
 - **Invoice:** number, date, currency (USD only) and total.
 - **Context:** sponsor, study and site IDs.
-- **Lines:** for each, the Catalog Item's ID and code, the description as billed, quantity, unit price, amount, and a Price Variance flag.
+- **Lines:** for each, the Catalog Item's ID and code, the description as billed, quantity, unit price, amount, and a Price Variance flag; when a Release paid the line at the Catalog price, the billed unit price and amount as well.
 - **Decision:** the rationale, and whether it went straight through.
-- **Release, if any:** the reason and the Reviewer.
+- **Release, if any:** the reason, the Reviewer, and whether Price Variance lines were paid at the Catalog price.
 - **Source:** the Message ID and the time it was received.
 
 The response is a ClinRun ID with status *accepted*. A repeated idempotency key returns the original

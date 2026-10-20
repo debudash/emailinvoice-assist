@@ -382,3 +382,40 @@
 {"ts": "2026-10-20T21:23:12+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Commit ISSUE-006 fix"}, "ok": true}
 {"ts": "2026-10-20T21:23:17+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\docs\\issue_log.md"}, "ok": true}
 {"ts": "2026-10-20T21:23:19+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Commit issue log entry, show branch"}, "ok": true}
+{"ts": "2026-10-20T21:23:44+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Merge fixes to main and rerun tests"}, "ok": true}
+{"ts": "2026-10-20T21:23:50+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "C:\\Users\\debud\\.claude\\projects\\d--Dev-lr-emailassist\\memory\\project-status.md"}, "ok": true}
+{"ts": "2026-10-20T21:35:51+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check stack status and DB location"}, "ok": true}
+{"ts": "2026-10-20T21:36:05+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Dump invoice 2 stage runs, actions, submissions"}, "ok": true}
+{"ts": "2026-10-20T21:36:11+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Find Release and role handling in Hub"}, "ok": true}
+{"ts": "2026-10-20T21:42:13+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Check spec for price correction and release rules"}, "ok": true}
+{"ts": "2026-10-20T21:42:17+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read glossary and brief on price handling"}, "ok": true}
+{"ts": "2026-10-20T21:45:14+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Look at mock-clinrun service schema"}, "ok": true}
+{"ts": "2026-10-20T21:45:14+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read pipeline submission path"}, "ok": true}
+{"ts": "2026-10-20T21:45:19+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read mock-clinrun submission schema and PRD contract"}, "ok": true}
+{"ts": "2026-10-20T21:45:33+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read Hub action area"}, "ok": true}
+{"ts": "2026-10-20T21:45:33+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read mock-clinrun and release tests"}, "ok": true}
+{"ts": "2026-10-20T21:45:42+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Read conftest fixtures"}, "ok": true}
+{"ts": "2026-10-20T21:46:09+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Branch and write failing ISSUE-007 tests"}, "ok": true}
+{"ts": "2026-10-20T21:46:34+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\models.py"}, "ok": true}
+{"ts": "2026-10-20T21:46:36+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\review.py"}, "ok": true}
+{"ts": "2026-10-20T21:46:37+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\review.py"}, "ok": true}
+{"ts": "2026-10-20T21:46:38+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\review.py"}, "ok": true}
+{"ts": "2026-10-20T21:46:39+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\hub.py"}, "ok": true}
+{"ts": "2026-10-20T21:46:40+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Find hub models import"}, "ok": true}
+{"ts": "2026-10-20T21:47:16+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Fix import and run all tests"}, "ok": true}
+{"ts": "2026-10-20T21:47:26+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Commit ISSUE-007 fix"}, "ok": true}
+{"ts": "2026-10-20T21:47:39+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\docs\\issue_log.md"}, "ok": true}
+{"ts": "2026-10-20T21:47:41+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Commit issue log entry"}, "ok": true}
+{"ts": "2026-10-20T21:48:04+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Write failing tests for release at catalog price"}, "ok": true}
+{"ts": "2026-10-20T21:48:18+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\review.py"}, "ok": true}
+{"ts": "2026-10-20T21:48:19+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\review.py"}, "ok": true}
+{"ts": "2026-10-20T21:48:20+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\pipeline.py"}, "ok": true}
+{"ts": "2026-10-20T21:48:30+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\pipeline.py"}, "ok": true}
+{"ts": "2026-10-20T21:48:33+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Add Decimal import; update release dict in old tests"}, "ok": true}
+{"ts": "2026-10-20T21:48:44+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\services\\mock-clinrun\\app\\main.py"}, "ok": true}
+{"ts": "2026-10-20T21:48:45+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\services\\mock-clinrun\\app\\main.py"}, "ok": true}
+{"ts": "2026-10-20T21:48:46+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\hub.py"}, "ok": true}
+{"ts": "2026-10-20T21:48:47+00:00", "session": "51fc2031", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\models.py"}, "ok": true}
+{"ts": "2026-10-20T21:49:08+00:00", "session": "51fc2031", "agent": "main", "tool": "PowerShell", "input": {"description": "Run app and mock-clinrun test suites"}, "ok": true}
+{"ts": "2026-10-20T21:49:12+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Locate doc sections to update"}, "ok": true}
+{"ts": "2026-10-20T21:49:22+00:00", "session": "51fc2031", "agent": "main", "tool": "Bash", "input": {"description": "Update PRD, glossary and decisions log"}, "ok": true}
