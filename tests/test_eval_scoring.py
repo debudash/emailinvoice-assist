@@ -49,3 +49,11 @@ def test_gate_passes_when_every_floor_is_met():
     assert passed and summary == {"examples": 4, "false_submits": 0, "decision_accuracy": 1.0,
                                   "hold_reason_recall": 1.0, "context_accuracy": 1.0, "line_match_accuracy": 1.0,
                                   "failures": []}
+
+
+def test_rationale_faithfulness_is_full_only_when_nothing_is_wrong():
+    from evals.judge import Grade, faithfulness
+    assert faithfulness(Grade(states_outcome=True, cites_every_reason=True)) == 1.0
+    assert faithfulness(Grade(states_outcome=True, cites_every_reason=False)) == 2 / 3
+    assert faithfulness(Grade(states_outcome=True, cites_every_reason=True,
+                              unsupported_claims=["total is 1,500"])) == 2 / 3

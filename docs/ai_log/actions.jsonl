@@ -275,3 +275,32 @@
 {"ts": "2026-10-20T03:31:44+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Annotate superseded statements in decisions and ADR"}, "ok": true}
 {"ts": "2026-10-20T03:32:29+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Record limitations, AI log, commit fixes"}, "ok": true}
 {"ts": "2026-10-20T03:35:58+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Clean rebuild and final smoke run of all samples"}, "ok": true}
+{"ts": "2026-10-20T03:36:12+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Merge P1 to main, tag, push"}, "ok": true}
+{"ts": "2026-10-20T12:47:37+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Create branch and look up st.pdf docs"}, "ok": true}
+{"ts": "2026-10-20T12:49:01+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Check pdfplumber text from a sample"}, "ok": true}
+{"ts": "2026-10-20T12:49:28+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Inspect number formatting in PDF text"}, "ok": true}
+{"ts": "2026-10-20T12:49:52+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_verify.py"}, "ok": true}
+{"ts": "2026-10-20T12:49:53+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\src\\invoice_assist\\verify.py"}, "ok": true}
+{"ts": "2026-10-20T12:51:03+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Wire verification into extraction and decision"}, "ok": true}
+{"ts": "2026-10-20T12:51:58+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Add Decided status, document view, decision history"}, "ok": true}
+{"ts": "2026-10-20T12:52:40+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Inspect seed data for the generator"}, "ok": true}
+{"ts": "2026-10-20T12:53:20+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\scripts\\make_test_invoices.py"}, "ok": true}
+{"ts": "2026-10-20T12:53:38+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "List scenarios, generate all, inspect one"}, "ok": true}
+{"ts": "2026-10-20T12:59:20+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Write scenario runner and run all scenarios live"}, "ok": true}
+{"ts": "2026-10-20T13:01:13+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Close async client, rerun two scenarios"}, "ok": true}
+{"ts": "2026-10-20T13:01:37+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\evals\\judge.py"}, "ok": true}
+{"ts": "2026-10-20T13:02:10+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Add judge evaluator to eval and test scoring"}, "ok": true}
+{"ts": "2026-10-20T13:02:54+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\evals\\gold_review.py"}, "ok": true}
+{"ts": "2026-10-20T13:02:56+00:00", "session": "f5c00250", "agent": "main", "tool": "Write", "input": {"file_path": "D:\\Dev\\lr-emailassist\\tests\\test_gold_review.py"}, "ok": true}
+{"ts": "2026-10-20T13:03:59+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Run the gold review page test"}, "ok": true}
+{"ts": "2026-10-20T13:09:48+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Rebuild app and run eval with the judge"}, "ok": true}
+{"ts": "2026-10-20T13:10:22+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Inspect the judge's unsupported claims"}, "ok": true}
+{"ts": "2026-10-20T13:13:51+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Give the judge the evidence and rerun eval"}, "ok": true}
+{"ts": "2026-10-20T13:14:26+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Inspect remaining judge findings"}, "ok": true}
+{"ts": "2026-10-20T14:11:24+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Capture evidence at decision time, refine judge, rerun"}, "ok": true}
+{"ts": "2026-10-20T14:11:55+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "List README and test plan headings"}, "ok": true}
+{"ts": "2026-10-20T14:12:19+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\README.md"}, "ok": true}
+{"ts": "2026-10-20T14:12:19+00:00", "session": "f5c00250", "agent": "main", "tool": "Edit", "input": {"file_path": "D:\\Dev\\lr-emailassist\\docs\\test_plan.md"}, "ok": true}
+{"ts": "2026-10-20T14:12:34+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Point the gold-labels gap at the review page"}, "ok": true}
+{"ts": "2026-10-20T14:14:16+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Read the eval result"}, "ok": true}
+{"ts": "2026-10-20T14:14:51+00:00", "session": "f5c00250", "agent": "main", "tool": "Bash", "input": {"description": "Sanity check the judge with a planted bad rationale"}, "ok": true}

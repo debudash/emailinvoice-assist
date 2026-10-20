@@ -33,6 +33,7 @@ class Extraction(BaseModel):
     line_items: list[LineItem]
     # Set by the Stage, never by the LLM (kept out of the output schema).
     source_media_type: SkipJsonSchema[str] = "application/pdf"
+    unverified: SkipJsonSchema[list[str]] = []  # extracted values not found in the document text
 
 
 # --- Context ------------------------------------------------------------------
@@ -102,6 +103,7 @@ class HoldReason(StrEnum):
     price_variance = "price_variance"
     arithmetic = "arithmetic"
     extraction_unverifiable = "extraction_unverifiable"
+    extraction_unverified = "extraction_unverified"
     llm_concern = "llm_concern"
 
 
@@ -120,6 +122,7 @@ class InvoiceStatus(StrEnum):
     extracted = "Extracted"
     context_resolved = "Context Resolved"
     matched = "Matched"
+    decided = "Decided"
     submitted = "Submitted"
     held = "Held"
     failed = "Failed"
