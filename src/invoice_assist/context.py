@@ -22,9 +22,15 @@ header text. Do not state how confident you are; that is computed separately."""
 
 
 def _tool_json(result) -> object:
-    if getattr(result, "structuredContent", None):
-        data = result.structuredContent
-        return data.get("result", data) if isinstance(data, dict) else data
+    # ISSUE-002: the context Stage crashed scoring the agent's choices ("string indices must be
+    # integers"). Root cause: the mcp 2.x client names the field `structured_content`; reading the
+    # 1.x name `structuredContent` found nothing, so we fell back to the first text block, which
+    # holds only one row of a list. Reading the 2.x field returns the whole structured result.
+    data = result.structured_content
+    if isinstance(data, dict) and set(data) == {"result"}:
+        return data["result"]  # FastMCP wraps list returns as {"result": [...]}
+    if data is not None:
+        return data
     return json.loads(result.content[0].text)
 
 
