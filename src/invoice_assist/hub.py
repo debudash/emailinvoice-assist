@@ -102,11 +102,20 @@ metrics_strip()
 queue_name = st.segmented_control("Queue", QUEUES, default="Held", key="queue_name")
 
 
+def queue_rows(name: str | None) -> list[dict]:
+    rows = [dict(r) for r in store().invoices()]
+    return [r for r in rows if r["status"] == name] if name and name != "All" else rows
+
+
+# ISSUE-003: choosing a queue or ticking a row did not change the invoice shown below.
+# Root cause: the table lives in an auto-refreshing fragment, so a row click reran only the fragment
+# and the detail (outside it) never redrew; one table key was shared by every queue, so a stored row
+# position pointed at another queue's invoice; and the detail never checked the selection was in the
+# chosen queue. Fix: a changed selection reruns the whole app, each queue keeps its own table state,
+# and the detail always shows an invoice from the chosen queue (its first when nothing is selected).
 @st.fragment(run_every=settings.hub_refresh_seconds or None)
 def queue():
-    rows = [dict(r) for r in store().invoices()]
-    if queue_name and queue_name != "All":
-        rows = [r for r in rows if r["status"] == queue_name]
+    rows = queue_rows(queue_name)
     if not rows:
         st.info(f"Nothing in {queue_name or 'this queue'}.", icon=":material/inbox:")
         return
@@ -114,10 +123,13 @@ def queue():
     df["reasons"] = [", ".join((store().latest_output(i, "decision") or {}).get("hold_reasons", [])) for i in df["id"]]
     df["status"] = [f"{STATUS_ICON.get(s, ':material/autorenew:')} {s}" for s in df["status"]]
     event = st.dataframe(df[["id", "status", "reasons", "filename", "sender", "updated_at"]], hide_index=True,
-                         on_select="rerun", selection_mode="single-row", key="queue_table",
+                         on_select="rerun", selection_mode="single-row", key=f"queue_table_{queue_name}",
                          alt="Invoices in the selected queue")
     if event.selection.rows:
-        st.session_state["selected"] = int(df.iloc[event.selection.rows[0]]["id"])
+        chosen = int(df.iloc[event.selection.rows[0]]["id"])
+        if chosen != st.session_state.get("selected"):
+            st.session_state["selected"] = chosen
+            st.rerun()  # the whole app, so the detail below shows the chosen invoice
 
 
 queue()
@@ -129,7 +141,11 @@ with st.expander("Rejected messages"):
     else:
         st.caption("None")
 
+in_queue = [r["id"] for r in queue_rows(queue_name)]
 invoice_id = st.session_state.get("selected")
+if invoice_id not in in_queue:
+    invoice_id = in_queue[0] if in_queue else None
+    st.session_state["selected"] = invoice_id
 if invoice_id is None:
     st.stop()
 

@@ -24,9 +24,10 @@ def hub(tmp_path, monkeypatch):
     store = Store(db)
     invoice_id = ingest(store, ROOT / "samples" / "emails" / "01-simple-invoice.eml")[0]
 
-    def open_hub(**pipeline_overrides):
+    def open_hub(queue="Held", **pipeline_overrides):
         make_pipeline(store, **pipeline_overrides)[0].process(invoice_id)
         at = AppTest.from_file(HUB, default_timeout=30)
+        at.session_state["queue_name"] = queue
         at.session_state["selected"] = invoice_id
         at.run()
         return at
@@ -34,7 +35,7 @@ def hub(tmp_path, monkeypatch):
 
 
 def test_submitted_invoice_shows_clinrun_id_and_history(hub):
-    at = hub()
+    at = hub(queue="Submitted")
     assert not at.exception
     assert "CR-000001" in at.success[0].proto.title
     assert any("History" in h.value for h in at.subheader)
