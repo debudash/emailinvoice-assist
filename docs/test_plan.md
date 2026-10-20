@@ -13,11 +13,11 @@
 - **Every False Submit path found in review gets a test** that fails without the fix (for example,
   a line the matcher leaves out, or a rerun pushing a Held Invoice into submission).
 - **Bug fixes go test first**, with the issue ID in the test's docstring and a "found by" line
-  (ISSUE-001 to ISSUE-008; see [issue_log.md](issue_log.md)).
+  (ISSUE-001 to ISSUE-011; see [issue_log.md](issue_log.md)).
 
 ## Levels
 
-### Interface and integration (app, `tests/`, 87 tests)
+### Interface and integration (app, `tests/`, 89 tests)
 
 Run with `python -m pytest` from the repository root (the `.venv` from `uv sync`). No stack and no
 API key are needed: the Store is in-memory SQLite or a temp file, and the ClinRun Client test starts
@@ -29,7 +29,7 @@ its own mock-clinrun.
 | `test_pipeline.py` | 6 | Pipeline with the real Store and fake Stages: all five Stages then Submitted, with the submission's Context, codes and as-billed text; uncertain Context skips matching and holds; Unmatched never submits; a Stage failure marks Failed at that Stage; a rerun adds Stage Runs without overwriting; a Message with no PDF is Rejected |
 | `test_review_actions.py` | 15 | Review Actions: Correct Context reruns matching and the AI decides; a Correction to an unlinked site still holds; Release submits with reason and Reviewer; Release needs a reason; Release refused for `context_uncertain`; Escalation needs a note; Correct a Line Match; a Submitted Invoice cannot be corrected; Operator rerun from the failed Stage; rerun cannot push a Held Invoice into submission; only Held can be Escalated; a Correction without a note writes nothing; a Corrected Invoice is not Straight-Through; a Release survives a failed-submission rerun; a line the matcher left out can be corrected |
 | `test_review_fixes.py` | 9 | S0 review findings: skipped matching never reports Matched; a missing printed total holds; a study from another sponsor holds; Stage Runs record their inputs; computed Context Confidence through `score_context` (a weak site name stays uncertain despite PI and link; an unproposed field scores 0; a study found by both protocol and name scores without error); a Failed Stage Run records the underlying error, not the ExceptionGroup; the status passes through Decided before the outcome |
-| `test_reliability_and_intake.py` | 8 | Retries with attempts recorded; retries exhausted is Failed with 3 attempts; an image attachment is an Invoice; an upload is recorded as `upload`; an image Invoice holds as `extraction_unverifiable`; metrics (Straight-Through rate, manual minutes); an unreadable `.eml` is set aside and the worker keeps going; the submission's Price Variance flag uses the decision's tolerance |
+| `test_reliability_and_intake.py` | 6 | Retries with attempts recorded; retries exhausted is Failed with 3 attempts; an image attachment is an Invoice; an upload is recorded as `upload`; an image Invoice holds as `extraction_unverifiable`; metrics (Straight-Through rate, manual minutes) |
 | `test_eval_scoring.py` | 7 | The eval scoring and gate as pure functions: extra Hold Reasons keep full recall; a False Submit; Context correctness; line accuracy; the gate fails on one False Submit despite high accuracy; the gate passes when every floor is met; rationale faithfulness is full only when nothing is wrong |
 | `test_hub.py` | 2 | **Component** level, through Streamlit's `AppTest`: a Submitted Invoice shows its ClinRun ID and History; a Held Invoice shows the actions and the Release lock for `context_uncertain` |
 | `test_clinrun_client.py` | 2 | **Integration**: the ClinRun Client against a private mock-clinrun on a free port with a temp database; the same key returns the original ClinRun ID and stores one row; a new Invoice Version gets a new key |
@@ -42,6 +42,9 @@ its own mock-clinrun.
 | `test_issue_006_queue_row_shift.py` | 1 | ISSUE-006 regression (`AppTest`): the detail stays on the ticked invoice when a new one arrives |
 | `test_issue_007_hold_guidance.py` | 3 | ISSUE-007 regressions: a line or Context Correction that changes nothing is refused; the Hub shows what clears a Price Variance |
 | `test_issue_008_flagged_lines.py` | 3 | ISSUE-008 regressions (`AppTest`): flagged lines lead the Matched table; Correct a line lists only flagged lines and drops a fixed one; the confident-Context caption |
+| `test_issue_009_unreadable_email.py` | 1 | ISSUE-009 regression: an unreadable `.eml` is set aside and recorded as a Rejected Message, and the worker keeps going |
+| `test_issue_010_submission_variance_flag.py` | 1 | ISSUE-010 regression: the submission's Price Variance flag uses the decision's tolerance |
+| `test_issue_011_context_client_close.py` | 2 | ISSUE-011 regression: the context agent closes its client inside the event loop, on success and on failure |
 
 ### Service suites
 
